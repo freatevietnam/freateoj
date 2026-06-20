@@ -1,0 +1,76 @@
+# IDE
+.idea
+.vscode
+.review/
+
+# Python
+*.py[co]
+*.mo
+*.egg-info/
+__pycache__/
+
+# Environment
+.python-version
+.env
+venv/
+
+# Database
+*.sqlite3
+*.sql
+
+# Local settings
+dmoj/local_settings.py
+local_urls.py
+
+# Compiled/Cached resources
+.sass-cache
+sass_processed
+resources/ace-dmoj.css
+resources/dark/
+resources/featherlight.css
+resources/martor-description.css
+resources/select2-dmoj.css
+resources/style.css
+resources/vars.scss
+resources/blog-modern.css
+resources/blog-post.css
+resources/theme-toggle.css
+
+# Static files (built)
+/static/
+
+# Temp / Generated
+*~
+*.swp
+*.bak
+tmp.json
+tmp.sh
+tmp_uwsgi.ini
+_mytempfile/
+nginx_template.conf
+backup*.json
+custom_script_*
+db.json
+vo21.json
+fc_*
+
+# Fixtures (specific)
+judge/fixtures/fixed*
+judge/fixtures/voj_*
+judge/fixtures/VOJ_*
+VOJ_*problems.json
+language_voj.json
+
+# Node
+node_modules/
+package-lock.json
+
+# Server
+dmoj-site.pid
+dmoj-site.sock
+uwsgi.ini
+bridge_log.txt
+celerybeat-schedule.*
+
+# Docs build
+docs/build/
