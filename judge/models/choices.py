@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 def make_timezones():
     data = defaultdict(list)
     for tz in pytz.all_timezones:
+        if tz in ('Asia/Saigon',):
+            continue
         if '/' in tz:
             area, loc = tz.split('/', 1)
         else:

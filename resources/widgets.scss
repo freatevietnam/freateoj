@@ -327,6 +327,7 @@ ul.pagination {
     margin-bottom: 20px;
     border: 1px solid transparent;
     border-radius: $widget_border_radius;
+    animation: slideInDown 250ms ease-out both;
 }
 
 .alert-info {
@@ -448,6 +449,13 @@ a.close {
     border-top-right-radius: $widget_border_radius;
     padding: 0 5px !important;
     padding-bottom: 1.5em !important;
+    animation: fadeIn 300ms ease-out both;
+
+    @for $i from 1 through 5 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 80ms};
+        }
+    }
 }
 
 .ws-closed {
@@ -479,6 +487,13 @@ a.close {
         margin-bottom: 1em;
         border: 1px solid transparent;
         border-radius: 5px;
+        animation: slideInDown 250ms ease-out both;
+
+        @for $i from 1 through 10 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 60ms};
+            }
+        }
 
         &.debug {
             color: $color_primary75;

@@ -1,0 +1,96 @@
+{% load wpadmin_tags wpadmin_menu_tags %}{% load static %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}"{% if LANGUAGE_BIDI %} dir="rtl"{% endif %}>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{% block title %}{% endblock %}</title>
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}" />
+{% block extrastyle %}{% endblock %}
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+{% if INLINE_FONTAWESOME %}
+<link rel="stylesheet" type="text/css" href="{% static "libs/fontawesome/font-awesome.css" %}" />
+{% elif FONTAWESOME_CSS %}
+<link rel="stylesheet" type="text/css" href="{{ FONTAWESOME_CSS }}" />
+{% else %}
+<link rel="stylesheet" type="text/css" href="{% static "wpadmin/css/font-awesome.min.css" %}" />
+{% endif %}
+{% with WPADMIN_DEV=0 %}{% if WPADMIN_DEV %}
+<link rel="stylesheet/less" type="text/css" href="{% static "wpadmin/less/wpadmin.less" %}" />
+<link rel="stylesheet/less" type="text/css" href="{% static "wpadmin/less/themes/default/theme.less" %}" />
+<script type="text/javascript">less = {env: "development"};</script>
+<script type="text/javascript" src="{% static "wpadmin/js/lib/less.min.js" %}"></script>
+{% else %}
+<link rel="stylesheet" type="text/css" href="{% static "wpadmin/css/wpadmin.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "wpadmin/css/themes/default.css" %}" />
+{% endif %}{% endwith %}
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "{% filter escapejs %}{% now "Z" %}{% endfilter %}";</script>
+<script type="text/javascript">
+	window.__admin_url = '{% url 'admin:index' %}';
+	window.__wpadmin_cookie_name = 'djangoWpAdminSettings';
+</script>
+<script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.min.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+{% block extrahead %}{% endblock %}
+{% wpadmin_render_custom_style %}
+{% block wpadmin_extrastyle %}{% endblock %}
+{% block wpadmin_extrahead %}{% endblock %}
+<script type="text/javascript" src="{% static "wpadmin/js/lib/jquery.cookie.min.js" %}"></script>
+<script type="text/javascript" src="{% static "wpadmin/js/menus.js" %}"></script>
+<script type="text/javascript" src="{% static "wpadmin/js/content.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static "wpadmin/css/wpadmin.site.css" %}" />
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+</head>
+{% load i18n %}
+
+{% wpadmin_are_breadcrumbs_enabled %}{% wpadmin_is_left_menu_enabled %}
+<body class="{% if is_popup %}popup {% endif %}{% if not wpadmin_are_breadcrumbs_enabled %}wp-no-breadcrumbs {% endif %}{% if wpadmin_is_left_menu_enabled %}wp-with-left-menu {% endif %}{% block bodyclass %}{% endblock %} wp-pinned">
+
+<div id="wrapper">
+	{% if not is_popup %}
+		{% block adminmenu %}
+			{% wpadmin_render_left_menu %}
+		{% endblock%}
+	{% endif %}
+
+	<div id="container">
+
+		{% if not is_popup %}
+			{% block adminbar %}
+				{% wpadmin_render_top_menu %}
+			{% endblock %}
+			{% block breadcrumbs %}
+				<div class="breadcrumbs">
+					<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+					{% if title %} &rsaquo; {{ title }}{% endif %}
+				</div>
+			{% endblock %}
+		{% endif %}
+
+		{% block messages %}
+			{% if messages %}
+				<ul class="messagelist">
+					{% for message in messages %}
+						<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% endblock messages %}
+
+		<div id="content" class="{% block coltype %}colM{% endblock %}">
+			{% block pretitle %}{% endblock %}
+			{% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+			{% block content %}
+			{% block object-tools %}{% endblock %}
+			{{ content }}
+			{% endblock %}
+			{% block sidebar %}{% endblock %}
+			<br class="clear" />
+		</div>
+
+		{% block footer %}<div id="footer"></div>{% endblock %}
+	</div>
+</div>
+
+</body>
+</html>

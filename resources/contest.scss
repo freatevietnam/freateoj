@@ -118,6 +118,13 @@
 
     tbody tr {
         height: 4em;
+        animation: fadeIn 250ms ease-out both;
+
+        @for $i from 1 through 30 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 40ms};
+            }
+        }
     }
 
     .time-left {
@@ -153,6 +160,14 @@
     font-weight: 600;
     margin-right: 0.45em;
     position: relative;
+    display: inline-block;
+    animation: popIn 300ms ease-out both;
+
+    @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 50ms};
+        }
+    }
 }
 
 .contest-list-title {
@@ -210,6 +225,16 @@ form.contest-join-pseudotab {
 
     td {
         height: 2.5em;
+    }
+
+    tr {
+        animation: fadeIn 250ms ease-out both;
+
+        @for $i from 1 through 50 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 30ms};
+            }
+        }
     }
 
     td:not(.user-name, .personal-info) a:hover {

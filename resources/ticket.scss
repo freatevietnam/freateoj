@@ -186,6 +186,13 @@ div.ticket-title {
     color: #586069;
     font-size: 0.9em;
     z-index: 1;
+    animation: fadeIn 200ms ease-out both;
+
+    @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 40ms};
+        }
+    }
 
     .action-icon {
         position: absolute;
@@ -224,6 +231,13 @@ div.ticket-title {
     padding-top: 15px;
     position: relative;
     z-index: 1;
+    animation: slideInLeft 250ms ease-out both;
+
+    @for $i from 1 through 20 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 50ms};
+        }
+    }
 
     .info {
         width: 130px;
@@ -364,6 +378,7 @@ div.ticket-title {
     top: calc(100% + 4px);
     left: 0;
     right: 0;
+    animation: fadeIn 150ms ease-out both;
     min-width: 300px;
     background: $color_primary0;
     border: 1px solid $color_primary25;

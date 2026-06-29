@@ -180,6 +180,7 @@ nav {
 
             &:hover > ul, &:active > ul, &:focus > ul {
                 display: block !important;
+                animation: navDropdownIn 200ms ease-out both;
             }
 
             &.home-nav-element a:hover {
@@ -242,6 +243,7 @@ nav {
 
         &.show-list {
             display: block;
+            animation: slideInLeft 200ms ease-out both;
         }
 
         li {
@@ -304,6 +306,7 @@ nav .settings-popup {
     border: 1px solid $color_primary25;
     color: $color_primary90;
     margin-top: 2px;
+    animation: scaleIn 150ms ease-out both;
 }
 
 .nav-settings-row {

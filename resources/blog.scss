@@ -7,6 +7,13 @@
 
     .post {
         margin: 0em 0.5em;
+        animation: fadeIn 300ms ease-out both;
+
+        @for $i from 1 through 20 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 60ms};
+            }
+        }
 
         &:first-child {
             margin-top: 1.1em;

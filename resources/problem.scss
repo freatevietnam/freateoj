@@ -69,6 +69,13 @@
 
     tr {
         transition: background-color linear 0.2s;
+        animation: fadeIn 250ms ease-out both;
+
+        @for $i from 1 through 50 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 30ms};
+            }
+        }
 
         &:hover {
             background: rgba($color_primary100, 0.05);
@@ -145,6 +152,13 @@ ul.problem-list {
 
     li {
         margin-bottom: 0.5em;
+        animation: fadeIn 250ms ease-out both;
+
+        @for $i from 1 through 20 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 40ms};
+            }
+        }
     }
 }
 
@@ -500,6 +514,7 @@ ul.problem-list {
 
     &.active {
         display: block;
+        animation: fadeIn 200ms ease-out both;
     }
 }
 

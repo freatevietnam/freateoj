@@ -533,6 +533,15 @@
                 return false;
             };
 
+            $('#fill-test-case-btn').click(function (e) {
+                e.preventDefault();
+                if (!window.valid_files.length) {
+                    alert({{ _('No test files found. Please upload a ZIP file first.')|htmltojs }});
+                    return;
+                }
+                fill_testcases();
+            });
+
             var oldIndex;
             $table.find('tbody:first').sortable({
                 handle: 'i.fa-ellipsis-v',
@@ -1095,6 +1104,7 @@
         </table>
         <input type="submit" value="{{ _('Save') }}" class="button" id="submit-button">
         <a id="add-case-row" href="#" style="display: None;"><i class="fa fa-plus"></i> {{ _('Add new case') }}</a>
+        <a href="#" id="fill-test-case-btn" class="button" style="margin-left: 0.5em;"><i class="fa fa-magic"></i> {{ _('Fill test') }}</a>
     </form>
     <div style="display: none" class="generator-args-editor"><textarea></textarea><a class="button">{{ _('Save') }}</a></div>
 

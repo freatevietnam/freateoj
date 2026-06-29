@@ -2,7 +2,7 @@
 
 {% block js_media %}
     {% include "leave-warning.html" %}
-    <script src="/static/freateoj/flatpickr/flatpickr.js"></script>
+    <script src="{{ static('freateoj/flatpickr/flatpickr.js') }}"></script>
     <script>
         // This code activates flatpickr on fields with the 'datetimefield' class when the document has loaded
         window.addEventListener("DOMContentLoaded", function () {
@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block media %}
-    <link rel="stylesheet" href="/static/freateoj/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ static('freateoj/flatpickr/dist/flatpickr.min.css') }}">
     {{ form.media.css }}
     <link rel="stylesheet" type="text/css" href="{{ static('ui_form.css') }}">
 {% endblock %}

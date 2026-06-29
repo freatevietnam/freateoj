@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block media %}
+    {% compress css %}
+        <link rel="stylesheet" href="{{ static('notification.css') }}">
+    {% endcompress %}
+{% endblock %}
+
+{% block js_media %}
+    <script src="{{ static('notification.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em;">
+        <h2>{{ _('Notifications') }}</h2>
+        <a href="#" class="mark-all-read button">{{ _('Mark all as read') }}</a>
+    </div>
+
+    {% if notifications %}
+        <ul class="notification-list">
+            {% for n in notifications %}
+                <li class="notification-item {% if not n.read %}unread{% endif %}" data-id="{{ n.id }}">
+                    <div class="notification-title">{{ n.title }}</div>
+                    {% if n.body %}
+                        <div class="notification-body">{{ n.body }}</div>
+                    {% endif %}
+                    {% if n.url %}
+                        <div class="notification-time">
+                            <a href="{{ n.url }}">{{ _('View') }}</a>
+                            &middot;
+                        {% else %}
+                        <div class="notification-time">
+                    {% endif %}
+                        {{ n.time|timesince }} {{ _('ago') }}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>{{ _('No notifications yet.') }}</p>
+    {% endif %}
+{% endblock %}

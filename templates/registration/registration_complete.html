@@ -1,5 +1,21 @@
 {% extends "base.html" %}
 {% block body %}
-    <p>{{ _('You have successfully been registered. An email has been sent to the email address you provided to confirm your registration.') }}</p>
-    <p>{{ _('See you soon! If you have problems activating your account, feel free to shoot us a message at: ') }}{% if misc_config.discord_invite_link and misc_config.discord_invite_shieldio %}<a href="{{ misc_config.discord_invite_link }}"><img src="{{ misc_config.discord_invite_shieldio }}"></a>{% endif %}</p>
+    {% if email_verification_enabled %}
+        <p>{{ _('Your account has been created successfully!') }}</p>
+        <p>{{ _('A verification email has been sent to your email address.') }}</p>
+        <p>{{ _('Please check your email and enter the verification code to activate your account.') }}</p>
+        <p>{{ _('If you didn\'t receive the email, check your spam folder or contact the administrator.') }}</p>
+        <br>
+        {% if completed_username %}
+            <a href="{{ url('registration_verify_otp', completed_username) }}" class="button">{{ _('Verify Email Now') }}</a>
+            <a href="{{ url('registration_resend_verification') }}" class="button">{{ _('Resend Verification Email') }}</a>
+        {% else %}
+            <p><a href="{{ url('registration_resend_verification') }}">{{ _('Resend verification email') }}</a></p>
+        {% endif %}
+    {% else %}
+        <p>{{ _('Your account has been created successfully!') }}</p>
+        <p>{{ _('You can now log in with your credentials.') }}</p>
+        <br>
+        <a href="{{ url('auth_login') }}" class="button">{{ _('Log In') }}</a>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,16 @@
+{{ _('Hello %(username)s,', username=user.username) }}
+
+{{ _('Thank you for registering on %(site_name)s!', site_name=site_name) }}
+
+{{ _('Your email verification code is:') }}
+
+{{ otp_code }}
+
+{{ _('This code will expire in %(expires_minutes)d minutes.', expires_minutes=expires_minutes) }}
+
+{{ _('To verify your email, visit:') }}
+http://{{ site_domain }}/accounts/verify/{{ user.username }}/
+
+{{ _('If you did not register for an account, please ignore this email.') }}
+
+{{ _('See you soon!') }}

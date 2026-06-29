@@ -20,6 +20,13 @@
     border-left: $color_primary25 1px solid;
     border-right: $color_primary25 1px solid;
     transition: background-color linear 0.2s;
+    animation: fadeIn 250ms ease-out both;
+
+    @for $i from 1 through 30 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 40ms};
+        }
+    }
 
     &:hover {
         background: $color_primary10;
@@ -241,6 +248,16 @@ label[for="language"], label[for="status"], label[for="organization"] {
         font-weight: 500;
     }
 
+    .case-row {
+        &.case-row-existing {
+            animation: none !important;
+        }
+
+        &.case-row-new {
+            animation: slideInUp 50ms ease-out both;
+        }
+    }
+
     .case-row td:nth-child(3) {
         padding-right: 0;
         text-align: right;
@@ -352,5 +369,11 @@ label[for="language"], label[for="status"], label[for="organization"] {
 
     .submission-date {
         color: $color_primary50;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #test-cases .case-row-new {
+        animation: none !important;
     }
 }

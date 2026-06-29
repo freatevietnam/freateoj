@@ -59,6 +59,13 @@ span.organization {
 .users-table, .organization-table {
     tr {
         transition: background-color linear .2s;
+        animation: fadeIn 250ms ease-out both;
+
+        @for $i from 1 through 50 {
+            &:nth-child(#{$i}) {
+                animation-delay: #{$i * 30ms};
+            }
+        }
 
         &:hover {
             background: rgba($color_primary100, 0.05);

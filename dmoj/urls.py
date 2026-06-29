@@ -11,14 +11,14 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from judge.feed import AtomBlogFeed, AtomCommentFeed, AtomProblemFeed, BlogFeed, CommentFeed, ProblemFeed
 from judge.sitemap import sitemaps
-from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, mailgun, organization, \
-    preview, problem, problem_download, problem_manage, ranked_submission, register, stats, status, submission, tag, \
-    tasks, ticket, two_factor, user, widgets
+from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, notification, \
+    organization, preview, problem, problem_download, problem_manage, ranked_submission, register, stats, status, \
+    submission, tag, tasks, ticket, two_factor, user, widgets
 from judge.views.magazine import MagazinePage
 from judge.views.misc_config import MiscConfigEdit
 from judge.views.problem_data import ProblemDataView, ProblemSubmissionDiff, \
     problem_data_file, problem_init_view
-from judge.views.register import ActivationView, RegistrationView
+from judge.views.register import RegistrationView, RegistrationCompleteView
 from judge.views.select2 import AssigneeSelect2View, CommentSelect2View, ContestSelect2View, \
     ContestUserSearchSelect2View, OrganizationSelect2View, OrganizationUserSearchSelect2View, \
     OrganizationUserSelect2View, ProblemSelect2View, TagGroupSelect2View, TagSelect2View, TicketUserSelect2View, \
@@ -28,22 +28,16 @@ from martor.views import markdown_search_user
 
 admin.autodiscover()
 
-SEND_ACTIVATION_EMAIL = getattr(settings, 'SEND_ACTIVATION_EMAIL', True)
-REGISTRATION_COMPLETE_TEMPLATE = 'registration/registration_complete.html' if SEND_ACTIVATION_EMAIL \
-                                 else 'registration/activation_complete.html'
-
 register_patterns = [
     path('activate/complete/',
          TitledTemplateView.as_view(template_name='registration/activation_complete.html',
                                     title=_('Activation Successful!')),
          name='registration_activation_complete'),
-    # Let's use <str:activation_key>, because a bad activation key should still get to the view;
-    # that way, it can return a sensible "invalid key" message instead of a confusing 404.
-    path('activate/<str:activation_key>/', ActivationView.as_view(), name='registration_activate'),
+    path('verify/resend/', register.ResendVerificationView.as_view(), name='registration_resend_verification'),
+    path('verify/<str:username>/', register.OTPVerificationView.as_view(), name='registration_verify_otp'),
     path('register/', RegistrationView.as_view(), name='registration_register'),
     path('register/complete/',
-         TitledTemplateView.as_view(template_name=REGISTRATION_COMPLETE_TEMPLATE,
-                                    title=_('Registration Completed')),
+         RegistrationCompleteView.as_view(),
          name='registration_complete'),
     path('register/closed/',
          TitledTemplateView.as_view(template_name='registration/registration_closed.html',
@@ -351,8 +345,6 @@ urlpatterns = [
 
     path('license/<str:key>', license.LicenseDetail.as_view(), name='license'),
 
-    path('mailgun/mail_activate/', mailgun.MailgunActivationView.as_view(), name='mailgun_activate'),
-
     path('widgets/', include([
         path('rejudge', widgets.rejudge_submission, name='submission_rejudge'),
         path('single_submission', submission.single_submission, name='submission_single_query'),
@@ -401,6 +393,12 @@ urlpatterns = [
     ])),
 
     path('stats/data/all/', stats.all_data, name='stats_data_all'),
+
+    path('notifications/', include([
+        path('', notification.NotificationList.as_view(), name='notification_list'),
+        path('ajax', notification.NotificationAjax.as_view(), name='notification_ajax'),
+        path('mark_read', notification.NotificationMarkRead.as_view(), name='notification_mark_read'),
+    ])),
 
     path('tickets/', include([
         path('', ticket.TicketList.as_view(), name='ticket_list'),

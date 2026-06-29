@@ -37,7 +37,7 @@ def get_pp_breakdown(user, start=0, end=settings.DMOJ_PP_ENTRIES):
                        NOT judge_problem.is_organization_private AND
                        judge_submission.points IS NOT NULL AND
                        judge_submission.user_id = %s)
-                GROUP BY judge_problem.id
+                GROUP BY judge_problem.id, judge_problem.name, judge_problem.code
                 HAVING MAX(judge_submission.points) > 0.0
             ) AS max_points_table
             INNER JOIN judge_submission ON (
@@ -46,7 +46,6 @@ def get_pp_breakdown(user, start=0, end=settings.DMOJ_PP_ENTRIES):
                 judge_submission.user_id = %s
             )
             INNER JOIN judge_language ON (judge_submission.language_id = judge_language.id)
-            GROUP BY max_points_table.problem_id
             ORDER BY max_points DESC, judge_submission.date DESC
             LIMIT %s OFFSET %s
         """, (user.id, user.id, end - start + 1, start))

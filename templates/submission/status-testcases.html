@@ -25,6 +25,29 @@
 {% set is_pretest = submission.is_pretested %}
 
 {% if submission.status != 'IE' %}
+    {% if submission.is_graded and submission.result == 'AC' and submission.case_points == submission.case_total %}
+    <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
+        <video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+            <source src="{{ static('freateoj/aceasteregg.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+    {% elif submission.status == 'CE' %}
+    <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
+        <video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+            <source src="{{ static('freateoj/ceeasteregg.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+    {% elif submission.is_graded and submission.case_total > 0 and submission.case_points < submission.case_total and (submission.case_points / submission.case_total) >= 0.99 %}
+    <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
+        <img src="{{ static('freateoj/99percenteasteregg.webp') }}" alt="99% easter egg" style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+    </div>
+    {% elif submission.is_graded and submission.result != 'AC' %}
+    <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
+        <video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+            <source src="{{ static('freateoj/notaceasteregg.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+    {% endif %}
     {% if submission.status == 'QU' %}
         <h4>{{ _('We are waiting for a suitable judge to process your submission...') }}</h4>
     {% elif submission.status == 'P' %}

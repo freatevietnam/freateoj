@@ -74,3 +74,7 @@ celerybeat-schedule.*
 
 # Docs build
 docs/build/
+
+# Compiled CSS files
+resources/**/*.css
+resources/**/*.css.map

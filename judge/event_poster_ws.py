@@ -1,12 +1,13 @@
 import json
-import socket
+import logging
 import threading
+import urllib.request
 
 from django.conf import settings
-from websocket import WebSocketException, create_connection
 
 __all__ = ['EventPostingError', 'EventPoster', 'post', 'last']
 _local = threading.local()
+logger = logging.getLogger('judge.event')
 
 
 class EventPostingError(RuntimeError):
@@ -15,42 +16,41 @@ class EventPostingError(RuntimeError):
 
 class EventPoster(object):
     def __init__(self):
-        self._connect()
+        pass
 
-    def _connect(self):
-        self._conn = create_connection(settings.EVENT_DAEMON_POST)
-        if settings.EVENT_DAEMON_KEY is not None:
-            self._conn.send(json.dumps({'command': 'auth', 'key': settings.EVENT_DAEMON_KEY}))
-            resp = json.loads(self._conn.recv())
-            if resp['status'] == 'error':
-                raise EventPostingError(resp['code'])
+    def _post_url(self):
+        return settings.EVENT_DAEMON_POST.rstrip('/')
 
     def post(self, channel, message, tries=0):
         try:
-            self._conn.send(json.dumps({'command': 'post', 'channel': channel, 'message': message}))
-            resp = json.loads(self._conn.recv())
-            if resp['status'] == 'error':
-                raise EventPostingError(resp['code'])
-            else:
-                return resp['id']
-        except WebSocketException:
-            if tries > 10:
+            url = self._post_url() + '/post'
+            payload = json.dumps({'command': 'post', 'channel': channel, 'message': message}).encode('utf-8')
+            req = urllib.request.Request(url, data=payload, headers={'Content-Type': 'application/json'})
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                data = json.loads(resp.read().decode('utf-8'))
+                if data.get('status') == 'error':
+                    raise EventPostingError(data.get('code', 'unknown'))
+                return data.get('id', 0)
+        except Exception as e:
+            logger.error('Failed to post event to %s: %s', url, e)
+            if tries > 3:
                 raise
-            self._connect()
             return self.post(channel, message, tries + 1)
 
     def last(self, tries=0):
         try:
-            self._conn.send('{"command": "last-msg"}')
-            resp = json.loads(self._conn.recv())
-            if resp['status'] == 'error':
-                raise EventPostingError(resp['code'])
-            else:
-                return resp['id']
-        except WebSocketException:
-            if tries > 10:
+            url = self._post_url() + '/post'
+            payload = json.dumps({'command': 'last-msg'}).encode('utf-8')
+            req = urllib.request.Request(url, data=payload, headers={'Content-Type': 'application/json'})
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                data = json.loads(resp.read().decode('utf-8'))
+                if data.get('status') == 'error':
+                    raise EventPostingError(data.get('code', 'unknown'))
+                return data.get('id', 0)
+        except Exception as e:
+            logger.error('Failed to get last msg from %s: %s', url, e)
+            if tries > 3:
                 raise
-            self._connect()
             return self.last(tries + 1)
 
 
@@ -63,7 +63,7 @@ def _get_poster():
 def post(channel, message):
     try:
         return _get_poster().post(channel, message)
-    except (WebSocketException, socket.error):
+    except Exception:
         try:
             del _local.poster
         except AttributeError:
@@ -74,7 +74,7 @@ def post(channel, message):
 def last():
     try:
         return _get_poster().last()
-    except (WebSocketException, socket.error):
+    except Exception:
         try:
             del _local.poster
         except AttributeError:

@@ -1,38 +1,55 @@
-# FreateOJ: Freate Online Judge [![Build Status](https://github.com/freatevietnam/freateoj/workflows/build/badge.svg)](https://github.com/freatevietnam/freateoj/actions/) [![AGPL License](https://img.shields.io/badge/license-AGPLv3.0-blue.svg)](http://www.gnu.org/licenses/agpl-3.0) [![Discord link](https://img.shields.io/discord/660930260405190688?color=%237289DA&label=Discord&logo=Discord)](https://discord.com/invite/fC3kG3hQyn)
+# FreateOJ: Freate Online Judge
 
-As a fork of [DMOJ](https://github.com/DMOJ/online-judge), FreateOJ serves as [Freate](https://freate.io.vn/)'s official online judge and hosts its programming contests.
+[![Build Status](https://github.com/freatevietnam/freateoj/workflows/build/badge.svg)](https://github.com/freatevietnam/freateoj/actions/)
+[![AGPL License](https://img.shields.io/badge/license-AGPLv3.0-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+[![Discord link](https://img.shields.io/discord/1517871991573581975?color=%237289DA&label=Discord&logo=Discord)](https://discord.com/invite/fC3kG3hQyn)
 
-See it live at [oj.freate.io.vn](https://oj.freate.io.vn/)!
+FreateOJ is an online judge serving as the official judge for Freate programming contests.
 
 ## Features
 
-Check out its features [here](https://github.com/DMOJ/online-judge#features).
+- Support for **56+ programming languages** (C, C++, Java, Python, and more)
+- **MathJax 3.2.0** for rendering LaTeX math with `$` and `$$` delimiters
+- **Contest formats**: IOI-style, ICPC-style, and custom formats
+- **Real-time updates** via Socket.IO
+- **Batch rejudging** and problem versioning
+- **Dark/Light theme** support
+- **Docker-based judge** for secure code execution
+
+## Math Syntax
+
+FreateOJ uses `$` as the default inline math delimiter and `$$` for display math.
+
+```markdown
+Inline: $x^2 + y^2 = z^2$
+Display: $$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$
+```
+
+See the full [Math Syntax Guide](docs/MATH_SYNTAX.md) for details.
 
 ## Installation
 
-Refer to the install documentation [here](https://freatevietnam.github.io/freateoj-docs/#/site/installation). Almost all installation steps remain the same as the docs, but there are several minor differences, including cloning this repo instead of DMOJ's repo.
+Refer to the [installation documentation](docs/docs/site/installation.md).
 
-### Additional installation steps
+- Define `FREATEOJ_PROBLEM_DATA_ROOT` in `local_settings.py` (path to problems' tests directory)
+- Use `memcached` or `redis` for caching instead of default local-memory caching
 
-- You **have to** define `DMOJ_PROBLEM_DATA_ROOT` in `local_settings.py`, which should be the path to the directory that contains your problems' tests.
+### Demo Data
 
-- Regarding disabling full-text search, please read [this issue](https://github.com/freatevietnam/freateoj/issues/4) for more information.
+```bash
+python manage.py loaddata demo
+```
 
-- To sync the judge server and the site's cache, change the cache framework (`CACHES`) to `memcached` or `redis` instead of the default (local-memory caching).
+This creates a superuser account with username `admin` and password `admin`.
 
-- If you use `python3 manage.py loaddata demo`, the home button in the admin dashboard (/admin) links you to `localhost:8081`, there are 2 ways to change that:
+## Contributing
 
-  1. You can change that in [demo.json](/judge/fixtures/demo.json)
-  2. You can go to the admin page, scroll down to find the `Sites` setting and change `localhost:8081` to your domain.
+See [contributing.md](contributing.md) for guidelines.
 
-- To support `testlib.h`, you need to copy [testlib.h](https://github.com/MikeMirzayanov/testlib/blob/master/testlib.h) to `g++`'s include path in the judge server. To speed up compile time, you can also create a precompiled header for `testlib.h`.
+## Security
 
-## Contributing ![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)
+Report security vulnerabilities to **freatevietnam@gmail.com**. See [SECURITY.md](SECURITY.md) for details.
 
-Take a look at [our contribution guideline](contributing.md).
+## License
 
-If you find any bug, please feel free to contact us via Discord [![Discord Chat](https://img.shields.io/discord/660930260405190688?color=%237289DA&label=Discord&logo=Discord)](https://discord.gg/fC3kG3hQyn) or open an issue.
-
-Pull requests are welcome as well. Before you submit your PR, please check your code with [flake8](https://flake8.pycqa.org/en/latest/) and format it if needed. There's also `prettier` if you need to format JS code (in `websocket/`).
-
-Translation contributions are also welcome.
+FreateOJ is licensed under the [GNU Affero General Public License v3.0](LICENSE).

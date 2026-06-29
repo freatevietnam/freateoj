@@ -8,10 +8,9 @@
   "dependencies": {
     "@commander-js/extra-typings": "11.0.0",
     "commander": "11.0.0",
-    "ws": "8.14.0"
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "@types/ws": "8.5.5",
     "autoprefixer": "10.4.15",
     "postcss": "8.4.29",
     "postcss-cli": "10.1.0",

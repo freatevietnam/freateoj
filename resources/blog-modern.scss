@@ -158,6 +158,13 @@
     font-weight: 500;
     text-decoration: none;
     transition: all 0.15s ease;
+    animation: popIn 300ms ease-out both;
+
+    @for $i from 1 through 15 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 40ms};
+        }
+    }
 
     &:hover {
         background: $color_blog_hover_bg;
@@ -593,6 +600,13 @@
     position: relative;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    animation: slideInUp 350ms ease-out both;
+
+    @for $i from 1 through 20 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 60ms};
+        }
+    }
 
     &::before {
         content: '';
@@ -683,6 +697,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.3px;
+    animation: scaleIn 200ms ease-out both;
 
     i {
         font-size: 10px;
@@ -690,18 +705,18 @@
 }
 
 .badge-pinned {
-    background: $color_blog_hero_bg;
-    color: #1e40af;
+    background: $color_blog_badge_pinned_bg;
+    color: $color_blog_badge_pinned_text;
 }
 
 .badge-draft {
-    background: #fef3c7;
-    color: #92400e;
+    background: $color_blog_badge_draft_bg;
+    color: $color_blog_badge_draft_text;
 }
 
 .badge-global {
-    background: #d1fae5;
-    color: #065f46;
+    background: $color_blog_badge_global_bg;
+    color: $color_blog_badge_global_text;
 }
 
 .card-date {
@@ -748,12 +763,12 @@
     -webkit-box-orient: vertical;
 
     a {
-        color: #0066cc;
+        color: $color_blog_excerpt_link;
         text-decoration: none;
 
         &:hover {
             text-decoration: underline;
-            color: #0052a3;
+            color: $color_blog_excerpt_link_hover;
         }
     }
 
@@ -832,22 +847,22 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      color: #202123;
+      color: $color_blog_text_primary;
       font-size: 0.95rem;
 
       i {
-        color: #6b7280;
+        color: $color_blog_text_muted;
         font-size: 1rem;
       }
 
       .stat-label {
-        color: #6b7280;
+        color: $color_blog_text_muted;
         font-weight: 500;
       }
 
       span:not(.stat-label) {
         font-weight: 600;
-        color: #202123;
+        color: $color_blog_text_primary;
       }
 
       &.vote-stat {

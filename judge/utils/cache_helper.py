@@ -17,3 +17,17 @@ class CacheFactory:
     def delete_cache(self):
         cache_key = self.get_cache_key()
         cache.delete(cache_key)
+
+
+def unread_notification_count_cache_factory(profile_id):
+    return CacheFactory(f'unread_notification_count_{profile_id}')
+
+
+def notification_list_cache_factory(profile_id):
+    return CacheFactory(f'notification_list_{profile_id}')
+
+
+def bulk_invalidate_notification_caches(profile_ids):
+    for pid in profile_ids:
+        factory = unread_notification_count_cache_factory(pid)
+        factory.delete_cache()

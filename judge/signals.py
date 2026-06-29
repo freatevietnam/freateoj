@@ -6,10 +6,8 @@ from django.conf import settings
 from django.contrib.flatpages.models import FlatPage
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
-from django.db import transaction
 from django.db.models.signals import m2m_changed, post_delete, post_save
 from django.dispatch import receiver
-from registration.models import RegistrationProfile
 from registration.signals import user_registered
 
 from judge.caching import finished_submission
@@ -198,16 +196,4 @@ def contest_announcement_create(sender, instance, created, **kwargs):
 
 @receiver(user_registered, sender=RegistrationView)
 def registration_user_registered(sender, user, request, **kwargs):
-    """Automatically activate user if SEND_ACTIVATION_EMAIL is False"""
-
-    if not getattr(settings, 'SEND_ACTIVATION_EMAIL', True):
-        # get should never fail here
-        # but if it does, we won't catch it so it can show up in our log
-        profile = RegistrationProfile.objects.get(user=user)
-
-        user.is_active = True
-        profile.activated = True
-
-        with transaction.atomic():
-            user.save()
-            profile.save()
+    pass

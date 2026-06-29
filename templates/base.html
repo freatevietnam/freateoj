@@ -93,6 +93,7 @@
     {% endcompress %}
     {% block js_media %}{% endblock %}
     {% if EVENT_LAST_MSG %}
+        <script src="{{ static('libs/socket.io.min.js') }}"></script>
         <script>
             window.event_dispatcher = new WSEventDispatcher(
                 '{{ EVENT_DAEMON_LOCATION }}',
@@ -111,6 +112,12 @@
                 };
             </script>
             <script src="{{ static('ticket_notification.js') }}"></script>
+            <script>
+                window.NOTIFICATION_SECRET = '{{ NOTIFICATION_SECRET }}';
+                window.UNREAD_NOTIFICATION_COUNT = {{ UNREAD_NOTIFICATION_COUNT|default(0) }};
+                window.EVENT_DAEMON_GET = '{{ EVENT_DAEMON_LOCATION }}';
+            </script>
+            <script src="{{ static('notification.js') }}"></script>
         {% endif %}
     {% endif %}
     {% if request.in_contest %}
@@ -276,17 +283,15 @@
                         </span>
                     </a>
                     <ul class="settings-popup" style="min-width: 210px; right: 0; left: auto;">
-                        {% if request.user.is_authenticated %}
-                            <li>
-                                <div class="nav-settings-row">
-                                    <span class="nav-settings-lbl">{{ _('Theme') }}</span>
-                                    <span class="nav-seg">
-                                        <span onclick="set_theme('light')" class="nav-seg-btn{% if SITE_THEME_NAME != 'dark' %} active{% endif %}"><i class="fa fa-sun-o"></i></span>
-                                        <span onclick="set_theme('dark')" class="nav-seg-btn{% if SITE_THEME_NAME == 'dark' %} active{% endif %}"><i class="fa fa-moon-o"></i></span>
-                                    </span>
-                                </div>
-                            </li>
-                        {% endif %}
+                        <li>
+                            <div class="nav-settings-row">
+                                <span class="nav-settings-lbl">{{ _('Theme') }}</span>
+                                <span class="nav-seg">
+                                    <span onclick="set_theme('light')" class="nav-seg-btn{% if SITE_THEME_NAME != 'dark' %} active{% endif %}"><i class="fa fa-sun-o"></i></span>
+                                    <span onclick="set_theme('dark')" class="nav-seg-btn{% if SITE_THEME_NAME == 'dark' %} active{% endif %}"><i class="fa fa-moon-o"></i></span>
+                                </span>
+                            </div>
+                        </li>
                         <li>
                             <div class="nav-settings-row">
                                 <span class="nav-settings-lbl">{{ _('Language') }}</span>
@@ -311,6 +316,14 @@
                 </span>
             </a>
             {% if request.user.is_authenticated %}
+                <a href="{{ url('notification_list') }}" style="margin-right: 5px; position: relative;">
+                    <span title="{{ _('Notifications') }}">
+                        <i class="fa fa-bell" style="color: rgb(200,200,200); font-size: 1.15em"></i>
+                        {% if UNREAD_NOTIFICATION_COUNT %}
+                            <span id="notification-badge" style="display: inline;">{{ UNREAD_NOTIFICATION_COUNT }}</span>
+                        {% endif %}
+                    </span>
+                </a>
                 <ul>
                     <li>
                         <a href="{{ url('user_page') }}">
@@ -405,7 +418,7 @@
         <span id="footer-content">
             <br>
             {{_('proudly powered by %(dmoj)s', dmoj=safe('<a style="color: #808080" href="https://dmoj.ca"><b>DMOJ</b></a>'))}} |
-            {{_('follow us on %(github)s and %(facebook)s', github=safe('<a style="color: #808080" href="https://github.com/freatevietnam/freateoj"><b>Github</b></a>'), facebook=safe('<a style="color: #808080" href="https://www.facebook.com/freatevietnam"><b>Facebook</b></a>'))}}
+            {{_('follow us on %(github)s and %(facebook)s', github=safe('<a style="color: #808080" href="https://github.com/freatevietnam/freateoj"><b>Github</b></a>'), facebook=safe('<a style="color: #808080" href="https://www.facebook.com/profile.php?id=61590965260203"><b>Facebook</b></a>'))}}
             {% if misc_config.footer %}
                 {{ misc_config.footer|safe }} |
             {% endif %}
@@ -414,13 +427,11 @@
             <input name="next" type="hidden" value="{{ request.get_full_path() }}">
             <input name="language" type="hidden" value="{{LANGUAGE_CODE}}">
           </form>
-            {% if request.user.is_authenticated %}
-                <form id="set_theme" action="{{ url('set_theme') }}" method="post" style="display: inline">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.get_full_path() }}">
-                    <input name="theme" type="hidden" value="{{ SITE_THEME_NAME }}">
-                </form>
-            {% endif %}
+            <form id="set_theme" action="{{ url('set_theme') }}" method="post" style="display: inline">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path() }}">
+                <input name="theme" type="hidden" value="{{ SITE_THEME_NAME }}">
+            </form>
         </span>
     </footer>
 </div>

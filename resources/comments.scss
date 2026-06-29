@@ -80,6 +80,13 @@ a {
     list-style: none none;
     border-radius: $widget_border_radius;
     margin: 0 0 5px;
+    animation: fadeIn 250ms ease-out both;
+
+    @for $i from 1 through 20 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 50ms};
+        }
+    }
 
     &:before {
         display: block;
@@ -124,6 +131,7 @@ a {
         border: 1px solid $color_primary25;
         background: $color_primary5;
         border-radius: $widget_border_radius;
+        animation: fadeIn 300ms ease-out both;
     }
 
     .comment .detail {
@@ -146,6 +154,7 @@ a {
         border: 1px solid $highlight_blue;
         border-left: 10px solid $highlight_blue;
         padding-left: 5px;
+        animation: popIn 400ms ease-out both;
     }
 
     .comment-edits {

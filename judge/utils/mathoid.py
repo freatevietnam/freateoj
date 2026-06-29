@@ -145,7 +145,7 @@ class MathoidMathParser(object):
                            '<span class="tex-text" style="display:none">{4}{2}{4}</span>'
                            '</span>',
                            result['svg'], result['css'], result['tex'],
-                           ['inline-math', 'display-math'][result['display']], ['~', '$$'][result['display']])
+                           ['inline-math', 'display-math'][result['display']], ['$', '$$'][result['display']])
 
     def output_svg(self, result):
         return format_html('<img class="{3}" src="{0}" style="{1}" alt="{2}">',

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+    <p>{{ _('We have sent a verification code to your email address.') }}</p>
+    <p>{{ _('Please enter the 8-character code below to verify your email address.') }}</p>
+    <p>{{ _('The code will expire in %(expires_minutes)d minutes.', expires_minutes=60) }}</p>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="otp_code">{{ _('Verification Code') }}</label>
+            <input type="text" id="otp_code" name="otp_code" class="form-control" maxlength="8"
+                   pattern="[A-Z0-9]{8}" placeholder="XXXXXXXX" required autofocus
+                   style="text-transform: uppercase; letter-spacing: 2px; font-size: 1.5em; text-align: center;">
+        </div>
+        <br>
+        <button type="submit" class="button">{{ _('Verify') }}</button>
+    </form>
+    <br>
+    <p><a href="{{ url('registration_resend_verification') }}">{{ _('Didn\'t receive the code? Resend verification email') }}</a></p>
+{% endblock %}

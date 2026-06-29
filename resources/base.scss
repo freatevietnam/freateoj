@@ -215,6 +215,7 @@ noscript #noscript {
     bottom: -4px;
     right: -4px;
     padding: 5px 6px 6px 5px;
+    animation: slideInUp 300ms ease-out both;
 
     a {
         color: orange;
@@ -243,6 +244,7 @@ noscript #noscript {
     border-radius: $widget_border_radius;
     padding: 0 1em 0.1em 1em;
     margin: 0.3em 0 0.5em 0;
+    animation: shake 400ms ease-in-out both;
 }
 
 #contest-info {

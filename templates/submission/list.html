@@ -244,15 +244,12 @@
                         }
                     }
                 );
-                event_dispatcher.onwsclose(function (event) {
-                    if (event.code == 1001) {
-                        console.log('Navigated away');
-                        return;
-                    }
-                    console.log('You probably should refresh?');
-                    $('.ws-closed').show().find('a').click(function () {
-                        window.location.reload();
-                    });
+                event_dispatcher.ondisconnect(function (data) {
+                    console.log('Connection lost: ' + data.reason);
+                    $('.ws-closed').show();
+                });
+                event_dispatcher.onreconnect(function () {
+                    $('.ws-closed').hide();
                 });
             }
         </script>

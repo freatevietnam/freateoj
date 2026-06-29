@@ -1,0 +1,20 @@
+<b>{{ _('Hello %(username)s,', username=user.username) }}</b>
+<br><br>
+{{ _('Thank you for registering on %(site_name)s!', site_name=site_name) }}
+<br><br>
+{{ _('Your email verification code is:') }}
+<br><br>
+<div style="background: #f5f5f5; padding: 15px; text-align: center; margin: 15px 0; border-radius: 5px;">
+    <span style="font-size: 24px; font-weight: bold; letter-spacing: 4px; color: #333;">{{ otp_code }}</span>
+</div>
+<br>
+{{ _('This code will expire in %(expires_minutes)d minutes.', expires_minutes=expires_minutes) }}
+<br><br>
+{{ _('To verify your email, visit:') }}
+<p style="margin-left:1em">
+    <a href="http://{{ site_domain }}/accounts/verify/{{ user.username }}/">http://{{ site_domain }}/accounts/verify/{{ user.username }}/</a>
+</p>
+
+{{ _('If you did not register for an account, please ignore this email.') }}
+<br><br>
+{{ _('See you soon!') }}

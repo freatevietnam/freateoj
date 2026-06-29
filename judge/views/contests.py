@@ -337,8 +337,14 @@ class ContestDetail(ContestMixin, TitleMixin, CommentedDetailView):
         context['metadata'].update(
             **self.object.contest_problems
             .annotate(
-                partials_enabled=F('partial').bitand(F('problem__partial')),
-                pretests_enabled=F('is_pretested').bitand(F('contest__run_pretests_only')),
+                partials_enabled=Case(
+                    When(partial=True, problem__partial=True, then=Value(1)),
+                    default=Value(0), output_field=IntegerField(),
+                ),
+                pretests_enabled=Case(
+                    When(is_pretested=True, contest__run_pretests_only=True, then=Value(1)),
+                    default=Value(0), output_field=IntegerField(),
+                ),
             )
             .aggregate(
                 has_partials=Sum('partials_enabled', output_field=BooleanField()),

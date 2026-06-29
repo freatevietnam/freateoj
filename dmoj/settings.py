@@ -339,6 +339,10 @@ DMOJ_THEME_DEFAULT_ACE_THEME = {
 }
 DMOJ_SELECT2_THEME = 'dmoj'
 
+# Cookie used to remember the site theme of anonymous (logged-out) users.
+SITE_THEME_COOKIE_NAME = 'site_theme'
+SITE_THEME_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 year
+
 MARKDOWN_STYLES = {}
 MARKDOWN_DEFAULT_STYLE = {}
 
@@ -527,7 +531,9 @@ MIDDLEWARE = (
 IMPERSONATE_REQUIRE_SUPERUSER = True
 IMPERSONATE_DISABLE_LOGGING = True
 
-ACCOUNT_ACTIVATION_DAYS = 7
+EMAIL_VERIFICATION_ENABLED = True
+EMAIL_VERIFICATION_EXPIRY_MINUTES = 60
+EMAIL_VERIFICATION_OTP_LENGTH = 8
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -761,16 +767,17 @@ BRIDGED_JUDGE_PROXIES = None
 BRIDGED_DJANGO_ADDRESS = [('localhost', 9998)]
 BRIDGED_DJANGO_CONNECT = None
 
-# Event Server configuration
+# Event Server configuration (Socket.IO)
 EVENT_DAEMON_USE = False
-EVENT_DAEMON_POST = 'ws://localhost:9997/'
-EVENT_DAEMON_GET = 'ws://localhost:9996/'
+EVENT_DAEMON_POST = 'http://localhost:9996/'
+EVENT_DAEMON_GET = 'http://localhost/'
 EVENT_DAEMON_POLL = '/channels/'
 EVENT_DAEMON_KEY = None
 EVENT_DAEMON_AMQP_EXCHANGE = 'dmoj-events'
 EVENT_DAEMON_SUBMISSION_KEY = '6Sdmkx^%pk@GsifDfXcwX*Y7LRF%RGT8vmFpSxFBT$fwS7trc8raWfN#CSfQuKApx&$B#Gh2L7p%W!Ww'
 EVENT_DAEMON_CONTEST_KEY = '&w7hB-.9WnY2Jj^Qm+|?o6a<!}_2Wiw+?(_Yccqq{uR;:kWQP+3R<r(ICc|4^dDeEuJE{*D;Gg@K(4K>'
 EVENT_DAEMON_TICKET_KEY = '@R3DjH&egtm0HNhok6ERIMK!zlTzq2hrSGG2Se8SujCoO(2NX!DkbzcgQtm90FHDvpFM3gJ&D7acS$ta'
+EVENT_DAEMON_NOTIFICATION_KEY = 'm4l6v_%7j_%#abf&2#esiq@f_#2!cu54+gg%7y+g(fg--0=(hz'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

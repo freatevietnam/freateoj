@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+    <p>{{ _('Enter your username to resend the verification email.') }}</p>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">{{ _('Username') }}</label>
+            <input type="text" id="username" name="username" class="form-control" value="{{ username }}" required>
+        </div>
+        <br>
+        <button type="submit" class="button">{{ _('Resend Verification Email') }}</button>
+    </form>
+    <br>
+    <p><a href="{{ url('auth_login') }}">{{ _('Back to login') }}</a></p>
+{% endblock %}

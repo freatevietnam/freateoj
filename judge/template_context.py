@@ -42,12 +42,12 @@ def get_profile(request):
 
 def comet_location(request):
     if request.is_secure():
-        websocket = getattr(settings, 'EVENT_DAEMON_GET_SSL', settings.EVENT_DAEMON_GET)
+        event_location = getattr(settings, 'EVENT_DAEMON_GET_SSL', settings.EVENT_DAEMON_GET)
         poll = getattr(settings, 'EVENT_DAEMON_POLL_SSL', settings.EVENT_DAEMON_POLL)
     else:
-        websocket = settings.EVENT_DAEMON_GET
+        event_location = settings.EVENT_DAEMON_GET
         poll = settings.EVENT_DAEMON_POLL
-    return {'EVENT_DAEMON_LOCATION': websocket,
+    return {'EVENT_DAEMON_LOCATION': event_location,
             'EVENT_DAEMON_POLL_LOCATION': poll,
             'EVENT_LAST_MSG': event.last()}
 
@@ -59,7 +59,7 @@ def __nav_tab(path):
 
 def general_info(request):
     path = request.get_full_path()
-    return {
+    info = {
         'nav_tab': FixedSimpleLazyObject(partial(__nav_tab, request.path)),
         'nav_bar': NavigationBar.objects.all(),
         'LOGIN_RETURN_PATH': '' if path.startswith('/accounts/') else path,
@@ -67,6 +67,10 @@ def general_info(request):
         'perms': PermWrapper(request.user),
         'HAS_WEBAUTHN': bool(settings.WEBAUTHN_RP_ID),
     }
+    if hasattr(request.user, 'profile'):
+        info['NOTIFICATION_SECRET'] = request.profile.notification_secret
+        info['UNREAD_NOTIFICATION_COUNT'] = request.profile.unread_notification_count
+    return info
 
 
 def site(request):
@@ -87,10 +91,11 @@ def site_theme(request):
     # Middleware populating `profile` may not have loaded at this point if we're called from an error context.
     if hasattr(request.user, 'profile'):
         site_theme = request.profile.site_theme
-        preferred_css = settings.DMOJ_THEME_CSS.get(site_theme)
     else:
-        site_theme = 'light'
-        preferred_css = settings.DMOJ_THEME_CSS.get('light')
+        site_theme = request.COOKIES.get(settings.SITE_THEME_COOKIE_NAME, 'auto')
+        if site_theme not in settings.DMOJ_THEME_CSS and site_theme != 'auto':
+            site_theme = 'auto'
+    preferred_css = settings.DMOJ_THEME_CSS.get(site_theme)
     return {
         'DARK_STYLE_CSS': settings.DMOJ_THEME_CSS['dark'],
         'LIGHT_STYLE_CSS': settings.DMOJ_THEME_CSS['light'],
