@@ -22,3 +22,7 @@ build_style() {
 
 build_style 'default' 'resources'
 build_style 'dark' 'resources/dark'
+
+echo "Compiling notification.scss..."
+npx sass resources/notification.scss resources/notification.css --no-source-map
+npx postcss resources/notification.css --verbose --use autoprefixer -o resources/notification.css
