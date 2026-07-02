@@ -466,3 +466,27 @@ math {
         padding: 0 5px;
     }
 }
+
+// PhotoSwipe custom styles
+.pswp-img {
+    cursor: zoom-in;
+}
+
+.pswp__button--zoom {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+}
