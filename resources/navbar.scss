@@ -11,7 +11,7 @@
     align-items: center;
     white-space: nowrap;
 
-    a {
+    a, button {
         color: #333;
     }
 
@@ -101,6 +101,7 @@ nav {
             text-transform: uppercase;
             position: relative;
             font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600;
 
             &.home-nav-element a {
                 padding: 0;
@@ -193,6 +194,7 @@ nav {
                 width: 100%;
                 border-radius: 0;
                 height: auto;
+                cursor: pointer;
             }
 
             &:hover > ul, &:active > ul, &:focus > ul {
@@ -350,6 +352,10 @@ nav .settings-popup {
     margin-top: 2px;
     animation: scaleIn 150ms ease-out both;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    li a, li button, li form button {
+        color: #333;
+    }
 }
 
 .nav-settings-row {
@@ -396,10 +402,24 @@ nav .settings-popup {
 }
 
 // ============================================================
+// Logout button — red in all themes
+// ============================================================
+#user-links ul ul li form button {
+    color: #e53e3e !important;
+    font-weight: 700;
+}
+
+nav ul ul li a,
+nav ul ul li button {
+    font-weight: 600;
+}
+
+// ============================================================
 // Dark mode — white text on navbar
 // ============================================================
 body[data-theme="dark"] {
     #user-links a,
+    #user-links button,
     #user-links > ul > li > a > span > span {
         color: #eee;
     }
@@ -471,6 +491,10 @@ body[data-theme="dark"] {
     nav .settings-popup {
         border-color: rgba(255, 255, 255, 0.1);
         color: #eee;
+
+        li a, li button, li form button {
+            color: #eee;
+        }
     }
 
     .nav-settings-lbl {
