@@ -93,12 +93,8 @@
                 $('#content-body img').each(function() {
                     var $img = $(this);
                     if (!$img.parent().is('a')) {
-                        $img.wrap('<a href="' + $img.attr('src') + '" data-featherlight></a>');
+                        $img.wrap('<a href="' + $img.attr('src') + '" data-featherlight="img"></a>');
                     }
-                });
-                $('#content-body a[data-featherlight]').featherlight({
-                    closeOnClick: true,
-                    closeOnEsc: true
                 });
             });
         </script>
