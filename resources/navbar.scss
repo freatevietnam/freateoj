@@ -76,6 +76,15 @@
 }
 
 // -- Liquid Glass Navbar --
+
+@font-face {
+    font-family: 'Agbalumo';
+    src: url('../freateoj/Agbalumo/Agbalumo-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 nav {
     position: fixed;
     top: 8px;
@@ -108,7 +117,7 @@ nav {
             color: #333;
             text-transform: uppercase;
             position: relative;
-            font-family: 'Source Sans Pro', sans-serif;
+            font-family: 'Agbalumo', 'Source Sans Pro', sans-serif;
             font-weight: 600;
 
             &.home-nav-element a {
