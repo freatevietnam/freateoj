@@ -57,7 +57,7 @@
         <link rel="stylesheet" type="text/css" href="{{ static('libs/clipboard/tooltip.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ static('libs/select2/select2.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ static('libs/featherlight/featherlight.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ static('libs/medium-zoom/medium-zoom.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ static('libs/glightbox/glightbox.min.css') }}">
     {% endcompress %}
     <link rel="canonical"
           href="{{ DMOJ_SCHEME }}://{{ DMOJ_CANONICAL|default(site.domain) }}{{ request.get_full_path() }}">
@@ -84,7 +84,7 @@
         <script src="{{ static('libs/moment.js') }}"></script>
         <script src="{{ static('libs/select2/select2.js') }}"></script>
         <script src="{{ static('libs/featherlight/featherlight.min.js') }}"></script>
-        <script src="{{ static('libs/medium-zoom/medium-zoom.min.js') }}"></script>
+        <script src="{{ static('libs/glightbox/glightbox.min.js') }}"></script>
         {% include "extra_js.html" %}
         <script src="{{ static('common.js') }}"></script>
         <script src="{{ static('event.js') }}"></script>
@@ -92,10 +92,19 @@
             moment.locale('{{ LANGUAGE_CODE }}');
             $(function () {
                 $('img.unveil').unveil(200);
-                mediumZoom('#content-body img:not(.user-avatar):not(.gravatar):not(.user-gravatar):not([class*="rate"]):not([class*="icon"]):not([width="1"]):not([height="1"])', {
-                    margin: 24,
-                    background: 'rgba(0, 0, 0, 0.85)',
-                    scrollOffset: 40
+                var selectors = '#content-body img:not(.user-avatar):not(.gravatar):not(.user-gravatar):not([class*="rate"]):not([class*="icon"]):not([width="1"]):not([height="1"])';
+                $(selectors).each(function() {
+                    var $img = $(this);
+                    if (!$img.parent().is('a')) {
+                        $img.wrap('<a class="glightbox" data-gallery="content" href="' + $img.attr('src') + '"></a>');
+                    }
+                });
+                GLightbox({
+                    selector: '.glightbox',
+                    zoomable: true,
+                    touchNavigation: true,
+                    loop: false,
+                    closeButton: true
                 });
             });
         </script>
