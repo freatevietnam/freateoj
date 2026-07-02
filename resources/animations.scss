@@ -207,6 +207,15 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 }
 
+#submissions-table > .submission-row {
+    animation: fadeIn $anim-normal $ease-out both;
+    @for $i from 1 through 100 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 50ms};
+        }
+    }
+}
+
 .anim-stagger-parent {
     @for $i from 1 through 100 {
         > :nth-child(#{$i}) {
@@ -275,6 +284,7 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     #nav-list > li,
     #content-body ul > li,
     #content ul > li,
+    #submissions-table > .submission-row,
     .content-description > *,
     .content-description > ul > li,
     .content-description > ol > li,
