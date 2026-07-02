@@ -568,6 +568,16 @@ math {
     letter-spacing: -0.5px;
 }
 
+.user-about-preview {
+    font-size: 0.85em;
+    color: #888;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+}
+
 .pswp-img {
     cursor: zoom-in;
 }
