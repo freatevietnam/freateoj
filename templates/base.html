@@ -414,25 +414,45 @@
 
     {% block bodyend %}{% endblock %}
 
-    <footer>
-        <span id="footer-content">
-            <br>
-            {{_('proudly powered by %(dmoj)s', dmoj=safe('<a style="color: #808080" href="https://dmoj.ca"><b>DMOJ</b></a>'))}} |
-            {{_('follow us on %(github)s and %(facebook)s', github=safe('<a style="color: #808080" href="https://github.com/freatevietnam/freateoj"><b>Github</b></a>'), facebook=safe('<a style="color: #808080" href="https://www.facebook.com/profile.php?id=61590965260203"><b>Facebook</b></a>'))}}
-            {% if misc_config.footer %}
-                {{ misc_config.footer|safe }} |
-            {% endif %}
-            <form id="set_language" action="{{ url('set_language') }}" method="post" style="display: inline">
-                {% csrf_token %}
-            <input name="next" type="hidden" value="{{ request.get_full_path() }}">
-            <input name="language" type="hidden" value="{{LANGUAGE_CODE}}">
-          </form>
-            <form id="set_theme" action="{{ url('set_theme') }}" method="post" style="display: inline">
-                {% csrf_token %}
-                <input name="next" type="hidden" value="{{ request.get_full_path() }}">
-                <input name="theme" type="hidden" value="{{ SITE_THEME_NAME }}">
-            </form>
-        </span>
+    <footer id="site-footer">
+        <div class="footer-inner">
+            <div class="footer-section footer-brand">
+                <span class="footer-logo">FreateOJ</span>
+                <span class="footer-tagline">{{ _('Competitive Programming Platform') }}</span>
+            </div>
+            <div class="footer-section footer-links">
+                <a href="https://github.com/freatevietnam/freateoj">
+                    <i class="fa fa-github"></i> GitHub
+                </a>
+                <span class="footer-sep">|</span>
+                <a href="https://www.facebook.com/profile.php?id=61590965260203">
+                    <i class="fa fa-facebook"></i> Facebook
+                </a>
+                <span class="footer-sep">|</span>
+                <a href="https://dmoj.ca">
+                    <i class="fa fa-code"></i> DMOJ
+                </a>
+            </div>
+            <div class="footer-section footer-meta">
+                {% if misc_config.footer %}
+                    <span>{{ misc_config.footer|safe }}</span>
+                    <span class="footer-sep">|</span>
+                {% endif %}
+                <span>{{ _('Powered by %(dmoj)s', dmoj=safe('<a href="https://dmoj.ca">DMOJ</a>')) }}</span>
+            </div>
+            <div class="footer-section footer-forms">
+                <form id="set_language" action="{{ url('set_language') }}" method="post" style="display: inline">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path() }}">
+                    <input name="language" type="hidden" value="{{LANGUAGE_CODE}}">
+                </form>
+                <form id="set_theme" action="{{ url('set_theme') }}" method="post" style="display: inline">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path() }}">
+                    <input name="theme" type="hidden" value="{{ SITE_THEME_NAME }}">
+                </form>
+            </div>
+        </div>
     </footer>
 </div>
 </body>
