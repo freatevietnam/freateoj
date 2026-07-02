@@ -569,13 +569,52 @@ math {
 }
 
 .user-about-preview {
-    font-size: 0.85em;
-    color: #888;
-    display: block;
+    font-size: 0.75em;
+    color: #666;
+    max-height: 3.6em;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 300px;
+    line-height: 1.2;
+    margin-top: 2px;
+    position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1.2em;
+        background: linear-gradient(transparent, $color_pageBg);
+        pointer-events: none;
+    }
+
+    img {
+        max-width: 60px;
+        max-height: 20px;
+        display: inline;
+        vertical-align: middle;
+    }
+
+    p {
+        margin: 0;
+        display: inline;
+    }
+
+    pre, code, blockquote, table, ul, ol, hr, h1, h2, h3, h4, h5, h6 {
+        display: none;
+    }
+}
+
+body[data-theme="dark"] .user-about-preview {
+    &::after {
+        background: linear-gradient(transparent, #2b2b2b);
+    }
+}
+
+body[data-theme="dark"] .user-about-preview {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .pswp-img {

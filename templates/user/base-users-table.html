@@ -32,7 +32,7 @@
                                 {% block personal_info_display scoped %}
                                     <span>{{ user.user.first_name }}</span>
                                     {% if user.about %}
-                                        <br><span class="user-about-preview">{{ user.about|markdown('self-description', MATH_ENGINE)|reference|striptags|truncatewords(10) }}</span>
+                                        <div class="user-about-preview">{{ user.about|markdown('self-description', MATH_ENGINE)|reference|safe }}</div>
                                     {% endif %}
                                 {% endblock %}
                             </div>
