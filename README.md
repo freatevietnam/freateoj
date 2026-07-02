@@ -25,11 +25,22 @@ Inline: $x^2 + y^2 = z^2$
 Display: $$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$
 ```
 
-See the full [Math Syntax Guide](docs/MATH_SYNTAX.md) for details.
+See the full [Math Syntax Guide](https://freatevietnam.github.io/freateoj-docs/#math-syntax) for details.
+
+## Documentation
+
+Full documentation is available at **[freatevietnam.github.io/freateoj-docs](https://freatevietnam.github.io/freateoj-docs/)**, covering:
+
+- [Installation Guide](https://freatevietnam.github.io/freateoj-docs/#installation)
+- [Judge Setup](https://freatevietnam.github.io/freateoj-docs/#judge-setup)
+- [Problem Format](https://freatevietnam.github.io/freateoj-docs/#problem-format)
+- [API Reference](https://freatevietnam.github.io/freateoj-docs/#api)
+- [Contest Formats](https://freatevietnam.github.io/freateoj-docs/#contest-formats)
+- [Supported Languages](https://freatevietnam.github.io/freateoj-docs/#supported-languages)
 
 ## Installation
 
-Refer to the [installation documentation](docs/docs/site/installation.md).
+Refer to the [installation documentation](https://freatevietnam.github.io/freateoj-docs/#installation).
 
 - Define `FREATEOJ_PROBLEM_DATA_ROOT` in `local_settings.py` (path to problems' tests directory)
 - Use `memcached` or `redis` for caching instead of default local-memory caching
