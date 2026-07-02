@@ -66,9 +66,21 @@
     {% endif %}
     <script type="text/javascript">
         $(function() {
-            $('#pdf_button').click(function(e) {
+            $('#pdf_button').click(async function(e) {
                 e.preventDefault();
-                window.location.href = "{{ url('problem_pdf', problem.code) }}";
+                {% if problem.absolute_pdf_url %}
+                    window.location.href = "{{ problem.absolute_pdf_url }}";
+                {% elif problem.pdf_url %}
+                    window.location.href = "{{ problem.pdf_url }}";
+                {% else %}
+                    if (!$('#raw_problem').attr("src"))
+                        $('#raw_problem').attr("src", "{{problem.code}}/raw");
+
+                    while(!$('.math-loaded', frames['raw_problem'].document).length) {
+                        await new Promise(r => setTimeout(r, 200));
+                    }
+                    frames['raw_problem'].print();
+                {% endif %}
             });
 
             // Tab switching functionality
