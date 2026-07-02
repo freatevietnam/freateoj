@@ -200,7 +200,7 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 #content-body ul > li,
 #content ul > li {
     animation: listItemIn $anim-normal $ease-out both;
-    @for $i from 1 through 12 {
+    @for $i from 1 through 100 {
         &:nth-child(#{$i}) {
             animation-delay: #{$i * 50ms};
         }
@@ -208,7 +208,7 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .anim-stagger-parent {
-    @for $i from 1 through 12 {
+    @for $i from 1 through 100 {
         > :nth-child(#{$i}) {
             animation-delay: #{$i * 60ms};
         }
@@ -238,7 +238,7 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
         animation: fadeIn $anim-normal $ease-out both;
     }
 
-    @for $i from 1 through 20 {
+    @for $i from 1 through 100 {
         > :nth-child(#{$i}) {
             animation-delay: #{$i * 40ms};
         }
