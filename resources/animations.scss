@@ -110,6 +110,27 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     to   { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes notificationSlideIn {
+    from { opacity: 0; transform: translateX(16px) scale(0.95); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes notificationSlideOut {
+    from { opacity: 1; transform: translateX(0) scale(1); }
+    to   { opacity: 0; transform: translateX(16px) scale(0.95); }
+}
+
+@keyframes scaleInBounce {
+    0%   { opacity: 0; transform: scale(0.5); }
+    70%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 // ============================================================
 // Utility classes – apply directly in HTML
 // ============================================================
@@ -169,6 +190,24 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .anim-pulse {
     animation: pulse 300ms $ease-in-out both;
+}
+
+// Notification animations
+.anim-notification-in {
+    animation: notificationSlideIn 300ms $ease-out both;
+}
+.anim-notification-out {
+    animation: notificationSlideOut 250ms $ease-in both;
+}
+
+// Bounce scale
+.anim-scale-bounce {
+    animation: scaleInBounce 400ms $ease-bounce both;
+}
+
+// Count-up style reveal
+.anim-count-up {
+    animation: countUp 300ms $ease-out both;
 }
 
 // ============================================================
@@ -280,6 +319,10 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     .anim-pop-in,
     .anim-shake,
     .anim-pulse,
+    .anim-notification-in,
+    .anim-notification-out,
+    .anim-scale-bounce,
+    .anim-count-up,
     #content,
     #nav-list > li,
     #content-body ul > li,

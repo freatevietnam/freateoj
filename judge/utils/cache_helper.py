@@ -31,3 +31,7 @@ def bulk_invalidate_notification_caches(profile_ids):
     for pid in profile_ids:
         factory = unread_notification_count_cache_factory(pid)
         factory.delete_cache()
+
+
+def storage_pie_cache_factory(org_id):
+    return CacheFactory(f'storage_pie_data_{org_id}')
