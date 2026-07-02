@@ -178,6 +178,8 @@ footer {
     background: transparent;
     position: relative;
     padding: 0 8px 8px;
+    width: 100%;
+    box-sizing: border-box;
 
     .footer-inner {
         background: transparent;
@@ -193,7 +195,8 @@ footer {
         justify-content: center;
         gap: 12px 24px;
         max-width: 100em;
-        margin: 0 auto;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .footer-section {
