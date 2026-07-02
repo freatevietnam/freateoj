@@ -25,6 +25,7 @@
             <td class="user-name">
                 <div>
                     <div style="float:left">
+                        <img src="{{ gravatar(user, 32) }}" class="user-avatar" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 8px; vertical-align: middle;">
                         {% block user_name_display scoped %} {{ link_user(user) }} {% endblock %}
                         <div class="personal-info">
                             {% block personal_info_display scoped %}
