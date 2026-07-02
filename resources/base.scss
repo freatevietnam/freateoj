@@ -468,25 +468,106 @@ math {
 }
 
 // PhotoSwipe custom styles
-.pswp-img {
-    cursor: zoom-in;
+// Custom image lightbox
+.img-lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 200ms ease-out both;
+    cursor: zoom-out;
 }
 
-.pswp__button--zoom {
-    background: none;
+.img-lightbox-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90vw;
+    height: 90vh;
+    overflow: hidden;
+}
+
+.img-lightbox-img {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+    cursor: zoom-in;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.img-lightbox-close {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 100001;
+    background: rgba(255, 255, 255, 0.15);
     border: none;
-    cursor: pointer;
-    padding: 8px;
     color: white;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+    font-size: 32px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    backdrop-filter: blur(8px);
 
     &:hover {
-        opacity: 1;
+        background: rgba(255, 255, 255, 0.3);
     }
+}
 
-    svg {
-        width: 24px;
-        height: 24px;
+.img-lightbox-btn {
+    position: fixed;
+    z-index: 100001;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    backdrop-filter: blur(8px);
+    font-weight: 700;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.3);
     }
+}
+
+.img-lightbox-zoom-in {
+    bottom: 24px;
+    right: 80px;
+}
+
+.img-lightbox-zoom-out {
+    bottom: 24px;
+    right: 130px;
+}
+
+.img-lightbox-reset {
+    bottom: 24px;
+    right: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.pswp-img {
+    cursor: zoom-in;
 }
