@@ -50,6 +50,13 @@ See [contributing.md](contributing.md) for guidelines.
 
 Report security vulnerabilities to **freatevietnam@gmail.com**. See [SECURITY.md](SECURITY.md) for details.
 
+## Credits
+
+Ideas and inspiration for FreateOJ are taken from:
+
+- [VNOJ - Viet Nam Online Judge](https://github.com/VNOI-Admin/OJ)
+- [OREOJ - ORE Online Judge](https://ojkhanhhoa.site/)
+
 ## License
 
 FreateOJ is licensed under the [GNU Affero General Public License v3.0](LICENSE).
