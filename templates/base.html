@@ -93,7 +93,21 @@
                 $('#content-body img').each(function() {
                     var $img = $(this);
                     if (!$img.parent().is('a')) {
-                        $img.wrap('<a href="' + $img.attr('src') + '" data-featherlight="img"></a>');
+                        $img.css('cursor', 'zoom-in');
+                        $img.on('click', function(e) {
+                            e.preventDefault();
+                            var $clone = $img.clone().css({
+                                'max-width': '90vw',
+                                'max-height': '90vh',
+                                'width': 'auto',
+                                'height': 'auto',
+                                'cursor': 'default'
+                            });
+                            $.featherlight($clone, {
+                                closeOnClick: true,
+                                closeOnEsc: true
+                            });
+                        });
                     }
                 });
             });
