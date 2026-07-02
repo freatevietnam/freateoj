@@ -31,6 +31,9 @@
                             <div class="personal-info">
                                 {% block personal_info_display scoped %}
                                     <span>{{ user.user.first_name }}</span>
+                                    {% if user.about %}
+                                        <br><span style="font-size: 0.85em; color: #888;">{{ user.about|truncatewords(10) }}</span>
+                                    {% endif %}
                                 {% endblock %}
                             </div>
                         </div>
