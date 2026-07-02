@@ -8,6 +8,7 @@
   "dependencies": {
     "@commander-js/extra-typings": "11.0.0",
     "commander": "11.0.0",
+    "medium-zoom": "^1.1.0",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
