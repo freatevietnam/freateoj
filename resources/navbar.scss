@@ -4,7 +4,7 @@
     top: 0;
     right: 0;
     position: absolute;
-    color: #5c5954;
+    color: #333;
     padding-right: 10px;
     display: inline-flex;
     min-height: 100%;
@@ -12,7 +12,7 @@
     white-space: nowrap;
 
     a {
-        color: #FFF;
+        color: #333;
     }
 
     li {
@@ -43,7 +43,7 @@
 
                     & > span {
                         vertical-align: middle;
-                        color: #eee;
+                        color: #333;
                     }
                 }
             }
@@ -55,35 +55,40 @@
     }
 }
 
-#nav-background {
-    position: absolute;
-    z-index: 3;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 56px;
-    background: #231f20;
-}
-
 #nav-shadow {
     height: 3px;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), transparent);
 }
 
 #nav-container {
-    background: #231f20;
-
-    // opacity: 0.77
-    // filter: alpha(opacity=77)
     height: 100%;
+    margin: 0 6px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
 }
 
+// -- Liquid Glass Navbar --
 nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 8px;
+    left: 8px;
+    right: 8px;
     z-index: 500;
+    height: 48px;
+    margin: 0;
+
+    // Liquid glass outer — transparent, light blur
+    background: transparent;
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+    }
 
     ul {
         margin: 0 0 0 -5px;
@@ -92,10 +97,11 @@ nav {
 
         li {
             display: inline-block;
-            color: #FFF;
+            color: #333;
             text-transform: uppercase;
             position: relative;
             font-family: 'Source Sans Pro', sans-serif;
+
             &.home-nav-element a {
                 padding: 0;
                 height: 44px;
@@ -110,27 +116,26 @@ nav {
             a, button {
                 text-decoration: none;
                 vertical-align: middle;
-                color: #FFF;
-                padding: 14px 7px;
+                color: #333;
+                padding: 14px 10px;
                 height: 20px;
                 display: inline-table;
+                border-radius: 8px;
+                transition: background 0.2s ease;
 
                 &:link {
-                    color: #FFF;
+                    color: #333;
                 }
 
                 &:hover {
-                    color: #FFF;
-                    background: rgba(255, 255, 255, 0.25);
+                    background: rgba(0, 0, 0, 0.06);
                     margin: 0;
                 }
 
                 &.active {
-                    color: #FFF;
-
-                    border: 5px solid transparent;
-                    border-bottom: 5px solid $highlight_blue;
-                    padding: 9px 2px;
+                    border: none;
+                    border-bottom: 3px solid $highlight_blue;
+                    padding: 11px 10px;
                 }
 
                 .nav-expand {
@@ -139,19 +144,25 @@ nav {
             }
 
             ul {
-                padding: 0;
+                padding: 4px 0;
                 position: absolute;
                 left: 5px;
                 display: none;
-                color: #fff;
-                background: #231f20;
+                color: #333;
                 margin: 0 !important;
-                box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+
+                // Liquid glass dropdown
+                background: transparent;
+                backdrop-filter: blur(12px) saturate(150%);
+                -webkit-backdrop-filter: blur(12px) saturate(150%);
+                border-radius: 14px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 
                 li {
                     a.active {
                         border: none;
-                        border-left: 5px solid $highlight_blue;
+                        border-left: 3px solid $highlight_blue;
                     }
                 }
 
@@ -163,8 +174,14 @@ nav {
                         font-size: 0.8em;
                         line-height: 18px;
                         display: block;
-                        border-left: 4px solid $highlight_blue;
+                        border-left: 3px solid transparent;
                         white-space: nowrap;
+                        border-radius: 8px;
+
+                        &:hover {
+                            background: rgba(0, 0, 0, 0.06);
+                            border-left-color: $highlight_blue;
+                        }
                     }
                 }
             }
@@ -199,7 +216,7 @@ nav {
         display: inline-block;
         height: 32px;
         margin-right: 1px;
-        border-right: 3px solid rgba(255, 255, 255, 0.15);
+        border-right: 3px solid rgba(0, 0, 0, 0.1);
     }
 }
 
@@ -208,6 +225,19 @@ nav {
 }
 
 @media (max-width: 760px) {
+    nav {
+        top: 6px;
+        left: 6px;
+        right: 6px;
+        height: 42px;
+        border-radius: 12px;
+    }
+
+    #nav-container {
+        margin: 0 4px;
+        border-radius: 8px;
+    }
+
     #navigation {
         height: 36px;
     }
@@ -217,29 +247,36 @@ nav {
         display: block;
         line-height: 26px;
         font-size: 2em;
-        color: #FFF;
+        color: #333;
         padding: 0 0.25em;
         margin: 4px 0.25em;
         white-space: nowrap;
         float: left;
 
         &.hover {
-            color: #4db7fe;
-            text-shadow: 0 0 5px $highlight_blue;
+            color: $highlight_blue;
             transition-duration: 0.25s;
         }
     }
 
     #nav-list {
         display: none;
-        padding: 0;
+        padding: 4px;
         margin: 0;
         position: fixed;
-        top: 36px;
-        background: #231f20;
-        bottom: 0;
-        width: 8em;
-        left: 0;
+        top: 52px;
+        left: 6px;
+        right: 6px;
+        bottom: auto;
+        width: auto;
+
+        // Liquid glass mobile menu
+        background: transparent;
+        backdrop-filter: blur(12px) saturate(150%);
+        -webkit-backdrop-filter: blur(12px) saturate(150%);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 
         &.show-list {
             display: block;
@@ -251,6 +288,8 @@ nav {
 
             a {
                 display: block;
+                border-radius: 8px;
+                margin: 2px 0;
 
                 .nav-expand {
                     float: right;
@@ -262,8 +301,8 @@ nav {
             }
 
             ul {
-                left: 8em;
-                top: 0px;
+                left: 0;
+                top: 40px;
 
                 &.show-list {
                     display: block;
@@ -300,13 +339,17 @@ nav {
 }
 
 nav .settings-popup {
-    background: $color_pageBg;
-    border-radius: 12px;
+    // Liquid glass settings
+    background: transparent;
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 14px;
     padding: 4px;
-    border: 1px solid $color_primary25;
-    color: $color_primary90;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #333;
     margin-top: 2px;
     animation: scaleIn 150ms ease-out both;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .nav-settings-row {
@@ -318,12 +361,12 @@ nav .settings-popup {
 
 .nav-settings-lbl {
     font-size: 13px;
-    color: $color_primary90;
+    color: #555;
 }
 
 .nav-seg {
     display: inline-flex;
-    background: $color_primary10;
+    background: rgba(0, 0, 0, 0.06);
     border-radius: 7px;
     padding: 2px;
 }
@@ -337,16 +380,117 @@ nav .settings-popup {
     font-size: 0.8em;
     font-weight: 600;
     font-family: inherit;
-    color: $color_primary66;
+    color: #888;
     line-height: 1;
+    transition: background 0.2s ease, color 0.2s ease;
 
     &:hover {
-        color: $color_primary90;
+        color: #333;
         margin: 0;
     }
 
     &.active {
-        background: $color_primary0;
-        color: $color_primary90;
+        background: rgba(0, 0, 0, 0.06);
+        color: #333;
+    }
+}
+
+// ============================================================
+// Dark mode — white text on navbar
+// ============================================================
+body[data-theme="dark"] {
+    #user-links a,
+    #user-links > ul > li > a > span > span {
+        color: #eee;
+    }
+
+    nav {
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+
+        &:hover {
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        ul li {
+            color: #eee;
+
+            a, button {
+                color: #eee;
+
+                &:link {
+                    color: #eee;
+                }
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                }
+
+                &.active {
+                    border-bottom-color: $highlight_blue;
+                }
+            }
+
+            ul {
+                color: #eee;
+                border-color: rgba(255, 255, 255, 0.1);
+
+                li a, li button {
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.1);
+                    }
+                }
+            }
+        }
+
+        .nav-divider {
+            border-right-color: rgba(255, 255, 255, 0.15);
+        }
+    }
+
+    #navicon {
+        color: #eee;
+
+        &.hover {
+            color: $highlight_blue;
+        }
+    }
+
+    #nav-list {
+        border-color: rgba(255, 255, 255, 0.1);
+
+        li a {
+            color: #eee;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+    }
+
+    nav .settings-popup {
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #eee;
+    }
+
+    .nav-settings-lbl {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-seg {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-seg-btn {
+        color: rgba(255, 255, 255, 0.5);
+
+        &:hover {
+            color: #eee;
+        }
+
+        &.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
     }
 }
