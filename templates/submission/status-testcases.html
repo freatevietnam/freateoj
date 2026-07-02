@@ -31,7 +31,7 @@
             <source src="{{ static('freateoj/aceasteregg.mp4') }}" type="video/mp4">
         </video>
     </div>
-    {% elif submission.status == 'CE' %}
+    {% elif submission.result in ('CE', 'IR') %}
     <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
         <video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
             <source src="{{ static('freateoj/ceeasteregg.mp4') }}" type="video/mp4">
