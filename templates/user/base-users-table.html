@@ -23,17 +23,19 @@
             <td>{{ rank }}</td>
             {% block after_rank scoped %}{% endblock %}
             <td class="user-name">
-                <div>
-                    <div style="float:left">
-                        <img src="{{ gravatar(user, 32) }}" class="user-avatar" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 8px; vertical-align: middle;">
-                        {% block user_name_display scoped %} {{ link_user(user) }} {% endblock %}
-                        <div class="personal-info">
-                            {% block personal_info_display scoped %}
-                                <span>{{ user.user.first_name }}</span>
-                            {% endblock %}
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; min-width: 0;">
+                        <img src="{{ gravatar(user, 32) }}" class="user-avatar" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 8px; flex-shrink: 0;">
+                        <div style="min-width: 0;">
+                            {% block user_name_display scoped %} {{ link_user(user) }} {% endblock %}
+                            <div class="personal-info">
+                                {% block personal_info_display scoped %}
+                                    <span>{{ user.user.first_name }}</span>
+                                {% endblock %}
+                            </div>
                         </div>
                     </div>
-                    <div style="float:right">
+                    <div style="flex-shrink: 0; text-align: right;">
                         {% block user_name_data scoped %}{% endblock %}
                         {% block admin_operations scoped %}{% endblock %}
                         <div class="personal-info" style="text-align: right;">
