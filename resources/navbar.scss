@@ -51,7 +51,7 @@
             & > ul {
                 left: 0;
                 // Liquid glass user dropdown
-                background: transparent;
+                background: rgba(255, 255, 255, 0.75);
                 backdrop-filter: blur(12px) saturate(150%);
                 -webkit-backdrop-filter: blur(12px) saturate(150%);
                 border-radius: 14px;
@@ -164,7 +164,7 @@ nav {
                 margin: 0 !important;
 
                 // Liquid glass dropdown
-                background: transparent;
+                background: rgba(255, 255, 255, 0.75);
                 backdrop-filter: blur(12px) saturate(150%);
                 -webkit-backdrop-filter: blur(12px) saturate(150%);
                 border-radius: 14px;
@@ -284,7 +284,7 @@ nav {
         width: auto;
 
         // Liquid glass mobile menu
-        background: transparent;
+        background: rgba(255, 255, 255, 0.75);
         backdrop-filter: blur(12px) saturate(150%);
         -webkit-backdrop-filter: blur(12px) saturate(150%);
         border-radius: 14px;
@@ -317,7 +317,7 @@ nav {
                 left: 0;
                 top: 40px;
                 // Liquid glass mobile sub-dropdown
-                background: transparent;
+                background: rgba(255, 255, 255, 0.75);
                 backdrop-filter: blur(12px) saturate(150%);
                 -webkit-backdrop-filter: blur(12px) saturate(150%);
                 border-radius: 14px;
@@ -360,7 +360,7 @@ nav {
 
 nav .settings-popup {
     // Liquid glass settings
-    background: transparent;
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(12px) saturate(150%);
     -webkit-backdrop-filter: blur(12px) saturate(150%);
     border-radius: 14px;
@@ -472,6 +472,7 @@ body[data-theme="dark"] {
             ul {
                 color: #eee;
                 border-color: rgba(255, 255, 255, 0.1);
+                background: rgba(30, 30, 30, 0.85);
 
                 li a, li button {
                     &:hover {
@@ -496,6 +497,7 @@ body[data-theme="dark"] {
 
     #nav-list {
         border-color: rgba(255, 255, 255, 0.1);
+        background: rgba(30, 30, 30, 0.85);
 
         li a {
             color: #eee;
@@ -506,9 +508,14 @@ body[data-theme="dark"] {
         }
     }
 
+    #user-links > ul > li > ul {
+        background: rgba(30, 30, 30, 0.85);
+    }
+
     nav .settings-popup {
         border-color: rgba(255, 255, 255, 0.1);
         color: #eee;
+        background: rgba(30, 30, 30, 0.85);
 
         li a, li button, li form button {
             color: #eee;
