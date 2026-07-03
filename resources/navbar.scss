@@ -357,6 +357,16 @@ nav {
     }
 }
 
+@media (max-width: 760px) {
+    body[data-theme="dark"] #nav-list {
+        background: rgba(30, 30, 30, 0.85);
+    }
+
+    body[data-theme="dark"] #nav-list li ul {
+        background: rgba(30, 30, 30, 0.85);
+    }
+}
+
 nav .settings-popup {
     // Liquid glass settings
     background: rgba(255, 255, 255, 0.75);
@@ -495,7 +505,6 @@ body[data-theme="dark"] {
 
     #nav-list {
         border-color: rgba(255, 255, 255, 0.1);
-        background: rgba(30, 30, 30, 0.85);
 
         li a {
             color: #eee;
@@ -503,6 +512,10 @@ body[data-theme="dark"] {
             &:hover {
                 background: rgba(255, 255, 255, 0.1);
             }
+        }
+
+        li ul {
+            background: rgba(30, 30, 30, 0.85);
         }
     }
 
