@@ -1,16 +1,19 @@
+@use 'sass:color';
+@use 'vars-common' as *;
+
 .AB {
     background-color: #CCC;
     color: black;
 }
 
 .AC {
-    background-color: #53f23f;
-    color: green;
+    background-color: $gradient_end;
+    color: darken($gradient_end, 40%);
 }
 
 ._AC {
-    background-color: #DFFF00;
-    color: green;
+    background-color: lighten($gradient_end, 20%);
+    color: darken($gradient_end, 30%);
 }
 
 .WA {

@@ -247,7 +247,7 @@ form.contest-join-pseudotab {
 
     /* Make problem table headers green on hover */
     th a:hover {
-        color: #0F0;
+        color: $gradient_end;
     }
 
     th a, th a:link, th a:visited {

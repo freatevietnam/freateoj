@@ -620,3 +620,15 @@ body[data-theme="dark"] .user-about-preview {
 .pswp-img {
     cursor: zoom-in;
 }
+
+// Gradient utilities
+.gradient-bg {
+    background: $gradient_css;
+}
+
+.gradient-text {
+    background: $gradient_css;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

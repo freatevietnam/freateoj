@@ -184,7 +184,7 @@ ul.problem-list {
 }
 
 .solved-problem-color {
-    color: #44AD41;
+    color: $gradient_end;
 }
 
 .unsolved-problem-color {
@@ -196,7 +196,7 @@ ul.problem-list {
 }
 
 .has-editorial-color {
-    color: #44AD41;
+    color: $gradient_end;
 }
 
 .no-editorial-color {
@@ -439,6 +439,10 @@ ul.problem-list {
 #point-slider {
     margin: 30px 15px 10px;
     height: 10px;
+
+    .noUi-connect {
+        background: $gradient_css;
+    }
 
     .noUi-handle {
         height: 20px;

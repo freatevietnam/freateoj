@@ -17,7 +17,7 @@ form#ticket-form {
 
 #ticket-list {
     .fa-check-circle-o, .fa-arrow-up {
-        color: #44AD41;
+        color: $gradient_end;
     }
 
     .fa-exclamation-circle {
@@ -53,7 +53,7 @@ div.ticket-title {
     column-gap: 0.3em;
 
     .fa-check-circle-o, .fa-arrow-up {
-        color: #00a900;
+        color: $gradient_end;
     }
 
     .fa-exclamation-circle {
@@ -146,12 +146,12 @@ div.ticket-title {
 .close-ticket, .vote-good {
     display: block;
     width: 100%;
-    background: linear-gradient(to bottom, #4bad00 0%, #278811 100%);
-    border-color: #24710e;
+    background: $gradient_css;
+    border-color: darken($gradient_end, 10%);
     font-weight: 600;
 
     &:hover {
-        background: #24710e;
+        background: darken($gradient_end, 10%);
     }
 }
 
@@ -209,7 +209,7 @@ div.ticket-title {
         box-sizing: border-box;
 
         .fa-check-circle {
-            color: #44AD41;
+            color: $gradient_end;
             font-size: 16px;
         }
         .fa-exclamation-circle {

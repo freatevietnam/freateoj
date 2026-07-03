@@ -1,4 +1,7 @@
-$highlight_blue: #1ba94c;
+$gradient_start: #1e90ff;
+$gradient_end: #99badd;
+$gradient_css: linear-gradient(135deg, $gradient_start, $gradient_end);
+$highlight_blue: $gradient_start;
 $announcement_red: #ae0000;
 
 $base_font_size: 15px;
