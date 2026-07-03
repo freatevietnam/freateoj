@@ -75,6 +75,9 @@ celerybeat-schedule.*
 # Docs build
 docs/build/
 
-# Compiled CSS files
-resources/**/*.css
-resources/**/*.css.map
+# Compiled CSS files (SCSS output, not vendor)
+resources/*.css
+resources/*.css.map
+resources/dark/*.css
+resources/dark/*.css.map
+resources/sass_processed/*.css
