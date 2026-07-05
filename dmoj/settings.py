@@ -804,6 +804,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'resources'),
 ]
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'dmoj.storage.ManifestStaticFilesStorageSafe'
 
 # Define a cache
 CACHES = {}
@@ -818,6 +819,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 REGISTRATION_OPEN = True
+ACCOUNT_ACTIVATION_DAYS = 7
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
