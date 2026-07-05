@@ -1,4 +1,4 @@
-Django>=4.2,<5
+Django>=5.2,<5.3
 django-cleanup
 django_compressor>=3
 django-mptt>=0.13
