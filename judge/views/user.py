@@ -612,7 +612,7 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, DiggPaginatorMixin
 user_list_view = UserList.as_view()
 
 
-class ContribList(QueryStringSortMixin, DiggPaginatorMixin, TitleMixin, ListView):
+class ContribList(QueryStringSortMixin, DiggPaginatorMixin, InfinitePaginationMixin, TitleMixin, ListView):
     model = Profile
     title = gettext_lazy('Contributors')
     context_object_name = 'users'
