@@ -54,7 +54,6 @@ FREATEOJ_ORG_PP_STEP = 0.95
 FREATEOJ_ORG_PP_ENTRIES = 100
 FREATEOJ_ORG_PP_SCALE = 1
 
-FREATEOJ_ENABLE_API = False
 FREATEOJ_ENABLE_SYNC_API = True  # need to make this true for testing :sad:
 GLOBAL_API_KEY = 'test-api-key-123'
 
