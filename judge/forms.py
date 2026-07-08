@@ -714,15 +714,9 @@ class ContestCloneForm(Form):
 class ProposeContestProblemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
-        self.org_pk = kwargs.pop('org_pk', None)
         super(ProposeContestProblemForm, self).__init__(*args, **kwargs)
 
         self.fields['problem'].queryset = Problem.get_visible_problems(self.user, include_deleted=True)
-
-        if self.org_pk:
-            self.fields['problem'].widget.data_url = reverse('problem_select2_org', args=(self.org_pk,))
-        else:
-            self.fields['problem'].widget.data_url = reverse('problem_select2_public')
 
     class Meta:
         model = ContestProblem

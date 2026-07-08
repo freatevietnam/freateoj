@@ -1363,8 +1363,6 @@ class EditContest(ContestMixin, LoginRequiredMixin, TitleMixin, UpdateView):
 
     def get_contest_problem_formset(self):
         form_kwargs = {'user': self.request.user}
-        if self.object.organization:
-            form_kwargs['org_pk'] = self.object.organization.id
         if self.request.POST:
             return ProposeContestProblemFormSet(self.request.POST, instance=self.get_object(),
                                                 form_kwargs=form_kwargs)

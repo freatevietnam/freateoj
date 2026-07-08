@@ -135,6 +135,31 @@
         })
     </script>
     {{ form.media.js }}
+    <script>
+        $(function() {
+            // Update problem picker URLs based on contest organization
+            var $contestData = $('#contest-data');
+            var orgId = $contestData.data('org-id');
+            var publicUrl = $contestData.data('public-url');
+            var orgUrlPattern = $contestData.data('org-url-pattern');
+            var problemUrl = orgId ? orgUrlPattern + orgId + '/' : publicUrl;
+            // Update all problem select2 widgets
+            $('select[id$="-problem"]').each(function() {
+                var $select = $(this);
+                // If select2 already initialized, we need to update its ajax URL
+                if ($select.data('select2')) {
+                    $select.select2('destroy');
+                }
+                $select.attr('data-ajax--url', problemUrl);
+                // Reinitialize select2 (the django-select2 JS should handle this)
+                $select.select2({
+                    ajax: {
+                        url: problemUrl,
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block media %}
@@ -225,6 +250,9 @@
     <form action="" method="post" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
         {% csrf_token %}
         {{ contest_problem_formset.management_form }}
+        <div id="contest-data" data-org-id="{{ contest.organization_id|default:'' }}"
+             data-public-url="{% url 'problem_select2_public' %}"
+             data-org-url-pattern="/select2/problem/org/"></div>
         {% if contest_problem_formset.non_form_errors() %}
             {{ contest_problem_formset.non_form_errors() }}
         {% endif %}
