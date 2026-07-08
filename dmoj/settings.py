@@ -807,6 +807,8 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'dmoj.storage.ManifestStaticFilesStorageSafe'
 
 # Define a cache
+# Cache versioning: increase VERSION to invalidate all cache on deploy
+# See docs/README.md for more details
 CACHES = {}
 
 # Authentication
