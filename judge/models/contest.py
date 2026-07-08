@@ -426,7 +426,7 @@ class Contest(models.Model):
     @property
     def can_replay(self):
         return (self.ended and not self.time_limit and 
-                self.scoreboard_visibility and self.format_name not in ('ioi', 'ioi16'))
+                self.scoreboard_visibility == self.SCOREBOARD_VISIBLE and self.format_name not in ('ioi', 'ioi16'))
 
     class Inaccessible(Exception):
         pass

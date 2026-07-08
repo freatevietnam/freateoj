@@ -1197,7 +1197,9 @@ class ContestReplayData(ContestMixin, View):
         if not os.path.exists(replay_file):
             raise Http404()
         
-        import json
+        if os.path.getsize(replay_file) > 10 * 1024 * 1024:
+            raise Http404()
+        
         with open(replay_file, 'r') as f:
             data = json.load(f)
         
