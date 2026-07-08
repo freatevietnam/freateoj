@@ -64,7 +64,6 @@ FREATEOJ_OFFICIAL_CONTEST_MODE = False
 # Both should be int
 FREATEOJ_CP_COMMENT = 1   # Each comment vote equals 1 CP
 FREATEOJ_CP_TICKET = 10   # Each good ticket equals CP
-FREATEOJ_CP_PROBLEM = 20  # Each suggested problem equal 20 CP
 
 TICKET_AUTOFILL_REPLIES = [
     {'en': 'No comments',
