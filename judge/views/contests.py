@@ -1362,10 +1362,13 @@ class EditContest(ContestMixin, LoginRequiredMixin, TitleMixin, UpdateView):
                         reverse('contest_view', args=[self.object.key]))))
 
     def get_contest_problem_formset(self):
+        form_kwargs = {'user': self.request.user}
+        if self.object.organization:
+            form_kwargs['org_pk'] = self.object.organization.id
         if self.request.POST:
             return ProposeContestProblemFormSet(self.request.POST, instance=self.get_object(),
-                                                form_kwargs={'user': self.request.user})
-        return ProposeContestProblemFormSet(instance=self.get_object(), form_kwargs={'user': self.request.user})
+                                                form_kwargs=form_kwargs)
+        return ProposeContestProblemFormSet(instance=self.get_object(), form_kwargs=form_kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
