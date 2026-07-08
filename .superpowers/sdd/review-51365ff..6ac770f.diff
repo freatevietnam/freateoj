@@ -1,0 +1,67 @@
+# Review package: 51365ff..6ac770f
+
+## Commits
+6ac770f fix: address Task 11 review findings - fix can_replay check, remove duplicate import, add size limit
+
+## Files changed
+ judge/models/contest.py | 2 +-
+ judge/views/contests.py | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+## Diff
+diff --git a/judge/models/contest.py b/judge/models/contest.py
+index c261276..1d4a5ed 100755
+--- a/judge/models/contest.py
++++ b/judge/models/contest.py
+@@ -419,21 +419,21 @@ class Contest(models.Model):
+             return False
+         if self.format.name == contest_format.ICPCContestFormat.name or \
+            self.format.name == contest_format.FreateOJContestFormat.name:
+             # Keep frozen even if the contest is ended
+             return self._now >= self.frozen_time
+         return False
+ 
+     @property
+     def can_replay(self):
+         return (self.ended and not self.time_limit and 
+-                self.scoreboard_visibility and self.format_name not in ('ioi', 'ioi16'))
++                self.scoreboard_visibility == self.SCOREBOARD_VISIBLE and self.format_name not in ('ioi', 'ioi16'))
+ 
+     class Inaccessible(Exception):
+         pass
+ 
+     class PrivateContest(Exception):
+         pass
+ 
+     def access_check(self, user):
+         # Do unauthenticated check here so we can skip authentication checks later on.
+         if not user.is_authenticated:
+diff --git a/judge/views/contests.py b/judge/views/contests.py
+index 008b20d..6dc1ade 100755
+--- a/judge/views/contests.py
++++ b/judge/views/contests.py
+@@ -1190,21 +1190,23 @@ class ContestReplayData(ContestMixin, View):
+         
+         if version != self.object.replay_version:
+             raise Http404()
+         
+         replay_dir = settings.FREATEOJ_CONTEST_REPLAY_MEDIA_DIR
+         replay_file = os.path.join(replay_dir, f'{self.object.key}_v{version}.json')
+         
+         if not os.path.exists(replay_file):
+             raise Http404()
+         
+-        import json
++        if os.path.getsize(replay_file) > 10 * 1024 * 1024:
++            raise Http404()
++        
+         with open(replay_file, 'r') as f:
+             data = json.load(f)
+         
+         response = JsonResponse(data)
+         response['Cache-Control'] = 'public, max-age=3600'
+         return response
+ 
+ 
+ class ContestMossMixin(ContestMixin, PermissionRequiredMixin):
+     permission_required = 'judge.moss_contest'

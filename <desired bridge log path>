@@ -1,0 +1,41 @@
+INFO 2026-07-05 05:43:04,068 daemon Exiting due to SIGINT
+INFO 2026-07-05 05:55:13,918 daemon Exiting due to SIGINT
+INFO 2026-07-05 06:57:58,388 judge_handler Judge connected from: ('127.0.0.1', 43222)
+INFO 2026-07-05 06:57:58,416 judge_handler Judge disconnected from: ('127.0.0.1', 43222) with name None
+INFO 2026-07-05 06:58:02,419 judge_handler Judge connected from: ('127.0.0.1', 59976)
+INFO 2026-07-05 06:58:02,443 judge_handler Judge disconnected from: ('127.0.0.1', 59976) with name None
+INFO 2026-07-05 06:58:08,447 judge_handler Judge connected from: ('127.0.0.1', 59984)
+INFO 2026-07-05 06:58:08,470 judge_handler Judge disconnected from: ('127.0.0.1', 59984) with name None
+INFO 2026-07-05 06:58:17,474 judge_handler Judge connected from: ('127.0.0.1', 37906)
+INFO 2026-07-05 06:58:17,498 judge_handler Judge disconnected from: ('127.0.0.1', 37906) with name None
+INFO 2026-07-05 06:58:31,002 judge_handler Judge connected from: ('127.0.0.1', 42720)
+INFO 2026-07-05 06:58:31,027 judge_handler Judge disconnected from: ('127.0.0.1', 42720) with name None
+INFO 2026-07-05 06:58:51,282 judge_handler Judge connected from: ('127.0.0.1', 55794)
+INFO 2026-07-05 06:58:51,306 judge_handler Judge disconnected from: ('127.0.0.1', 55794) with name None
+INFO 2026-07-05 06:59:21,687 judge_handler Judge connected from: ('127.0.0.1', 47062)
+INFO 2026-07-05 06:59:21,712 judge_handler Judge disconnected from: ('127.0.0.1', 47062) with name None
+INFO 2026-07-05 07:00:07,281 judge_handler Judge connected from: ('127.0.0.1', 58276)
+INFO 2026-07-05 07:00:07,305 judge_handler Judge disconnected from: ('127.0.0.1', 58276) with name None
+INFO 2026-07-05 07:01:07,313 judge_handler Judge connected from: ('127.0.0.1', 53722)
+INFO 2026-07-05 07:01:07,338 judge_handler Judge disconnected from: ('127.0.0.1', 53722) with name None
+INFO 2026-07-05 07:02:07,345 judge_handler Judge connected from: ('127.0.0.1', 39450)
+INFO 2026-07-05 07:02:07,371 judge_handler Judge disconnected from: ('127.0.0.1', 39450) with name None
+INFO 2026-07-05 07:03:07,380 judge_handler Judge connected from: ('127.0.0.1', 48308)
+INFO 2026-07-05 07:03:07,405 judge_handler Judge disconnected from: ('127.0.0.1', 48308) with name None
+INFO 2026-07-05 07:04:07,415 judge_handler Judge connected from: ('127.0.0.1', 41640)
+INFO 2026-07-05 07:04:07,442 judge_handler Judge disconnected from: ('127.0.0.1', 41640) with name None
+INFO 2026-07-05 07:05:07,453 judge_handler Judge connected from: ('127.0.0.1', 43606)
+INFO 2026-07-05 07:05:07,479 judge_handler Judge disconnected from: ('127.0.0.1', 43606) with name None
+INFO 2026-07-05 07:06:07,490 judge_handler Judge connected from: ('127.0.0.1', 44364)
+INFO 2026-07-05 07:06:07,515 judge_handler Judge authenticated: ('127.0.0.1', 44364) (judge)
+INFO 2026-07-05 07:06:07,515 judge_list Minimum tier changed from None to 1
+INFO 2026-07-05 19:57:09,287 judge_handler Judge connected from: ('127.0.0.1', 57168)
+INFO 2026-07-05 19:57:09,315 judge_handler Judge authenticated: ('127.0.0.1', 57168) (judge)
+INFO 2026-07-05 19:57:09,315 judge_list Minimum tier changed from None to 1
+INFO 2026-07-08 05:37:05,387 judge_handler Judge connected from: ('127.0.0.1', 56722)
+INFO 2026-07-08 05:37:05,412 judge_handler Judge authenticated: ('127.0.0.1', 56722) (judge)
+INFO 2026-07-08 05:37:05,412 judge_list Minimum tier changed from None to 1
+INFO 2026-07-08 09:54:32,952 daemon Exiting due to SIGINT
+INFO 2026-07-08 09:54:53,009 judge_handler Judge connected from: ('127.0.0.1', 56694)
+INFO 2026-07-08 09:54:53,037 judge_handler Judge authenticated: ('127.0.0.1', 56694) (judge)
+INFO 2026-07-08 09:54:53,037 judge_list Minimum tier changed from None to 1

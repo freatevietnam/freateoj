@@ -1,0 +1,150 @@
+# Review package: 4d5c217..6c41766
+
+## Commits
+6c41766 fix: address Task 12 review findings - update template as specified in brief
+
+## Files changed
+ judge/forms.py              |  6 ------
+ judge/views/contests.py     |  2 --
+ templates/contest/edit.html | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 28 insertions(+), 8 deletions(-)
+
+## Diff
+diff --git a/judge/forms.py b/judge/forms.py
+index 08ba560..2404d58 100755
+--- a/judge/forms.py
++++ b/judge/forms.py
+@@ -707,30 +707,24 @@ class ContestCloneForm(Form):
+     def clean_key(self):
+         key = self.cleaned_data['key']
+         if Contest.objects.filter(key=key).exists():
+             raise ValidationError(_('Contest with key already exists.'))
+         return key
+ 
+ 
+ class ProposeContestProblemForm(ModelForm):
+     def __init__(self, *args, **kwargs):
+         self.user = kwargs.pop('user', None)
+-        self.org_pk = kwargs.pop('org_pk', None)
+         super(ProposeContestProblemForm, self).__init__(*args, **kwargs)
+ 
+         self.fields['problem'].queryset = Problem.get_visible_problems(self.user, include_deleted=True)
+ 
+-        if self.org_pk:
+-            self.fields['problem'].widget.data_url = reverse('problem_select2_org', args=(self.org_pk,))
+-        else:
+-            self.fields['problem'].widget.data_url = reverse('problem_select2_public')
+-
+     class Meta:
+         model = ContestProblem
+         verbose_name = _('Problem')
+         verbose_name_plural = 'Problems'
+         fields = (
+             'problem', 'points', 'order', 'max_submissions',
+         )
+ 
+         widgets = {
+             'problem': HeavySelect2Widget(data_view='problem_select2', attrs={'style': 'width: 100%'}),
+diff --git a/judge/views/contests.py b/judge/views/contests.py
+index b2f2113..7a1a0f2 100755
+--- a/judge/views/contests.py
++++ b/judge/views/contests.py
+@@ -1356,22 +1356,20 @@ class EditContest(ContestMixin, LoginRequiredMixin, TitleMixin, UpdateView):
+     def get_title(self):
+         return _('Editing contest {0}').format(self.object.name)
+ 
+     def get_content_title(self):
+         return mark_safe(escape(_('Editing contest %s')) % (
+             format_html('<a href="{1}">{0}</a>', self.object.name,
+                         reverse('contest_view', args=[self.object.key]))))
+ 
+     def get_contest_problem_formset(self):
+         form_kwargs = {'user': self.request.user}
+-        if self.object.organization:
+-            form_kwargs['org_pk'] = self.object.organization.id
+         if self.request.POST:
+             return ProposeContestProblemFormSet(self.request.POST, instance=self.get_object(),
+                                                 form_kwargs=form_kwargs)
+         return ProposeContestProblemFormSet(instance=self.get_object(), form_kwargs=form_kwargs)
+ 
+     def get_context_data(self, **kwargs):
+         data = super().get_context_data(**kwargs)
+         data['contest_problem_formset'] = self.get_contest_problem_formset()
+         return data
+ 
+diff --git a/templates/contest/edit.html b/templates/contest/edit.html
+old mode 100644
+new mode 100755
+index 7624e86..41ef8dc
+--- a/templates/contest/edit.html
++++ b/templates/contest/edit.html
+@@ -128,20 +128,45 @@
+                                     data: contestant,
+                                 });
+                             }
+                         },
+                     });
+                 }
+             });
+         })
+     </script>
+     {{ form.media.js }}
++    <script>
++        $(function() {
++            // Update problem picker URLs based on contest organization
++            var $contestData = $('#contest-data');
++            var orgId = $contestData.data('org-id');
++            var publicUrl = $contestData.data('public-url');
++            var orgUrlPattern = $contestData.data('org-url-pattern');
++            var problemUrl = orgId ? orgUrlPattern + orgId + '/' : publicUrl;
++            // Update all problem select2 widgets
++            $('select[id$="-problem"]').each(function() {
++                var $select = $(this);
++                // If select2 already initialized, we need to update its ajax URL
++                if ($select.data('select2')) {
++                    $select.select2('destroy');
++                }
++                $select.attr('data-ajax--url', problemUrl);
++                // Reinitialize select2 (the django-select2 JS should handle this)
++                $select.select2({
++                    ajax: {
++                        url: problemUrl,
++                    }
++                });
++            });
++        });
++    </script>
+ {% endblock %}
+ 
+ {% block media %}
+     <link rel="stylesheet" href="{{ static('freateoj/flatpickr/dist/flatpickr.min.css') }}">
+     <link rel="stylesheet" href="{{ static('freateoj/jquery-ui/jquery-ui.min.css') }}">
+     {{ form.media.css }}
+     <link rel="stylesheet" type="text/css" href="{{ static('ui_form.css') }}">
+     <style>
+         body.dragging, body.dragging * {
+             cursor: move !important;
+@@ -218,20 +243,23 @@
+         {% if request.user.is_staff %}
+             <div class="alert alert-warning alert-dismissable">
+                 <a class="close">x</a>
+                 <a href="{{ url('admin:judge_contest_change', contest.id) }}">{{ _('Edit contest in admin panel for more options') }}</a>
+             </div>
+         {% endif %}
+     {% endblock %}
+     <form action="" method="post" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
+         {% csrf_token %}
+         {{ contest_problem_formset.management_form }}
++        <div id="contest-data" data-org-id="{{ contest.organization_id|default:'' }}"
++             data-public-url="{% url 'problem_select2_public' %}"
++             data-org-url-pattern="/select2/problem/org/"></div>
+         {% if contest_problem_formset.non_form_errors() %}
+             {{ contest_problem_formset.non_form_errors() }}
+         {% endif %}
+         <table class="django-as-table">{{ form.as_table() }}</table>
+         <hr>
+         <center><h3> {{ _('Problems') }} </h3></center>
+         <table class="table">
+             <thead>
+                 <tr>
+                     <th class="order-column"></th>

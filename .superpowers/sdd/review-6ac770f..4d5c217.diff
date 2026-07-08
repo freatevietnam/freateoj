@@ -1,0 +1,175 @@
+# Review package: 6ac770f..4d5c217
+
+## Commits
+4d5c217 feat: improve problem picker with code display and org split
+
+## Files changed
+ dmoj/urls.py            |  8 +++++---
+ judge/forms.py          |  6 ++++++
+ judge/views/contests.py |  7 +++++--
+ judge/views/select2.py  | 14 ++++++++++++++
+ 4 files changed, 30 insertions(+), 5 deletions(-)
+
+## Diff
+diff --git a/dmoj/urls.py b/dmoj/urls.py
+index ee17724..976ffd2 100755
+--- a/dmoj/urls.py
++++ b/dmoj/urls.py
+@@ -13,23 +13,23 @@ from judge.feed import AtomBlogFeed, AtomCommentFeed, AtomProblemFeed, BlogFeed,
+ from judge.sitemap import sitemaps
+ from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, notification, \
+     organization, preview, problem, problem_download, problem_manage, ranked_submission, register, stats, status, \
+     submission, tag, tasks, ticket, two_factor, user, widgets
+ from judge.views.magazine import MagazinePage
+ from judge.views.misc_config import MiscConfigEdit
+ from judge.views.problem_data import ProblemDataView, ProblemSubmissionDiff, \
+     problem_data_file, problem_init_view
+ from judge.views.register import RegistrationView, RegistrationCompleteView
+ from judge.views.select2 import AssigneeSelect2View, CommentSelect2View, ContestSelect2View, \
+-    OrganizationSelect2View, OrganizationUserSearchSelect2View, \
+-    OrganizationUserSelect2View, ProblemSelect2View, TagGroupSelect2View, TagSelect2View, TicketUserSelect2View, \
+-    UserSearchSelect2View, UserSelect2View
++    OrganizationSelect2View, OrganizationProblemSelect2View, OrganizationUserSearchSelect2View, \
++    OrganizationUserSelect2View, ProblemSelect2View, PublicProblemSelect2View, TagGroupSelect2View, \
++    TagSelect2View, TicketUserSelect2View, UserSearchSelect2View, UserSelect2View
+ from judge.views.widgets import martor_image_uploader
+ from martor.views import markdown_search_user
+ 
+ admin.autodiscover()
+ 
+ register_patterns = [
+     path('activate/complete/',
+          TitledTemplateView.as_view(template_name='registration/activation_complete.html',
+                                     title=_('Activation Successful!')),
+          name='registration_activation_complete'),
+@@ -414,20 +414,22 @@ urlpatterns = [
+     ])),
+ 
+     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
+ 
+     path('judge-select2/', include([
+         path('profile/', UserSelect2View.as_view(), name='profile_select2'),
+         path('organization_profile/<int:pk>/', OrganizationUserSelect2View.as_view(),
+              name='organization_profile_select2'),
+         path('organization/', OrganizationSelect2View.as_view(), name='organization_select2'),
+         path('problem/', ProblemSelect2View.as_view(), name='problem_select2'),
++        path('problem/public/', PublicProblemSelect2View.as_view(), name='problem_select2_public'),
++        path('problem/org/<int:org_pk>/', OrganizationProblemSelect2View.as_view(), name='problem_select2_org'),
+         path('contest/', ContestSelect2View.as_view(), name='contest_select2'),
+         path('comment/', CommentSelect2View.as_view(), name='comment_select2'),
+         path('tag/', TagSelect2View.as_view(), name='tag_select2'),
+         path('taggroup/', TagGroupSelect2View.as_view(), name='taggroup_select2'),
+     ])),
+ 
+     path('tasks/', include([
+         path('status/<slug:task_id>', tasks.task_status, name='task_status'),
+         path('ajax_status', tasks.task_status_ajax, name='task_status_ajax'),
+         path('success', tasks.demo_success),
+diff --git a/judge/forms.py b/judge/forms.py
+index 2404d58..08ba560 100755
+--- a/judge/forms.py
++++ b/judge/forms.py
+@@ -707,24 +707,30 @@ class ContestCloneForm(Form):
+     def clean_key(self):
+         key = self.cleaned_data['key']
+         if Contest.objects.filter(key=key).exists():
+             raise ValidationError(_('Contest with key already exists.'))
+         return key
+ 
+ 
+ class ProposeContestProblemForm(ModelForm):
+     def __init__(self, *args, **kwargs):
+         self.user = kwargs.pop('user', None)
++        self.org_pk = kwargs.pop('org_pk', None)
+         super(ProposeContestProblemForm, self).__init__(*args, **kwargs)
+ 
+         self.fields['problem'].queryset = Problem.get_visible_problems(self.user, include_deleted=True)
+ 
++        if self.org_pk:
++            self.fields['problem'].widget.data_url = reverse('problem_select2_org', args=(self.org_pk,))
++        else:
++            self.fields['problem'].widget.data_url = reverse('problem_select2_public')
++
+     class Meta:
+         model = ContestProblem
+         verbose_name = _('Problem')
+         verbose_name_plural = 'Problems'
+         fields = (
+             'problem', 'points', 'order', 'max_submissions',
+         )
+ 
+         widgets = {
+             'problem': HeavySelect2Widget(data_view='problem_select2', attrs={'style': 'width: 100%'}),
+diff --git a/judge/views/contests.py b/judge/views/contests.py
+index 6dc1ade..b2f2113 100755
+--- a/judge/views/contests.py
++++ b/judge/views/contests.py
+@@ -1355,24 +1355,27 @@ class EditContest(ContestMixin, LoginRequiredMixin, TitleMixin, UpdateView):
+ 
+     def get_title(self):
+         return _('Editing contest {0}').format(self.object.name)
+ 
+     def get_content_title(self):
+         return mark_safe(escape(_('Editing contest %s')) % (
+             format_html('<a href="{1}">{0}</a>', self.object.name,
+                         reverse('contest_view', args=[self.object.key]))))
+ 
+     def get_contest_problem_formset(self):
++        form_kwargs = {'user': self.request.user}
++        if self.object.organization:
++            form_kwargs['org_pk'] = self.object.organization.id
+         if self.request.POST:
+             return ProposeContestProblemFormSet(self.request.POST, instance=self.get_object(),
+-                                                form_kwargs={'user': self.request.user})
+-        return ProposeContestProblemFormSet(instance=self.get_object(), form_kwargs={'user': self.request.user})
++                                                form_kwargs=form_kwargs)
++        return ProposeContestProblemFormSet(instance=self.get_object(), form_kwargs=form_kwargs)
+ 
+     def get_context_data(self, **kwargs):
+         data = super().get_context_data(**kwargs)
+         data['contest_problem_formset'] = self.get_contest_problem_formset()
+         return data
+ 
+     def post(self, request, *args, **kwargs):
+         self.object = self.get_object()
+         form = self.get_form()
+         form_set = self.get_contest_problem_formset()
+diff --git a/judge/views/select2.py b/judge/views/select2.py
+index 0761c89..9e3200b 100755
+--- a/judge/views/select2.py
++++ b/judge/views/select2.py
+@@ -118,20 +118,34 @@ class TagSelect2View(Select2View):
+ class OrganizationSelect2View(Select2View):
+     def get_queryset(self):
+         return Organization.objects.filter(name__icontains=self.term)
+ 
+ 
+ class ProblemSelect2View(Select2View):
+     def get_queryset(self):
+         return Problem.get_visible_problems(self.request.user) \
+                       .filter(Q(code__icontains=self.term) | Q(name__icontains=self.term))
+ 
++    def get_name(self, obj):
++        return f'[{obj.code}] {obj.name}'
++
++
++class PublicProblemSelect2View(ProblemSelect2View):
++    def get_queryset(self):
++        return super().get_queryset().filter(is_public=True)
++
++
++class OrganizationProblemSelect2View(ProblemSelect2View):
++    def get_queryset(self):
++        org_pk = self.kwargs.get('org_pk')
++        return super().get_queryset().filter(organizations__pk=org_pk)
++
+ 
+ class ContestSelect2View(Select2View):
+     def get_queryset(self):
+         return Contest.get_visible_contests(self.request.user) \
+                       .filter(Q(key__icontains=self.term) | Q(name__icontains=self.term))
+ 
+ 
+ class CommentSelect2View(Select2View):
+     def get_queryset(self):
+         return Comment.objects.filter(page__icontains=self.term)

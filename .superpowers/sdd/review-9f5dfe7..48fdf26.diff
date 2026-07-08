@@ -1,0 +1,224 @@
+# Review package: 9f5dfe7..48fdf26
+
+## Commits
+48fdf26 fix: address Task 3 review findings - update tests, commit template deletions, remove dead setting
+
+## Files changed
+ dmoj/settings.py                    |  1 -
+ judge/models/tests/test_problem.py  | 58 ++-----------------------------------
+ templates/problem/suggest-list.html |  6 ----
+ templates/problem/suggest.html      | 40 -------------------------
+ 4 files changed, 2 insertions(+), 103 deletions(-)
+
+## Diff
+diff --git a/dmoj/settings.py b/dmoj/settings.py
+index 5592e0e..481ced4 100755
+--- a/dmoj/settings.py
++++ b/dmoj/settings.py
+@@ -57,21 +57,20 @@ FREATEOJ_ORG_PP_SCALE = 1
+ FREATEOJ_ENABLE_API = False
+ FREATEOJ_ENABLE_SYNC_API = True  # need to make this true for testing :sad:
+ GLOBAL_API_KEY = 'test-api-key-123'
+ 
+ FREATEOJ_OFFICIAL_CONTEST_MODE = False
+ 
+ # Contribution points function
+ # Both should be int
+ FREATEOJ_CP_COMMENT = 1   # Each comment vote equals 1 CP
+ FREATEOJ_CP_TICKET = 10   # Each good ticket equals CP
+-FREATEOJ_CP_PROBLEM = 20  # Each suggested problem equal 20 CP
+ 
+ TICKET_AUTOFILL_REPLIES = [
+     {'en': 'No comments',
+      'vi': 'Không có nhận xét'},
+     {'en': 'Read the problem statement',
+      'vi': 'Đọc đề bài'},
+     {'en': 'Yes',
+      'vi': 'Có'},
+     {'en': 'No',
+      'vi': 'Không'},
+diff --git a/judge/models/tests/test_problem.py b/judge/models/tests/test_problem.py
+old mode 100644
+new mode 100755
+index 46482a1..3f5063c
+--- a/judge/models/tests/test_problem.py
++++ b/judge/models/tests/test_problem.py
+@@ -19,26 +19,21 @@ class ProblemTestCase(CommonDataMixin, TestCase):
+             'staff_problem_edit_only_all': create_user(
+                 username='staff_problem_edit_only_all',
+                 is_staff=True,
+                 user_permissions=('edit_all_problem',),
+             ),
+             'normal_in_contest': create_user(
+                 username='normal_in_contest',
+             ),
+         })
+ 
+-        self.users.update({
+-            'suggester': create_user(
+-                username='suggester',
+-                user_permissions=('edit_own_problem', 'suggest_new_problem', 'rejudge_submission'),
+-            ),
+-        })
++
+ 
+         create_problem_type(name='type')
+ 
+         self.basic_problem = create_problem(
+             code='basic',
+             allowed_languages=Language.objects.values_list('key', flat=True),
+             types=('type',),
+             authors=('normal',),
+             testers=('staff_problem_edit_public',),
+         )
+@@ -111,24 +106,21 @@ class ProblemTestCase(CommonDataMixin, TestCase):
+         self.organization_admin_private_problem = create_problem(
+             code='org_admin_private',
+             is_organization_private=True,
+             organization=self.problem_organization,
+         )
+         self.organization_admin_problem = create_problem(
+             code='organization_admin',
+             organization=self.problem_organization,
+         )
+ 
+-        self.suggesting_problem = create_problem(
+-            code='suggesting',
+-            suggester=self.users['suggester'].profile,
+-        )
++
+ 
+     def test_basic_problem(self):
+         self.assertEqual(str(self.basic_problem), self.basic_problem.name)
+         self.assertCountEqual(
+             self.basic_problem.languages_list(),
+             set(Language.objects.values_list('common_name', flat=True)),
+         )
+         self.basic_problem.user_count = -1000
+         self.basic_problem.ac_rate = -1000
+         self.basic_problem.update_stats()
+@@ -367,66 +359,20 @@ class ProblemTestCase(CommonDataMixin, TestCase):
+                 'is_accessible_by': self.assertFalse,
+                 'is_editable_by': self.assertFalse,
+             },
+             'anonymous': {
+                 'is_accessible_by': self.assertFalse,
+                 'is_editable_by': self.assertFalse,
+             },
+         }
+         self._test_object_methods_with_users(self.organization_admin_problem, data)
+ 
+-    def test_suggesting_problem_methods(self):
+-        data = {
+-            'superuser': {
+-                'is_accessible_by': self.assertTrue,
+-                'is_editable_by': self.assertTrue,
+-            },
+-            'staff_problem_edit_own': {
+-                'is_accessible_by': self.assertFalse,
+-                'is_editable_by': self.assertFalse,
+-            },
+-            'staff_problem_see_all': {
+-                'is_accessible_by': self.assertTrue,
+-                'is_editable_by': self.assertFalse,
+-            },
+-            'staff_problem_edit_all': {
+-                'is_accessible_by': self.assertTrue,
+-                'is_editable_by': self.assertTrue,
+-            },
+-            'staff_problem_edit_public': {
+-                'is_accessible_by': self.assertFalse,
+-                'is_editable_by': self.assertFalse,
+-            },
+-            'staff_organization_admin': {
+-                'is_accessible_by': self.assertFalse,
+-                'is_editable_by': self.assertFalse,
+-            },
+-            'staff_problem_see_organization': {
+-                'is_accessible_by': self.assertFalse,
+-                'is_editable_by': self.assertFalse,
+-            },
+-            'normal': {
+-                'is_accessible_by': self.assertFalse,
+-                'is_editable_by': self.assertFalse,
+-            },
+-            'anonymous': {
+-                'is_accessible_by': self.assertFalse,
+-                'is_editable_by': self.assertFalse,
+-            },
+-            'suggester': {
+-                'is_accessible_by': self.assertTrue,
+-                'is_editable_by': self.assertTrue,
+-                'is_rejudgeable_by': self.assertTrue,
+-            },
+-        }
+-        self._test_object_methods_with_users(self.suggesting_problem, data)
+-
+     def test_problems_list(self):
+         for name, user in self.users.items():
+             with self.subTest(user=name):
+                 with self.subTest(list='accessible problems'):
+                     # We only care about consistency between Problem.is_accessible_by and Problem.get_visible_problems
+                     problem_codes = []
+                     for problem in Problem.objects.prefetch_related('authors', 'curators', 'testers', 'organization'):
+                         if problem.is_accessible_by(user):
+                             problem_codes.append(problem.code)
+ 
+diff --git a/templates/problem/suggest-list.html b/templates/problem/suggest-list.html
+deleted file mode 100644
+index 26a9605..0000000
+--- a/templates/problem/suggest-list.html
++++ /dev/null
+@@ -1,6 +0,0 @@
+-{% extends 'problem/list.html' %}
+-
+-{% block title_row %}
+-    {% set tab = 'suggest' %}
+-    {% include "problem/problem-list-tabs.html" %}
+-{% endblock %}
+diff --git a/templates/problem/suggest.html b/templates/problem/suggest.html
+deleted file mode 100644
+index d54472c..0000000
+--- a/templates/problem/suggest.html
++++ /dev/null
+@@ -1,40 +0,0 @@
+-{% extends "problem/editor.html" %}
+-
+-{% block body %}
+-<div>
+-    {% if problem_limit_reached %}
+-    <div class="alert alert-danger">
+-        {{ _('Problem limit reached! Please delete some problems before creating new ones.') }}
+-        {% if quota_warning_suffix %}{{ quota_warning_suffix|safe }}{% endif %}
+-    </div>
+-    {% elif problem_warning %}
+-    <div class="alert alert-warning">
+-        {{ _('You are approaching the problem limit') }} ({{ problem_count }} / {{ max_problems }}).
+-        {{ _('You will not be able to create more problems if the limit is exceeded.') }}
+-        {% if quota_warning_suffix %}{{ quota_warning_suffix|safe }}{% endif %}
+-    </div>
+-    {% endif %}
+-    {% if request.path == url('problem_suggest') %}
+-        <div class="alert alert-warning alert-dismissable">
+-            <a class="close">x</a>
+-            <b>{{ _('Thanks for suggesting problem!') }}</b>
+-            <br>
+-            {{ _('Please keep in mind that this form is only for creating new problems. Spamming and using for wrong purposes is not allowed.') }}
+-            <br>
+-            {{ (_('If you don\'t know how to suggest a problem, please read [guide][0].') + '\n\n  [0]: /about/suggest_guide/')|markdown('blog', strip_paragraphs=True) }}
+-        </div>
+-    {% endif %}
+-    {% if perms.judge.import_polygon_package %}
+-        <div class="alert alert-warning alert-dismissable">
+-            <a class="close">x</a>
+-            <a href="{{ url('problem_import_polygon') }}">{{ _('Import problem from Codeforces Polygon package') }}</a>
+-        </div>
+-    {% endif %}
+-    <form action="" method="post" class="form-area" enctype="multipart/form-data" style="display: flex; justify-content: center; flex-direction: column;">
+-        {% csrf_token %}
+-        <table class="django-as-table">{{ form.as_table() }}</table>
+-        <hr>
+-        <div style="display: flex; justify-content: flex-end;"><input type="submit" value="{{ _('Create') }}" class="button"></div>
+-    </form>
+-</div>
+-{% endblock %}

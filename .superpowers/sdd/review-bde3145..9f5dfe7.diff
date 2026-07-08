@@ -1,0 +1,698 @@
+# Review package: bde3145..9f5dfe7
+
+## Commits
+9f5dfe7 feat: remove suggester feature
+
+## Files changed
+ dmoj/urls.py                                      |  2 --
+ judge/admin/problem.py                            |  4 +--
+ judge/jinja2/submission.py                        |  3 --
+ judge/migrations/0234_remove_problem_suggester.py | 21 +++++++++++++
+ judge/models/problem.py                           | 28 ++---------------
+ judge/models/profile.py                           |  4 +--
+ judge/models/submission.py                        |  2 --
+ judge/tasks/submission.py                         |  5 ---
+ judge/tasks/webhook.py                            |  8 ++---
+ judge/views/problem.py                            | 37 -----------------------
+ templates/problem/problem-list-tabs.html          |  5 ---
+ templates/problem/problem.html                    | 15 ---------
+ 12 files changed, 29 insertions(+), 105 deletions(-)
+
+## Diff
+diff --git a/dmoj/urls.py b/dmoj/urls.py
+old mode 100644
+new mode 100755
+index 9ba4429..2bf0365
+--- a/dmoj/urls.py
++++ b/dmoj/urls.py
+@@ -100,22 +100,20 @@ urlpatterns = [
+     path('i18n/', include('django.conf.urls.i18n')),
+     path('accounts/', include(register_patterns)),
+     path('', include('social_django.urls')),
+ 
+     # URL Shortener management (on main domain)
+     path('shorteners/', include('urlshortener.urls')),
+ 
+     path('problems', include([
+         path('/', problem.ProblemList.as_view(), name='problem_list'),
+         path('/random/', problem.RandomProblem.as_view(), name='problem_random'),
+-        path('/suggest_list/', problem.SuggestList.as_view(), name='problem_suggest_list'),
+-        path('/suggest', problem.ProblemSuggest.as_view(), name='problem_suggest'),
+         path('/create', problem.ProblemCreate.as_view(), name='problem_create'),
+         path('/import-polygon', problem.ProblemImportPolygon.as_view(), name='problem_import_polygon'),
+     ])),
+ 
+     path('problem/<str:problem>', include([
+         path('', problem.ProblemDetail.as_view(), name='problem_detail'),
+         path('/edit', problem.ProblemEdit.as_view(), name='problem_edit'),
+         path('/edit-type-group', problem.ProblemEditTypeGroup.as_view(), name='problem_edit_type_group'),
+         path('/editorial', problem.ProblemSolution.as_view(), name='problem_editorial'),
+         path('/raw', xframe_options_sameorigin(problem.ProblemRaw.as_view()), name='problem_raw'),
+diff --git a/judge/admin/problem.py b/judge/admin/problem.py
+old mode 100644
+new mode 100755
+index 85ff7a3..87d011e
+--- a/judge/admin/problem.py
++++ b/judge/admin/problem.py
+@@ -17,32 +17,30 @@ from judge.widgets import AdminHeavySelect2MultipleWidget, AdminHeavySelect2Widg
+     AdminSelect2MultipleWidget, AdminSelect2Widget, CheckboxSelectMultipleWithSelectAll
+ 
+ 
+ class ProblemForm(ModelForm):
+     change_message = forms.CharField(max_length=256, label='Edit reason', required=False)
+ 
+     def __init__(self, *args, **kwargs):
+         super(ProblemForm, self).__init__(*args, **kwargs)
+         self.fields['authors'].widget.can_add_related = False
+         self.fields['curators'].widget.can_add_related = False
+-        self.fields['suggester'].widget.can_add_related = False
+         self.fields['testers'].widget.can_add_related = False
+         self.fields['banned_users'].widget.can_add_related = False
+         self.fields['change_message'].widget.attrs.update({
+             'placeholder': gettext('Describe the changes you made (optional)'),
+         })
+ 
+     class Meta:
+         widgets = {
+             'authors': AdminHeavySelect2MultipleWidget(data_view='profile_select2'),
+             'curators': AdminHeavySelect2MultipleWidget(data_view='profile_select2'),
+-            'suggester': AdminHeavySelect2Widget(data_view='profile_select2'),
+             'testers': AdminHeavySelect2MultipleWidget(data_view='profile_select2'),
+             'banned_users': AdminHeavySelect2MultipleWidget(data_view='profile_select2'),
+             'organization': AdminHeavySelect2Widget(data_view='organization_select2'),
+             'types': AdminSelect2MultipleWidget,
+             'group': AdminSelect2Widget,
+             'description': AdminMartorWidget(attrs={'data-markdownfy-url': reverse_lazy('problem_preview')}),
+         }
+ 
+ 
+ class ProblemCreatorListFilter(admin.SimpleListFilter):
+@@ -116,21 +114,21 @@ class ProblemTranslationInline(admin.StackedInline):
+             return True
+         return request.user.has_perm('judge.problem_full_markup') or not obj.is_full_markup
+ 
+     has_add_permission = has_change_permission = has_delete_permission = has_permission_full_markup
+ 
+ 
+ class ProblemAdmin(AdminFastPaginationMixin, NoBatchDeleteMixin, VersionAdmin):
+     fieldsets = (
+         (None, {
+             'fields': (
+-                'code', 'name', 'suggester', 'is_public', 'is_manually_managed', 'date', 'authors',
++                'code', 'name', 'is_public', 'is_manually_managed', 'date', 'authors',
+                 'curators', 'testers', 'is_organization_private', 'organization', 'submission_source_visibility_mode',
+                 'testcase_visibility_mode', 'testcase_result_visibility_mode', 'allow_view_feedback',
+                 'is_full_markup', 'pdf_url', 'source', 'description', 'license',
+             ),
+         }),
+         (_('Social Media'), {'classes': ('collapse',), 'fields': ('og_image', 'summary')}),
+         (_('Taxonomy'), {'fields': ('types', 'group')}),
+         (_('Points'), {'fields': (('points', 'partial'), 'short_circuit')}),
+         (_('Limits'), {'fields': ('time_limit', 'memory_limit')}),
+         (_('Language'), {'fields': ('allowed_languages',)}),
+diff --git a/judge/jinja2/submission.py b/judge/jinja2/submission.py
+old mode 100644
+new mode 100755
+index e92df73..7dbf50c
+--- a/judge/jinja2/submission.py
++++ b/judge/jinja2/submission.py
+@@ -22,23 +22,20 @@ def submission_layout(submission, profile_id, user, completed_problem_ids, edita
+     if (user.has_perm('judge.edit_all_problem') or
+             (user.has_perm('judge.edit_public_problem') and submission.problem.is_public) or
+             # We try to avoid evaluating this as much as possible to keep it lazy.
+             problem_id in editable_problem_ids):
+         can_view = True
+         can_edit = True
+     elif user.has_perm('judge.view_all_submission'):
+         can_view = True
+     elif profile_id == submission.user_id:
+         can_view = True
+-    elif not submission.problem.is_public and user.has_perm('judge.suggest_new_problem') and \
+-            submission.problem.is_suggesting:
+-        can_view = True
+     elif submission_source_visibility == SubmissionSourceAccess.ALWAYS:
+         can_view = True
+     elif submission.contest_object is not None and profile_id in get_editor_ids(submission.contest_object):
+         can_view = True
+     elif submission.problem_id in completed_problem_ids:
+         can_view = submission.problem_id in tester_problem_ids
+         if submission_source_visibility == SubmissionSourceAccess.SOLVED:
+             can_view = can_view or submission.problem.is_public
+ 
+     return can_view, can_edit
+diff --git a/judge/migrations/0234_remove_problem_suggester.py b/judge/migrations/0234_remove_problem_suggester.py
+new file mode 100644
+index 0000000..cff14d0
+--- /dev/null
++++ b/judge/migrations/0234_remove_problem_suggester.py
+@@ -0,0 +1,21 @@
++# Generated by Django 5.2 on 2026-07-08
++
++from django.db import migrations
++
++
++class Migration(migrations.Migration):
++
++    dependencies = [
++        ('judge', '0233_submission_problem_date_index'),
++    ]
++
++    operations = [
++        migrations.AlterModelOptions(
++            name='problem',
++            options={'permissions': (('see_private_problem', 'See hidden problems'), ('edit_own_problem', 'Edit own problems'), ('create_organization_problem', 'Create organization problem'), ('edit_all_problem', 'Edit all problems'), ('edit_public_problem', 'Edit all public problems'), ('problem_full_markup', 'Edit problems with full markup'), ('clone_problem', 'Clone problem'), ('upload_file_statement', 'Upload file-type statement'), ('change_public_visibility', 'Change is_public field'), ('change_manually_managed', 'Change is_manually_managed field'), ('see_organization_problem', 'See organization-private problems'), ('import_polygon_package', 'Import Codeforces Polygon package'), ('edit_type_group_all_problem', 'Edit type and group for all problems')), 'verbose_name': 'problem', 'verbose_name_plural': 'problems'},
++        ),
++        migrations.RemoveField(
++            model_name='problem',
++            name='suggester',
++        ),
++    ]
+diff --git a/judge/models/problem.py b/judge/models/problem.py
+old mode 100644
+new mode 100755
+index 809f1f6..3ecbf16
+--- a/judge/models/problem.py
++++ b/judge/models/problem.py
+@@ -230,22 +230,20 @@ class Problem(models.Model):
+     objects = ProblemManager()
+     tickets = GenericRelation('Ticket')
+     expired_deletion = ExpiredProblemDeletionManager()
+     available = AvailableProblemManager()
+ 
+     organization = models.ForeignKey(Organization, blank=True, null=True, verbose_name=_('organization'),
+                                      on_delete=SET_NULL,
+                                      help_text=_('If private, only this organization may see the problem.'))
+     is_organization_private = models.BooleanField(verbose_name=_('private to organizations'), default=False)
+ 
+-    suggester = models.ForeignKey(Profile, blank=True, null=True, related_name='suggested_problems', on_delete=SET_NULL)
+-
+     allow_view_feedback = models.BooleanField(
+         help_text=_('Allow user to view checker feedback.'),
+         default=False,
+     )
+ 
+     __original_points = None
+ 
+     def __init__(self, *args, **kwargs):
+         super(Problem, self).__init__(*args, **kwargs)
+         self._translated_name_cache = {}
+@@ -263,31 +261,25 @@ class Problem(models.Model):
+     @cached_property
+     def types_list(self):
+         return list(map(user_gettext, map(attrgetter('full_name'), self.types.all())))
+ 
+     def languages_list(self):
+         return self.allowed_languages.values_list('common_name', flat=True).distinct().order_by('common_name')
+ 
+     def is_editor(self, profile):
+         return (self.authors.filter(id=profile.id) | self.curators.filter(id=profile.id)).exists()
+ 
+-    @property
+-    def is_suggesting(self):
+-        return self.suggester is not None and not self.is_public
+-
+     def is_editable_by(self, user):
+         if not user.is_authenticated:
+             return False
+         if not user.has_perm('judge.edit_own_problem'):
+             return False
+-        if user.has_perm('judge.suggest_new_problem') and self.is_suggesting:
+-            return True
+         if user.has_perm('judge.edit_all_problem') or user.has_perm('judge.edit_public_problem') and self.is_public:
+             return True
+         if user.profile.id in self.editor_ids:
+             return True
+         return False
+ 
+     def is_accessible_by(self, user, skip_contest_problem_check=False):
+         # If we don't want to check if the user is in a contest containing that problem.
+         if not skip_contest_problem_check and user.is_authenticated:
+             # If user is currently in a contest containing that problem.
+@@ -295,21 +287,21 @@ class Problem(models.Model):
+             if current is not None:
+                 # If contest has not started (for joining contest in advance).
+                 if not current.contest.can_join:
+                     return False
+ 
+                 from judge.models import ContestProblem
+                 if ContestProblem.objects.filter(problem_id=self.id, contest__users__id=current.id).exists():
+                     return True
+ 
+         # Problem is public.
+-        if self.is_public and not self.is_suggesting:
++        if self.is_public:
+             # Problem is not private to an organization.
+             if not self.is_organization_private:
+                 return True
+ 
+             # If the user can see all organization private problems.
+             if user.has_perm('judge.see_organization_problem'):
+                 return True
+ 
+             # If the user is in the organization.
+             if user.is_authenticated and self.organization and \
+@@ -321,24 +313,20 @@ class Problem(models.Model):
+ 
+         # If the user can view all problems.
+         if user.has_perm('judge.see_private_problem'):
+             return True
+ 
+         # If the user can edit the problem.
+         # We are using self.editor_ids to take advantage of caching.
+         if self.is_editable_by(user) or user.profile.id in self.editor_ids:
+             return True
+ 
+-        # If user is a suggester
+-        if user.has_perm('judge.suggest_new_problem') and self.is_suggesting:
+-            return True
+-
+         # If user is a tester.
+         if self.testers.filter(id=user.profile.id).exists():
+             return True
+ 
+         return False
+ 
+     def is_rejudgeable_by(self, user):
+         return user.has_perm('judge.rejudge_submission') and self.is_editable_by(user)
+ 
+     def is_subs_manageable_by(self, user):
+@@ -365,44 +353,38 @@ class Problem(models.Model):
+         # Do unauthenticated check here so we can skip authentication checks later on.
+         if not user.is_authenticated:
+             return cls.get_public_problems(include_deleted)
+ 
+         # Conditions for visible problem:
+         #   - `judge.edit_all_problem` or `judge.see_private_problem`
+         #   - otherwise
+         #       - not is_public problems
+         #           - author or curator or tester
+         #           - is_organization_private and admin of organization
+-        #           - is_suggesting and user is a suggester
+         #       - is_public problems
+         #           - not is_organization_private or in organization or `judge.see_organization_problem`
+         #           - author or curator or tester
+         queryset = (cls.objects if include_deleted else cls.available).defer('description')
+ 
+         edit_own_problem = user.has_perm('judge.edit_own_problem')
+         edit_public_problem = edit_own_problem and user.has_perm('judge.edit_public_problem')
+         edit_all_problem = edit_own_problem and user.has_perm('judge.edit_all_problem')
+-        edit_suggesting_problem = edit_own_problem and user.has_perm('judge.suggest_new_problem')
+ 
+         if not (user.has_perm('judge.see_private_problem') or edit_all_problem):
+             q = Q(is_public=True)
+             if not (user.has_perm('judge.see_organization_problem') or edit_public_problem):
+                 # Either not organization private or in the organization.
+                 q &= Q(is_organization_private=False) | cls.organization_filter_q(
+                     # Avoids needlessly joining Organization
+                     Profile.organizations.through.objects.filter(profile=user.profile).values('organization_id'),
+                 )
+ 
+-            # Suggesters should be able to view suggesting problems
+-            if edit_suggesting_problem:
+-                q |= Q(suggester__isnull=False, is_public=False)
+-
+             # Authors, curators, and testers should always have access.
+             q = cls.q_add_author_curator_tester(q, user.profile)
+             queryset = queryset.filter(q)
+ 
+         return queryset
+ 
+     @classmethod
+     def q_add_author_curator_tester(cls, q, profile):
+         # This is way faster than the obvious |= Q(authors=profile) et al. because we are not doing
+         # joins and forcing the user to clean it up with .distinct().
+@@ -423,46 +405,41 @@ class Problem(models.Model):
+                 .filter(is_public=True, is_organization_private=False)
+                 .defer('description'))
+ 
+     @classmethod
+     def get_editable_problems(cls, user):
+         if not user.has_perm('judge.edit_own_problem'):
+             return cls.objects.none()
+         if user.has_perm('judge.edit_all_problem'):
+             return cls.objects.all()
+ 
+-        q = Q(authors=user.profile) | Q(curators=user.profile) | Q(suggester=user.profile)
++        q = Q(authors=user.profile) | Q(curators=user.profile)
+ 
+         if user.has_perm('judge.edit_public_problem'):
+             q |= Q(is_public=True)
+-        if user.has_perm('judge.suggest_new_problem'):
+-            q |= Q(suggester__isnull=False, is_public=False)
+ 
+         return cls.objects.filter(q)
+ 
+     def __str__(self):
+         return self.name
+ 
+     def get_absolute_url(self):
+         return reverse('problem_detail', args=(self.code,))
+ 
+     @cached_property
+     def author_ids(self):
+         return Problem.authors.through.objects.filter(problem=self).values_list('profile_id', flat=True)
+ 
+     @cached_property
+     def editor_ids(self):
+         editors = self.author_ids.union(
+             Problem.curators.through.objects.filter(problem=self).values_list('profile_id', flat=True))
+-        if self.suggester is not None:
+-            editors = list(editors)
+-            editors.append(self.suggester.id)
+         return editors
+ 
+     @cached_property
+     def tester_ids(self):
+         return Problem.testers.through.objects.filter(problem=self).values_list('profile_id', flat=True)
+ 
+     @cached_property
+     def usable_common_names(self):
+         return set(self.usable_languages.values_list('common_name', flat=True))
+ 
+@@ -644,21 +621,20 @@ class Problem(models.Model):
+ 
+     mark_as_deleted.alters_data = True
+ 
+     class Meta:
+         permissions = (
+             ('see_private_problem', _('See hidden problems')),
+             ('edit_own_problem', _('Edit own problems')),
+             ('create_organization_problem', _('Create organization problem')),
+             ('edit_all_problem', _('Edit all problems')),
+             ('edit_public_problem', _('Edit all public problems')),
+-            ('suggest_new_problem', _('Suggest new problem')),
+             ('problem_full_markup', _('Edit problems with full markup')),
+             ('clone_problem', _('Clone problem')),
+             ('upload_file_statement', _('Upload file-type statement')),
+             ('change_public_visibility', _('Change is_public field')),
+             ('change_manually_managed', _('Change is_manually_managed field')),
+             ('see_organization_problem', _('See organization-private problems')),
+             ('import_polygon_package', _('Import Codeforces Polygon package')),
+             ('edit_type_group_all_problem', _('Edit type and group for all problems')),
+         )
+         indexes = [
+diff --git a/judge/models/profile.py b/judge/models/profile.py
+old mode 100644
+new mode 100755
+index d1d95db..840acb9
+--- a/judge/models/profile.py
++++ b/judge/models/profile.py
+@@ -424,24 +424,22 @@ class Profile(models.Model):
+         old_pp = self.contribution_points
+         # Because the aggregate function can return None
+         # So we use `X or 0` to get 0 if X is None
+         # Please note that `0 or X` will return None if X is None
+         total_comment_scores = Comment.objects.filter(author=self.id, hidden=False) \
+             .aggregate(sum=Sum('score'))['sum'] or 0
+         total_blog_scores = BlogPost.objects.filter(authors=self.id, visible=True, organization=None) \
+             .aggregate(sum=Sum('score'))['sum'] or 0
+         count_good_tickets = Ticket.objects.filter(user=self.id, is_contributive=True) \
+             .count()
+-        count_suggested_problem = self.suggested_problems.filter(is_public=True).count()
+         new_pp = (total_comment_scores + total_blog_scores) * settings.FREATEOJ_CP_COMMENT + \
+-            count_good_tickets * settings.FREATEOJ_CP_TICKET + \
+-            count_suggested_problem * settings.FREATEOJ_CP_PROBLEM
++            count_good_tickets * settings.FREATEOJ_CP_TICKET
+         if new_pp != old_pp:
+             self.contribution_points = new_pp
+             self.save(update_fields=['contribution_points'])
+         return new_pp
+ 
+     calculate_contribution_points.alters_data = True
+ 
+     def update_contribution_points(self, delta):
+         # this is just for testing the contribution
+         # we should not use this function to update contribution points
+diff --git a/judge/models/submission.py b/judge/models/submission.py
+old mode 100644
+new mode 100755
+index 56ac218..4707802
+--- a/judge/models/submission.py
++++ b/judge/models/submission.py
+@@ -145,22 +145,20 @@ class Submission(models.Model):
+ 
+     def can_see_detail(self, user):
+         if not user.is_authenticated:
+             return False
+         profile = user.profile
+         source_visibility = self.problem.submission_source_visibility
+         if self.problem.is_editable_by(user):
+             return True
+         elif user.has_perm('judge.view_all_submission'):
+             return True
+-        elif not self.problem.is_public and user.has_perm('judge.suggest_new_problem') and self.problem.is_suggesting:
+-            return True
+         elif self.user_id == profile.id:
+             return True
+         elif source_visibility == SubmissionSourceAccess.ALWAYS:
+             return True
+         elif source_visibility == SubmissionSourceAccess.SOLVED and \
+                 (self.problem.is_public or self.problem.testers.filter(id=profile.id).exists()) and \
+                 self.problem.submission_set.filter(user_id=profile.id, result='AC',
+                                                    points=self.problem.points).exists():
+             return True
+         elif source_visibility == SubmissionSourceAccess.ONLY_OWN and \
+diff --git a/judge/tasks/submission.py b/judge/tasks/submission.py
+old mode 100644
+new mode 100755
+index d2cab9c..84b3756
+--- a/judge/tasks/submission.py
++++ b/judge/tasks/submission.py
+@@ -37,25 +37,20 @@ def rejudge_problem_filter(self, problem_id, id_range=None, languages=None, resu
+             rejudged += 1
+             if rejudged % 10 == 0:
+                 p.done = rejudged
+     return rejudged
+ 
+ 
+ @shared_task(bind=True)
+ def rescore_problem(self, problem_id, publicy_changed=False):
+     problem = Problem.objects.get(id=problem_id)
+     submissions = Submission.objects.filter(problem_id=problem_id)
+-    if publicy_changed and problem.suggester is not None:
+-        points = settings.FREATEOJ_CP_PROBLEM
+-        if problem.is_public is False:
+-            points = -points
+-        problem.suggester.update_contribution_points(points)
+ 
+     with Progress(self, submissions.count(), stage=_('Modifying submissions')) as p:
+         rescored = 0
+         for submission in submissions.iterator():
+             submission.points = round(submission.case_points / submission.case_total
+                                       if submission.case_total else 0, 3) * problem.points
+             if not problem.partial and submission.points < problem.points:
+                 submission.points = 0
+             submission.save(update_fields=['points'])
+             submission.update_contest()
+diff --git a/judge/tasks/webhook.py b/judge/tasks/webhook.py
+old mode 100644
+new mode 100755
+index ac1cf1a..f6448ba
+--- a/judge/tasks/webhook.py
++++ b/judge/tasks/webhook.py
+@@ -90,31 +90,31 @@ def on_new_comment(comment_id):
+     webhook_config = get_webhook_config('on_new_comment')
+     if webhook_config is None or settings.SITE_FULL_URL is None:
+         return
+ 
+     comment = Comment.objects.get(pk=comment_id)
+     url = settings.SITE_FULL_URL + comment.get_absolute_url()
+     send_webhook(webhook_config, f'New comment {url}', comment.body[:200], comment.author)
+ 
+ 
+ @shared_task
+-def on_new_problem(problem_code, is_suggested=False):
+-    event_name = 'on_new_suggested_problem' if is_suggested else 'on_new_problem'
++def on_new_problem(problem_code):
++    event_name = 'on_new_problem'
+     webhook_config = get_webhook_config(event_name)
+     if webhook_config is None or settings.SITE_FULL_URL is None:
+         return
+ 
+     problem = Problem.objects.get(code=problem_code)
+-    author = problem.suggester or problem.authors.first()
++    author = problem.authors.first()
+ 
+     url = settings.SITE_FULL_URL + problem.get_absolute_url()
+-    title = f'New {"suggested" if is_suggested else "organization"} problem {url}'
++    title = f'New problem {url}'
+ 
+     description = [
+         ('Title', problem.name),
+         ('Statement', problem.description[:100] + '...\n'),
+         ('Time limit', problem.time_limit),
+         ('Memory limit (MB)', problem.memory_limit / 1024),
+         ('Points', problem.points),
+     ]
+ 
+     if problem.is_organization_private and problem.organization:
+diff --git a/judge/views/problem.py b/judge/views/problem.py
+index f025133..6c5ba7c 100755
+--- a/judge/views/problem.py
++++ b/judge/views/problem.py
+@@ -741,33 +741,20 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, Infinite
+         to_update = ('hide_solved', 'show_types', 'has_public_editorial', 'full_text')
+         for key in to_update:
+             if key in request.GET:
+                 val = request.GET.get(key) == '1'
+                 request.session[key] = val
+             else:
+                 request.session.pop(key, None)
+         return HttpResponseRedirect(request.get_full_path())
+ 
+ 
+-class SuggestList(ProblemList):
+-    title = gettext_lazy('Suggested problem list')
+-    template_name = 'problem/suggest-list.html'
+-    permission_required = 'superuser'
+-
+-    def get_filter(self):
+-        return Q(is_public=False) & ~Q(suggester=None)
+-
+-    def get(self, request, *args, **kwargs):
+-        if not request.user.has_perm('judge.suggest_new_problem'):
+-            raise Http404
+-        return super(SuggestList, self).get(request, *args, **kwargs)
+-
+ 
+ class LanguageTemplateAjax(View):
+     def get(self, request, *args, **kwargs):
+         try:
+             language = get_object_or_404(Language, id=int(request.GET.get('id', 0)))
+         except ValueError:
+             raise Http404()
+         return HttpResponse(language.template, content_type='text/plain')
+ 
+ 
+@@ -937,44 +924,20 @@ class ProblemCreate(PermissionRequiredMixin, TitleMixin, CreateView):
+             initial['group'] = ProblemGroup.objects.get(name='Uncategorized').pk
+         except ProblemGroup.DoesNotExist:
+             initial['group'] = ProblemGroup.objects.order_by('id').first().pk
+         try:
+             initial['types'] = ProblemType.objects.get(name='uncategorized').pk
+         except ProblemType.DoesNotExist:
+             initial['types'] = ProblemType.objects.order_by('id').first().pk
+         return initial
+ 
+ 
+-class ProblemSuggest(ProblemCreate):
+-    permission_required = 'judge.suggest_new_problem'
+-
+-    def get_title(self):
+-        return _('Suggesting new problem')
+-
+-    def get_content_title(self):
+-        return _('Suggesting new problem')
+-
+-    def form_valid(self, form):
+-        with revisions.create_revision(atomic=True):
+-            self.object = problem = form.save()
+-            problem.suggester = self.request.user.profile
+-            problem.allowed_languages.set(Language.objects.filter(include_in_problem=True))
+-            problem.date = timezone.now()
+-            self.save_statement(form, problem)
+-            problem.save()
+-
+-            revisions.set_comment(_('Created on site'))
+-            revisions.set_user(self.request.user)
+-
+-        on_new_problem.delay(problem.code, is_suggested=True)
+-        return HttpResponseRedirect(self.get_success_url())
+-
+ 
+ class ProblemImportPolygon(PermissionRequiredMixin, TitleMixin, FormView):
+     title = gettext_lazy('Import problem from Codeforces Polygon package')
+     template_name = 'problem/import-polygon.html'
+     model = Problem
+     form_class = ProblemImportPolygonForm
+     permission_required = 'judge.import_polygon_package'
+ 
+     def get_formset(self):
+         return ProblemImportPolygonStatementFormSet(
+diff --git a/templates/problem/problem-list-tabs.html b/templates/problem/problem-list-tabs.html
+old mode 100644
+new mode 100755
+index cc41506..e33de2c
+--- a/templates/problem/problem-list-tabs.html
++++ b/templates/problem/problem-list-tabs.html
+@@ -1,17 +1,12 @@
+ {% extends "tabs-base.html" %}
+ 
+ {% block tabs %}
+     {% if request.user.has_perm('judge.add_problem') %}
+         {{ make_tab('create', 'fa-plus', url('problem_create'), _('Create new problem')) }}
+-    {% elif request.user.has_perm('judge.suggest_new_problem') %}
+-        {{ make_tab('suggest', 'fa-plus', url('problem_suggest'), _('Suggest new problem')) }}
+     {% endif %}
+     {{ make_tab('list', 'fa-list', url('problem_list'), _('List')) }}
+ 
+-    {% if perms.judge.edit_all_problem or perms.judge.edit_public_problem or perms.judge.edit_own_problem %}
+-        {{ make_tab('suggest', 'fa-list', url('problem_suggest_list'), _('Suggest')) }}
+-    {% endif %}
+     {% if request.user.is_superuser %}
+         {{ make_tab('admin', 'fa-edit', url('admin:judge_problem_changelist'), _('Admin')) }}
+     {% endif %}
+ {% endblock %}
+diff --git a/templates/problem/problem.html b/templates/problem/problem.html
+old mode 100644
+new mode 100755
+index b0c4440..20b2525
+--- a/templates/problem/problem.html
++++ b/templates/problem/problem.html
+@@ -305,27 +305,20 @@
+                     <div class="problem-info-entry">
+                         <i class="fa fa-pencil-square-o fa-fw"></i><span
+                             class="pi-name">{% trans trimmed count=authors|length %}
+                         Author:
+                         {% pluralize count %}
+                         Authors:
+                     {% endtrans %}</span>
+                         <div class="pi-value authors-value">{{ link_users(authors) }}</div>
+                     </div>
+                 {% endif %}
+-                {% if problem.suggester %}
+-                <div class="problem-info-entry">
+-                    <i class="fa fa-pencil-square-o fa-fw"></i><span
+-                        class="pi-name">{{ _("Suggester:") }}</span>
+-                        <div class="pi-value authors-value">{{ link_user(problem.suggester) }}</div>
+-                    </div>
+-                {% endif %}
+             {% endwith %}
+         {% endcache %}
+     {% endif %}
+ 
+     {% if problem.source %}
+         <div class="problem-info-entry">
+             <i class="fa fa-pencil-square-o fa-fw"></i><span
+                 class="pi-name">{{ _('Problem source:') }}</span>
+             <div class="pi-value authors-value">{{ problem.source }}</div>
+         </div>
+@@ -387,28 +380,20 @@
+                 {% else %}
+                     <i>{{ _('none available') }}</i>
+                 {% endif %}
+             </div>
+         </div>
+     {% endif %}
+ {% endblock %}
+ 
+ {% block description %}
+     <iframe name="raw_problem" id="raw_problem"></iframe>
+-    {% if problem.is_suggesting %}
+-        <div class="alert alert-warning alert-dismissable">
+-            <a class="close">x</a>
+-            <b>{{ _('This problem is only a suggestion!') }}</b>
+-            <br>
+-            {{ _('This problem cannot be accessed by normal users until it is approved by an admin or staff. Please make sure that all the data for this problem is correct.') }}
+-        </div>
+-    {% endif %}
+     {% include "problem/problem-detail.html" %}
+ {% endblock %}
+ 
+ {% block post_description_end %}
+     {% if request.user.is_authenticated and not request.profile.mute %}
+         <a href="{{ url('new_problem_ticket', problem.code) }}" class="button clarify">
+             {%- if comment_lock and request.profile.current_contest.live -%}
+                 {{ _('Request clarification') }}
+             {%- else -%}
+                 {{ _('Report an issue') }}

@@ -1,0 +1,39 @@
+# Review package: 6c41766..af6cd47
+
+## Commits
+af6cd47 feat: use infinite pagination for contributors list
+
+## Files changed
+ judge/views/user.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+## Diff
+diff --git a/judge/views/user.py b/judge/views/user.py
+old mode 100644
+new mode 100755
+index 26692db..55e62a5
+--- a/judge/views/user.py
++++ b/judge/views/user.py
+@@ -605,21 +605,21 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, DiggPaginatorMixin
+         )
+         context['first_page_href'] = '.'
+         context.update(self.get_sort_context())
+         context.update(self.get_sort_paginate_context())
+         return context
+ 
+ 
+ user_list_view = UserList.as_view()
+ 
+ 
+-class ContribList(QueryStringSortMixin, DiggPaginatorMixin, TitleMixin, ListView):
++class ContribList(QueryStringSortMixin, DiggPaginatorMixin, InfinitePaginationMixin, TitleMixin, ListView):
+     model = Profile
+     title = gettext_lazy('Contributors')
+     context_object_name = 'users'
+     template_name = 'user/contrib-list.html'
+     paginate_by = 100
+     all_sorts = frozenset(('contribution_points', ))
+     default_desc = all_sorts
+     default_sort = '-contribution_points'
+ 
+     def get_queryset(self):

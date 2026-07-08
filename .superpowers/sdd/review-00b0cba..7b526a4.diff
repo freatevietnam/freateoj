@@ -1,0 +1,86 @@
+# Review package: 00b0cba..7b526a4
+
+## Commits
+7b526a4 chore: remove unused manifest.json
+
+## Files changed
+ resources/icons/manifest.json | 41 -----------------------------------------
+ templates/base.html           |  1 -
+ 2 files changed, 42 deletions(-)
+
+## Diff
+diff --git a/resources/icons/manifest.json b/resources/icons/manifest.json
+deleted file mode 100644
+index fe2832f..0000000
+--- a/resources/icons/manifest.json
++++ /dev/null
+@@ -1,41 +0,0 @@
+-{
+-	"name": "FreateOJ",
+-	"icons": [
+-		{
+-			"src": "\/android-chrome-36x36.png",
+-			"sizes": "36x36",
+-			"type": "image\/png",
+-			"density": 0.75
+-		},
+-		{
+-			"src": "\/android-chrome-48x48.png",
+-			"sizes": "48x48",
+-			"type": "image\/png",
+-			"density": 1
+-		},
+-		{
+-			"src": "\/android-chrome-72x72.png",
+-			"sizes": "72x72",
+-			"type": "image\/png",
+-			"density": 1.5
+-		},
+-		{
+-			"src": "\/android-chrome-96x96.png",
+-			"sizes": "96x96",
+-			"type": "image\/png",
+-			"density": 2
+-		},
+-		{
+-			"src": "\/android-chrome-144x144.png",
+-			"sizes": "144x144",
+-			"type": "image\/png",
+-			"density": 3
+-		},
+-		{
+-			"src": "\/android-chrome-192x192.png",
+-			"sizes": "192x192",
+-			"type": "image\/png",
+-			"density": 4
+-		}
+-	]
+-}
+diff --git a/templates/base.html b/templates/base.html
+old mode 100644
+new mode 100755
+index 73bcf43..8605b9b
+--- a/templates/base.html
++++ b/templates/base.html
+@@ -17,21 +17,20 @@
+     <link rel="apple-touch-icon" sizes="76x76" href="{{ static('icons/apple-touch-icon-76x76.png') }}">
+     <link rel="apple-touch-icon" sizes="114x114" href="{{ static('icons/apple-touch-icon-114x114.png') }}">
+     <link rel="apple-touch-icon" sizes="120x120" href="{{ static('icons/apple-touch-icon-120x120.png') }}">
+     <link rel="apple-touch-icon" sizes="144x144" href="{{ static('icons/apple-touch-icon-144x144.png') }}">
+     <link rel="apple-touch-icon" sizes="152x152" href="{{ static('icons/apple-touch-icon-152x152.png') }}">
+     <link rel="apple-touch-icon" sizes="180x180" href="{{ static('icons/apple-touch-icon-180x180.png') }}">
+     <link rel="icon" type="image/png" href="{{ static('icons/favicon-32x32.png') }}" sizes="32x32">
+     <link rel="icon" type="image/png" href="{{ static('icons/android-chrome-192x192.png') }}" sizes="192x192">
+     <link rel="icon" type="image/png" href="{{ static('icons/favicon-96x96.png') }}" sizes="96x96">
+     <link rel="icon" type="image/png" href="{{ static('icons/favicon-16x16.png') }}" sizes="16x16">
+-    <link rel="manifest" href="{{ static('icons/manifest.json') }}">
+     <meta name="msapplication-TileColor" content="#231F20">
+     <meta name="msapplication-TileImage" content="{{ static('icons/mstile-144x144.png') }}">
+     {# Chrome 39 for Android colour #}
+     <meta name="theme-color" content="#231F20">
+     {% if og_image %}
+         <meta property="og:image" content="{{ request.build_absolute_uri(og_image) }}">
+     {% else %}
+         {% with logo_url=misc_config.site_logo|default(static('icons/og_logo.png'), true) %}
+         <meta property="og:image" content="{{ logo_url }}">
+         {% endwith %}

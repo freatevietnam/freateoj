@@ -1,0 +1,66 @@
+# Review package: 48fdf26..ffd1fab
+
+## Commits
+ffd1fab feat: remove unused api_v2 REST API, keep only sync API
+
+## Files changed
+ dmoj/urls.py                | 18 ------------------
+ judge/views/api/__init__.py |  5 +----
+ 2 files changed, 1 insertion(+), 22 deletions(-)
+
+## Diff
+diff --git a/dmoj/urls.py b/dmoj/urls.py
+index 2bf0365..be6c6a4 100755
+--- a/dmoj/urls.py
++++ b/dmoj/urls.py
+@@ -446,38 +446,20 @@ urlpatterns = [
+ 
+ handler404 = 'judge.views.error.error404'
+ handler403 = 'judge.views.error.error403'
+ handler500 = 'judge.views.error.error500'
+ 
+ if 'newsletter' in settings.INSTALLED_APPS:
+     urlpatterns.append(path('newsletter/', include('newsletter.urls')))
+ if 'impersonate' in settings.INSTALLED_APPS:
+     urlpatterns.append(path('impersonate/', include('impersonate.urls')))
+ 
+-if settings.FREATEOJ_ENABLE_API:
+-    urlpatterns.append(
+-        path('api/v2/', include([
+-            path('contests', api.api_v2.APIContestList.as_view()),
+-            path('contest/<str:contest>', api.api_v2.APIContestDetail.as_view()),
+-            path('problems', api.api_v2.APIProblemList.as_view()),
+-            path('problem/<str:problem>', api.api_v2.APIProblemDetail.as_view()),
+-            path('users', api.api_v2.APIUserList.as_view()),
+-            path('user/<str:user>', api.api_v2.APIUserDetail.as_view()),
+-            path('submissions', api.api_v2.APISubmissionList.as_view()),
+-            path('submission/<int:submission>', api.api_v2.APISubmissionDetail.as_view()),
+-            path('organizations', api.api_v2.APIOrganizationList.as_view()),
+-            path('participations', api.api_v2.APIContestParticipationList.as_view()),
+-            path('languages', api.api_v2.APILanguageList.as_view()),
+-            path('judges', api.api_v2.APIJudgeList.as_view()),
+-        ])),
+-    )
+-
+ if settings.FREATEOJ_ENABLE_SYNC_API:
+     urlpatterns.append(
+         path('api/v2/sync/', include([
+             path(
+                 'contest/<str:contest_code>',
+                 api.api_v2.APIContestSyncDetail.as_view(),
+                 name='api_contest_sync_detail',
+             ),
+             path(
+                 'contest/<str:contest_code>/problems',
+diff --git a/judge/views/api/__init__.py b/judge/views/api/__init__.py
+old mode 100644
+new mode 100755
+index f25bab0..9f707c5
+--- a/judge/views/api/__init__.py
++++ b/judge/views/api/__init__.py
+@@ -1,4 +1 @@
+-from .api_v2 import (
+-    APIContestDetail, APIContestList, APIContestParticipationList, APIOrganizationList, APIProblemDetail,
+-    APIProblemList, APISubmissionDetail, APISubmissionList, APIUserDetail, APIUserList,
+-)
++from . import api_v2

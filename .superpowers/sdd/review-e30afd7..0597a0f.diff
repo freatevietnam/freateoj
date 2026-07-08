@@ -1,0 +1,167 @@
+# Review package: e30afd7..0597a0f
+
+## Commits
+0597a0f fix: make chart legend text color theme-aware for dark mode
+
+## Files changed
+ templates/stats/media-js.html | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+## Diff
+diff --git a/templates/stats/media-js.html b/templates/stats/media-js.html
+old mode 100644
+new mode 100755
+index a227f94..66d95c0
+--- a/templates/stats/media-js.html
++++ b/templates/stats/media-js.html
+@@ -1,22 +1,26 @@
+ <script type="text/javascript" src="{{ static('libs/chart.js/Chart.js') }}"></script>
+ <script type="text/javascript">
++    function chartFontColor() {
++        return document.body.classList.contains('dark') ? '#eee' : '#666';
++    }
++
+     function draw_pie_chart(data, $chart, opts) {
+         var ctx = $chart.find('canvas')[0].getContext('2d');
+         var options = Object.assign({
+             maintainAspectRatio: false,
+             responsive: false,
+             animation: false,
+             legend: {
+                 position: 'right',
+                 labels: {
+-                    fontColor: 'black',
++                    fontColor: chartFontColor(),
+                     boxWidth: 20,
+                 },
+             },
+         }, opts);
+         var chart = new Chart(ctx, {
+             type: 'pie',
+             data: data,
+             options: options,
+         });
+         return chart;
+@@ -26,20 +30,23 @@
+         var orig_data = JSON.parse(JSON.stringify(data));
+         var ctx = $chart.find('canvas')[0].getContext('2d');
+         ctx.canvas.height = 20 * data.labels.length + 100;
+         var chart = new Chart(ctx, {
+             type: 'horizontalBar',
+             data: data,
+             options: {
+                 maintainAspectRatio: false,
+                 legend: {
+                     display: false,
++                    labels: {
++                        fontColor: chartFontColor(),
++                    },
+                 },
+                 tooltips: {
+                     callbacks: {
+                         label: function(tooltipItem, data) {
+                             return show_percentage ? ((Math.round(tooltipItem.value * 100) / 100) + '%') : tooltipItem.value;
+                         },
+                     },
+                 },
+                 scales: {
+                     xAxes: [{
+@@ -129,28 +136,30 @@
+                                     fillStyle: (!Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
+                                     hidden: !chart.isDatasetVisible(i),
+                                     lineCap: dataset.borderCapStyle,
+                                     lineDash: dataset.borderDash,
+                                     lineDashOffset: dataset.borderDashOffset,
+                                     lineJoin: dataset.borderJoinStyle,
+                                     lineWidth: dataset.borderWidth,
+                                     strokeStyle: dataset.borderColor,
+                                     pointStyle: dataset.pointStyle,
+                                     datasetIndex: i,
++                                    fontColor: chartFontColor(),
+                                 };
+                             }, this);
+ 
+                             labels.push({
+                                 text: 'Total: ' + total,
+                                 fillStyle: 'transparent',
+                                 strokeStyle: 'transparent',
+                                 datasetIndex: -1,
++                                fontColor: chartFontColor(),
+                             });
+ 
+                             return labels;
+                         },
+                     },
+                     onClick: function(e, legendItem) {
+                         var index = legendItem.datasetIndex;
+                         if (index == -1) return;
+                         var ci = this.chart;
+                         var meta = ci.getDatasetMeta(index);
+@@ -220,28 +229,30 @@
+                                     fillStyle: (!Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
+                                     hidden: !chart.isDatasetVisible(i),
+                                     lineCap: dataset.borderCapStyle,
+                                     lineDash: dataset.borderDash,
+                                     lineDashOffset: dataset.borderDashOffset,
+                                     lineJoin: dataset.borderJoinStyle,
+                                     lineWidth: dataset.borderWidth,
+                                     strokeStyle: dataset.borderColor,
+                                     pointStyle: dataset.pointStyle,
+                                     datasetIndex: i,
++                                    fontColor: chartFontColor(),
+                                 };
+                             }, this);
+ 
+                             labels.push({
+                                 text: 'Total: ' + total,
+                                 fillStyle: 'transparent',
+                                 strokeStyle: 'transparent',
+                                 datasetIndex: -1,
++                                fontColor: chartFontColor(),
+                             });
+ 
+                             return labels;
+                         },
+                     },
+                     onClick: function(e, legendItem) {
+                         var index = legendItem.datasetIndex;
+                         if (index == -1) return;
+                         var ci = this.chart;
+                         var meta = ci.getDatasetMeta(index);
+@@ -301,34 +312,36 @@
+                                     fillStyle: (!Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
+                                     hidden: !chart.isDatasetVisible(i),
+                                     lineCap: dataset.borderCapStyle,
+                                     lineDash: dataset.borderDash,
+                                     lineDashOffset: dataset.borderDashOffset,
+                                     lineJoin: dataset.borderJoinStyle,
+                                     lineWidth: dataset.borderWidth,
+                                     strokeStyle: dataset.borderColor,
+                                     pointStyle: dataset.pointStyle,
+                                     datasetIndex: i,
++                                    fontColor: chartFontColor(),
+                                 };
+                             }, this);
+ 
+                             if (opts.hide_total) {
+                                 return labels;
+                             }
+ 
+                             const total_suffix = opts.total_suffix || '';
+ 
+                             labels.push({
+                                 text: 'Total: ' + (opts.total_decimals != undefined ? total.toFixed(opts.total_decimals) : total) + total_suffix,
+                                 fillStyle: 'transparent',
+                                 strokeStyle: 'transparent',
+                                 datasetIndex: -1,
++                                fontColor: chartFontColor(),
+                             });
+ 
+                             return labels;
+                         },
+                     },
+                 },
+             },
+ 
+         });
+         return chart;

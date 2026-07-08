@@ -1,0 +1,278 @@
+# Review package: 7b526a4..5d3f8c7
+
+## Commits
+5d3f8c7 feat: remove participation tab from contest pages
+
+## Files changed
+ dmoj/urls.py                        |  7 +-----
+ judge/views/contests.py             | 45 +------------------------------------
+ judge/views/select2.py              | 10 ---------
+ templates/contest/contest-tabs.html |  3 ---
+ templates/contest/ranking.html      |  5 -----
+ 5 files changed, 2 insertions(+), 68 deletions(-)
+
+## Diff
+diff --git a/dmoj/urls.py b/dmoj/urls.py
+index be6c6a4..ce07743 100755
+--- a/dmoj/urls.py
++++ b/dmoj/urls.py
+@@ -13,21 +13,21 @@ from judge.feed import AtomBlogFeed, AtomCommentFeed, AtomProblemFeed, BlogFeed,
+ from judge.sitemap import sitemaps
+ from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, notification, \
+     organization, preview, problem, problem_download, problem_manage, ranked_submission, register, stats, status, \
+     submission, tag, tasks, ticket, two_factor, user, widgets
+ from judge.views.magazine import MagazinePage
+ from judge.views.misc_config import MiscConfigEdit
+ from judge.views.problem_data import ProblemDataView, ProblemSubmissionDiff, \
+     problem_data_file, problem_init_view
+ from judge.views.register import RegistrationView, RegistrationCompleteView
+ from judge.views.select2 import AssigneeSelect2View, CommentSelect2View, ContestSelect2View, \
+-    ContestUserSearchSelect2View, OrganizationSelect2View, OrganizationUserSearchSelect2View, \
++    OrganizationSelect2View, OrganizationUserSearchSelect2View, \
+     OrganizationUserSelect2View, ProblemSelect2View, TagGroupSelect2View, TagSelect2View, TicketUserSelect2View, \
+     UserSearchSelect2View, UserSelect2View
+ from judge.views.widgets import martor_image_uploader
+ from martor.views import markdown_search_user
+ 
+ admin.autodiscover()
+ 
+ register_patterns = [
+     path('activate/complete/',
+          TitledTemplateView.as_view(template_name='registration/activation_complete.html',
+@@ -255,23 +255,20 @@ urlpatterns = [
+         path('/rank/<str:problem>/',
+              paged_list_view(ranked_submission.ContestRankedSubmission, 'contest_ranked_submissions')),
+ 
+         path('/submissions/',
+              paged_list_view(submission.AllContestSubmissions, 'contest_all_submissions')),
+         path('/submissions/<str:user>/',
+              paged_list_view(submission.UserAllContestSubmissions, 'contest_all_user_submissions')),
+         path('/submissions/<str:user>/<str:problem>/',
+              paged_list_view(submission.UserContestSubmissions, 'contest_user_submissions')),
+ 
+-        path('/participations/', contests.ContestParticipationList.as_view(), name='contest_participation_own'),
+-        path('/participations/<str:user>',
+-             contests.ContestParticipationList.as_view(), name='contest_participation'),
+         path('/participation/disqualify', contests.ContestParticipationDisqualify.as_view(),
+              name='contest_participation_disqualify'),
+ 
+         path('/', lambda _, contest: HttpResponsePermanentRedirect(reverse('contest_view', args=[contest]))),
+     ])),
+ 
+     path('contributors/', include([
+         path('', user.ContribList.as_view(), name='contributors_list'),
+         path('<int:page>', lambda request, page:
+              HttpResponsePermanentRedirect('%s?page=%s' % (reverse('contributors_list'), page))),
+@@ -348,22 +345,20 @@ urlpatterns = [
+     path('widgets/', include([
+         path('rejudge', widgets.rejudge_submission, name='submission_rejudge'),
+         path('single_submission', submission.single_submission, name='submission_single_query'),
+         path('submission_testcases', submission.SubmissionTestCaseQuery.as_view(), name='submission_testcases_query'),
+         path('status-table', status.status_table, name='status_table'),
+ 
+         path('template', problem.LanguageTemplateAjax.as_view(), name='language_template_ajax'),
+ 
+         path('select2/', include([
+             path('user_search', UserSearchSelect2View.as_view(), name='user_search_select2_ajax'),
+-            path('contest_users/<str:contest>', ContestUserSearchSelect2View.as_view(),
+-                 name='contest_user_search_select2_ajax'),
+             path('org_users/<slug:slug>', OrganizationUserSearchSelect2View.as_view(),
+                  name='org_user_search_select2_ajax'),
+             path('ticket_user', TicketUserSelect2View.as_view(), name='ticket_user_select2_ajax'),
+             path('ticket_assignee', AssigneeSelect2View.as_view(), name='ticket_assignee_select2_ajax'),
+         ])),
+ 
+         path('preview/', include([
+             path('default', preview.DefaultMarkdownPreviewView.as_view(), name='default_preview'),
+             path('problem', preview.ProblemMarkdownPreviewView.as_view(), name='problem_preview'),
+             path('blog', preview.BlogMarkdownPreviewView.as_view(), name='blog_preview'),
+diff --git a/judge/views/contests.py b/judge/views/contests.py
+index ba1095f..1052ffe 100755
+--- a/judge/views/contests.py
++++ b/judge/views/contests.py
+@@ -48,21 +48,21 @@ from judge.utils.celery import redirect_to_task_status, task_status_by_id, task_
+ from judge.utils.cms import parse_csv_ranking
+ from judge.utils.infinite_paginator import InfinitePaginationMixin
+ from judge.utils.opengraph import generate_opengraph
+ from judge.utils.problems import _get_result_data, user_attempted_ids, user_completed_ids
+ from judge.utils.stats import get_bar_chart, get_pie_chart, get_stacked_bar_chart
+ from judge.utils.views import SingleObjectFormView, TitleMixin, \
+     add_file_response, generic_message, paginate_query_context
+ 
+ __all__ = ['ContestList', 'ContestDetail', 'ContestRanking', 'ContestJoin', 'ContestLeave', 'ContestCalendar',
+            'ContestClone', 'ContestStats', 'ContestMossView', 'ContestMossDelete',
+-           'ContestParticipationList', 'ContestParticipationDisqualify',
++           'ContestParticipationDisqualify',
+            'ContestProblemMakePublic']
+ 
+ 
+ def _find_contest(request, key, private_check=True):
+     try:
+         contest = Contest.objects.get(key=key)
+         if private_check and not contest.is_accessible_by(request.user):
+             raise ObjectDoesNotExist()
+     except ObjectDoesNotExist:
+         return generic_message(request, _('No such contest'),
+@@ -1154,63 +1154,20 @@ class ContestOfficialRanking(ContestRankingBase):
+             raise Http404()
+ 
+         # If the csv_ranking is an url, redirect to it
+         # (the check is not perfect, but it's good enough)
+         if self.object.csv_ranking.startswith('http'):
+             return redirect(self.object.csv_ranking)
+ 
+         return super().get(request, *args, **kwargs)
+ 
+ 
+-class ContestParticipationList(LoginRequiredMixin, ContestRankingBase):
+-    tab = 'participation'
+-
+-    def get_title(self):
+-        if self.profile == self.request.profile:
+-            return _('Your participation in %(contest)s') % {'contest': self.object.name}
+-        return _("%(user)s's participation in %(contest)s") % {
+-            'user': self.profile.username, 'contest': self.object.name,
+-        }
+-
+-    def _build_participation_json_data(self):
+-        contest = self.object
+-        if not contest.can_see_full_scoreboard(self.request.user) and self.profile != self.request.profile:
+-            raise Http404()
+-
+-        problems, problems_data, contest_data = self._build_json_base()
+-        queryset = contest.users.filter(user=self.profile, virtual__gte=0).order_by('-virtual')
+-        participations = make_contest_ranking_json(contest, problems, queryset)
+-        for p in participations:
+-            p['rank'] = p['virtual']  # 0 = live, N = Nth virtual
+-
+-        contest_data.update({
+-            'is_frozen': False,
+-            'has_rating': False,
+-            'mode': 'participation',
+-            'rank_header': str(_('Participation')),
+-            'ranking_url': reverse('contest_ranking', args=[contest.key]),
+-        })
+-        return {'contest': contest_data, 'problems': problems_data, 'participations': participations}
+-
+-    def get_context_data(self, **kwargs):
+-        context = super().get_context_data(**kwargs)
+-        context['ranking_json'] = json.dumps(self._build_participation_json_data()).translate(_json_script_escapes)
+-        return context
+-
+-    def get(self, request, *args, **kwargs):
+-        if 'user' in kwargs:
+-            self.profile = get_object_or_404(Profile, user__username=kwargs['user'])
+-        else:
+-            self.profile = self.request.profile
+-        return super().get(request, *args, **kwargs)
+-
+-
+ class ContestParticipationDisqualify(ContestMixin, SingleObjectMixin, View):
+     def get_object(self, queryset=None):
+         contest = super().get_object(queryset)
+         if not contest.is_editable_by(self.request.user):
+             raise Http404()
+         return contest
+ 
+     def post(self, request, *args, **kwargs):
+         self.object = self.get_object()
+ 
+diff --git a/judge/views/select2.py b/judge/views/select2.py
+old mode 100644
+new mode 100755
+index 1d1d5b4..0761c89
+--- a/judge/views/select2.py
++++ b/judge/views/select2.py
+@@ -163,30 +163,20 @@ class UserSearchSelect2View(BaseListView):
+                     'gravatar_url': gravatar(email, self.gravatar_size, self.gravatar_default),
+                     'display_rank': display_rank,
+                 } for pk, username, email, display_rank, username_override in context['object_list']],
+             'more': context['page_obj'].has_next(),
+         })
+ 
+     def get_name(self, obj):
+         return str(obj)
+ 
+ 
+-class ContestUserSearchSelect2View(UserSearchSelect2View):
+-    def get_queryset(self):
+-        contest = get_object_or_404(Contest, key=self.kwargs['contest'])
+-        if not contest.is_accessible_by(self.request.user) or not contest.can_see_full_scoreboard(self.request.user):
+-            raise Http404()
+-
+-        return Profile.objects.filter(contest_history__contest=contest,
+-                                      user__username__icontains=self.term).distinct()
+-
+-
+ class OrganizationUserSearchSelect2View(UserSearchSelect2View):
+     def get_queryset(self):
+         org = get_object_or_404(Organization, slug=self.kwargs['slug'])
+         return org.members.filter(user__username__icontains=self.term)
+ 
+ 
+ class TicketUserSelect2View(UserSearchSelect2View):
+     def get_queryset(self):
+         return Profile.objects.filter(tickets__isnull=False,
+                                       user__username__icontains=self.term).distinct()
+diff --git a/templates/contest/contest-tabs.html b/templates/contest/contest-tabs.html
+old mode 100644
+new mode 100755
+index c921f5b..a204cc6
+--- a/templates/contest/contest-tabs.html
++++ b/templates/contest/contest-tabs.html
+@@ -5,23 +5,20 @@
+     {% if can_edit %}
+         {{ make_tab('stats', 'fa-pie-chart', url('contest_stats', contest.key), _('Statistics')) }}
+     {% endif %}
+ 
+     {% if contest.start_time <= now or perms.judge.see_private_contest %}
+         {% if contest.can_see_own_scoreboard(request.user) %}
+             {{ make_tab('ranking', 'fa-bar-chart', url('contest_ranking', contest.key), _('Rankings')) }}
+             {% if contest.csv_ranking %}
+                 {{ make_tab('official_ranking', 'fa-bar-chart', url('contest_official_ranking', contest.key), _('Official Rankings')) }}
+             {% endif %}
+-            {% if request.user.is_authenticated %}
+-                {{ make_tab('participation', 'fa-users', url('contest_participation_own', contest.key), _('Participation')) }}
+-            {% endif %}
+         {% else %}
+             {{ make_tab('ranking', 'fa-bar-chart', None, _('Hidden Rankings')) }}
+         {% endif %}
+         {{ make_tab('submissions', 'fa-bar-chart', url('contest_all_submissions', contest.key), _('Submissions')) }}
+     {% endif %}
+     {% if can_edit %}
+         {% if perms.judge.moss_contest and has_moss_api_key %}
+             {{ make_tab('moss', 'fa-gavel', url('contest_moss', contest.key), _('MOSS')) }}
+         {% endif %}
+         {{ make_tab('edit', 'fa-edit', url('contest_edit', contest.key), _('Edit')) }}
+diff --git a/templates/contest/ranking.html b/templates/contest/ranking.html
+old mode 100644
+new mode 100755
+index 1ec2f9d..8ed4be4
+--- a/templates/contest/ranking.html
++++ b/templates/contest/ranking.html
+@@ -478,25 +478,20 @@
+                 link.click();
+                 document.body.removeChild(link);
+             }
+         {% endif %}
+     </script>
+     {% include "contest/media-js.html" %}
+ {% endblock %}
+ 
+ {% block before_users_table %}
+     <div style="margin-bottom: 1.25em">
+-        {% if tab == 'participation' %}
+-            {% if contest.can_see_full_scoreboard(request.user) %}
+-                <input id="search-contest" type="text" placeholder="{{ _('View user participation') }}">
+-            {% endif %}
+-        {% endif %}
+         {% if tab == 'ranking' %}
+             <div id="org-dropdown-check-list">
+                 <button id="filter-by-organization-button" class="inline-button">
+                     <i class="tab-icon fa fa-filter"></i>
+                     <b>{{ _('Filter') }}</b>
+                 </button>
+ 
+                 <div id="org-check-list-wrapper">
+                     <div>
+                         <button id="apply-organization-filter" class="inline-button filter-checklist-button">{{ _('Apply') }}</button>

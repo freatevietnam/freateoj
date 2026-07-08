@@ -1,0 +1,173 @@
+# Review package: b303440..a099a9a
+
+## Commits
+a099a9a fix: hide submission links in ranking when user can't see submissions
+
+## Files changed
+ judge/views/contests.py        |  1 +
+ resources/contest-ranking.js   | 28 ++++++++++++++++++++--------
+ templates/contest/ranking.html |  1 +
+ 3 files changed, 22 insertions(+), 8 deletions(-)
+
+## Diff
+diff --git a/judge/views/contests.py b/judge/views/contests.py
+index 1052ffe..aee6d81 100755
+--- a/judge/views/contests.py
++++ b/judge/views/contests.py
+@@ -1072,20 +1072,21 @@ class ContestRanking(ContestRankingBase):
+             return JsonResponse(self.get_cached_json_ranking_data())
+         return super().get(request, *args, **kwargs)
+ 
+     def get_context_data(self, **kwargs):
+         self._resolve_show_virtual()
+         context = super().get_context_data(**kwargs)
+         context['has_rating'] = self.object.ratings.exists()
+         context['show_virtual'] = self.show_virtual
+         context['is_frozen'] = self.is_frozen
+         context['cache_timeout'] = 0 if self.bypass_cache_ranking else self.object.scoreboard_cache_timeout
++        context['can_see_full_submission_list'] = self.object.can_see_full_submission_list(self.request.user)
+         context['ranking_json'] = json.dumps(self.get_cached_json_ranking_data()).translate(_json_script_escapes)
+         return context
+ 
+ 
+ class ContestPublicRanking(ContestRanking):
+     def check_can_see_own_scoreboard(self):
+         # ignore this check, we want to show the scoreboard to everyone
+         pass
+ 
+     @property
+diff --git a/resources/contest-ranking.js b/resources/contest-ranking.js
+old mode 100644
+new mode 100755
+index e39c8f6..ed09bd3
+--- a/resources/contest-ranking.js
++++ b/resources/contest-ranking.js
+@@ -124,57 +124,67 @@
+                 }
+             }
+         }
+ 
+         return { firstSolves: firstSolves, totalAC: totalAC };
+     }
+ 
+     // ─── Shared rendering helpers ────────────────────────────────────────────
+ 
+     function makeSubmissionUrl(meta, problemCode) {
++        if (!meta.contest.url_templates || !window.CONTEST_CAN_SEE_SUBMISSIONS) return null;
+         return meta.contest.url_templates.problem_submissions
+             .replace('__USERNAME__', meta.username)
+             .replace('__PROBLEM__', problemCode);
+     }
+ 
+     function makeAllSubmissionsUrl(meta) {
++        if (!meta.contest.url_templates || !window.CONTEST_CAN_SEE_SUBMISSIONS) return null;
+         return meta.contest.url_templates.all_submissions
+             .replace('__USERNAME__', meta.username);
+     }
+ 
+     // Returns the pretest CSS prefix for a problem cell.
+     function pretestPrefix(meta, problem) {
+         return (meta.contest.run_pretests_only && problem.is_pretested) ? 'pretest-' : '';
+     }
+ 
+     // Builds the state CSS class string common to all problem cells.
+     function problemStateClass(entry, problem, isFirst, meta, extraPrefix) {
+         return (extraPrefix || '') +
+                pretestPrefix(meta, problem) +
+                (isFirst ? 'first-solve ' : '') +
+                baseStateClass(entry.points, problem.points);
+     }
+ 
+-    // Wraps inner HTML in a standard problem <td><a>...</a></td>.
++    // Wraps inner HTML in a standard problem <td>.
++    // When url is null, renders a plain <td> without a link.
+     function wrapProblemCell(state, url, innerHtml) {
++        if (url === null) {
++            return '<td class="' + state + '">' + innerHtml + '</td>';
++        }
+         return '<td class="' + state + '"><a href="' + escapeHtml(url) + '">' +
+                innerHtml + '</a></td>';
+     }
+ 
+     // Standard result cell: score with optional cumtime.
+     function standardResultCell(participation, meta, showTime) {
+         var url = makeAllSubmissionsUrl(meta);
+-        return '<td class="user-points"><a href="' + escapeHtml(url) + '">' +
+-            escapeHtml(fmtPoints(participation.score, meta.contest.points_precision)) +
++        var scoreHtml = escapeHtml(fmtPoints(participation.score, meta.contest.points_precision)) +
+             '<div class="solving-time">' +
+             (showTime !== false ? escapeHtml(fmtTime(participation.cumtime)) : '') +
+-            '</div></a></td>';
++            '</div>';
++        if (url === null) {
++            return '<td class="user-points">' + scoreHtml + '</td>';
++        }
++        return '<td class="user-points"><a href="' + escapeHtml(url) + '">' +
++            scoreHtml + '</a></td>';
+     }
+ 
+     // Standard problem cell: points + optional extra HTML + time.
+     // Used by default, atcoder, ecoo, legacy-ioi, and freateoj (non-pending).
+     function standardProblemCell(entry, problem, participationId, firstSolves, meta, opts) {
+         if (!entry) return '<td></td>';
+         var pid = String(problem.id);
+         var isFirst = firstSolves[pid] === participationId;
+         var url = makeSubmissionUrl(meta, problem.code);
+ 
+@@ -241,24 +251,26 @@
+             }
+ 
+             return wrapProblemCell(state, url,
+                 '<div class="solving-time-minute">' + Math.floor(entry.time / 60) + '</div>' +
+                 '<div class="solving-time">' + escapeHtml(fmtTime(entry.time)) + '</div>' +
+                 escapeHtml(triesText));
+         },
+ 
+         renderResultCell: function (participation, meta) {
+             var url = makeAllSubmissionsUrl(meta);
+-            return '<td class="user-points">' +
+-                '<a href="' + escapeHtml(url) + '">' +
+-                escapeHtml(fmtPoints(participation.score, meta.contest.points_precision)) +
+-                '</a></td>' +
++            var scoreHtml = url === null
++                ? escapeHtml(fmtPoints(participation.score, meta.contest.points_precision))
++                : '<a href="' + escapeHtml(url) + '">' +
++                  escapeHtml(fmtPoints(participation.score, meta.contest.points_precision)) +
++                  '</a>';
++            return '<td class="user-points">' + scoreHtml + '</td>' +
+                 '<td class="user-penalty">' +
+                 escapeHtml(Math.round(participation.cumtime)) +
+                 '</td>';
+         },
+     };
+ 
+     // ── Legacy IOI (ioi) ─────────────────────────────────────────────────────
+     var legacyIoiRenderer = {
+         renderProblemCell: function (entry, problem, participationId, firstSolves, meta) {
+             var cfg = meta.contest.format_config || {};
+diff --git a/templates/contest/ranking.html b/templates/contest/ranking.html
+index 2e74009..409656e 100755
+--- a/templates/contest/ranking.html
++++ b/templates/contest/ranking.html
+@@ -41,20 +41,21 @@
+         }
+     </style>
+ {% endblock %}
+ 
+ {% block users_js_media %}
+     {% compress js %}
+         <script type="text/javascript" src="{{ static('contest-ranking.js') }}"></script>
+     {% endcompress %}
+     <script type="text/javascript">
+         window.RANKING_DATA = {{ ranking_json|safe }};
++        window.CONTEST_CAN_SEE_SUBMISSIONS = {{ can_see_full_submission_list|tojson }};
+     </script>
+     {% if not contest.ended and tab != 'participation' %}
+         <script type="text/javascript">
+             $(function () {
+                 // Auto reload every 10 seconds
+                 var ranking_outdated = false;
+                 function update_ranking() {
+                     if ($('body').hasClass('window-hidden')) {
+                         return ranking_outdated = true;
+                     }

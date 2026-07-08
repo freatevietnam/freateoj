@@ -1,0 +1,118 @@
+# Review package: 50b6ed8..e30afd7
+
+## Commits
+e30afd7 refactor: remove old partial AC logic, use result=AC only
+
+## Files changed
+ judge/models/problem.py | 2 +-
+ judge/utils/problems.py | 2 +-
+ judge/views/problem.py  | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+## Diff
+diff --git a/judge/models/problem.py b/judge/models/problem.py
+index 3ecbf16..10f160c 100755
+--- a/judge/models/problem.py
++++ b/judge/models/problem.py
+@@ -477,21 +477,21 @@ class Problem(models.Model):
+         if self.submission_source_visibility_mode == SubmissionSourceAccess.FOLLOW:
+             return {
+                 'all': SubmissionSourceAccess.ALWAYS,
+                 'all-solved': SubmissionSourceAccess.SOLVED,
+                 'only-own': SubmissionSourceAccess.ONLY_OWN,
+             }[settings.DMOJ_SUBMISSION_SOURCE_VISIBILITY]
+         return self.submission_source_visibility_mode
+ 
+     def update_stats(self):
+         all_queryset = self.submission_set.filter(user__is_unlisted=False)
+-        ac_queryset = all_queryset.filter(points__gte=self.points, result='AC')
++        ac_queryset = all_queryset.filter(result='AC')
+         self.user_count = ac_queryset.values('user').distinct().count()
+         submissions = all_queryset.count()
+         if submissions:
+             self.ac_rate = 100.0 * ac_queryset.count() / submissions
+         else:
+             self.ac_rate = 0
+         self.save()
+ 
+     update_stats.alters_data = True
+ 
+diff --git a/judge/utils/problems.py b/judge/utils/problems.py
+old mode 100644
+new mode 100755
+index 274db5c..7c1994f
+--- a/judge/utils/problems.py
++++ b/judge/utils/problems.py
+@@ -18,21 +18,21 @@ def user_tester_ids(profile):
+ 
+ 
+ def user_editable_ids(profile):
+     return set(Problem.get_editable_problems(profile.user).values_list('id', flat=True))
+ 
+ 
+ def contest_completed_ids(participation):
+     key = 'contest_complete:%d' % participation.id
+     result = cache.get(key)
+     if result is None:
+-        result = set(participation.submissions.filter(submission__result='AC', points__gte=F('problem__points'))
++        result = set(participation.submissions.filter(submission__result='AC')
+                      .values_list('problem__problem_id', flat=True).distinct())
+         cache.set(key, result, 86400)
+     return result
+ 
+ 
+ def user_completed_ids(profile):
+     key = 'user_complete:%d' % profile.id
+     result = cache.get(key)
+     if result is None:
+         result = set(Submission.objects.filter(user=profile, result='AC')
+diff --git a/judge/views/problem.py b/judge/views/problem.py
+index 6c5ba7c..2844d05 100755
+--- a/judge/views/problem.py
++++ b/judge/views/problem.py
+@@ -3,21 +3,21 @@ import logging
+ import os
+ import re
+ from datetime import timedelta
+ from operator import itemgetter
+ from random import randrange
+ 
+ from django.conf import settings
+ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+ from django.db import transaction
+-from django.db.models import BooleanField, Case, F, Prefetch, Q, When
++from django.db.models import BooleanField, Case, Prefetch, Q, When
+ from django.db.utils import ProgrammingError
+ from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+ from django.shortcuts import get_object_or_404, render
+ from django.template.loader import get_template
+ from django.urls import reverse
+ from django.utils import timezone, translation
+ from django.utils.functional import cached_property
+ from django.utils.html import escape, format_html
+ from django.utils.safestring import mark_safe
+ from django.utils.translation import gettext as _, gettext_lazy
+@@ -614,21 +614,21 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, Infinite
+         if self.profile is not None:
+             _filter = Problem.q_add_author_curator_tester(_filter, self.profile)
+         return _filter
+ 
+     def get_normal_queryset(self):
+         _filter = self.get_filter()
+         queryset = Problem.available.filter(_filter).select_related('group').defer('description', 'summary')
+ 
+         if self.profile is not None and self.hide_solved:
+             queryset = queryset.exclude(id__in=Submission.objects
+-                                        .filter(user=self.profile, result='AC', case_points__gte=F('case_total'))
++                                        .filter(user=self.profile, result='AC')
+                                         .values_list('problem_id', flat=True))
+         if self.show_types:
+             queryset = queryset.prefetch_related('types')
+         queryset = queryset.annotate(has_public_editorial=Case(
+             When(solution__is_public=True, solution__publish_on__lte=timezone.now(), then=True),
+             default=False,
+             output_field=BooleanField(),
+         ))
+         if self.has_public_editorial:
+             queryset = queryset.filter(has_public_editorial=True)

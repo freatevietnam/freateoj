@@ -1,0 +1,64 @@
+# Review package: 5d3f8c7..50b6ed8
+
+## Commits
+50b6ed8 fix: address Task 6 review findings - remove orphaned JavaScript references
+
+## Files changed
+ templates/contest/ranking.html | 29 +----------------------------
+ 1 file changed, 1 insertion(+), 28 deletions(-)
+
+## Diff
+diff --git a/templates/contest/ranking.html b/templates/contest/ranking.html
+index 8ed4be4..2e74009 100755
+--- a/templates/contest/ranking.html
++++ b/templates/contest/ranking.html
+@@ -86,48 +86,21 @@
+                 setTimeout(update_ranking, 10000);
+             });
+         </script>
+     {% endif %}
+     <script type="text/javascript">
+         $(function () {
+             if (window.RANKING_DATA) {
+                 window.renderRankingTable(window.RANKING_DATA);
+             }
+ 
+-            var url = '{{ url('contest_participation', contest.key, '__username__') }}';
+-            var placeholder = $('#search-contest').replaceWith($('<select>').attr({
+-                id: 'search-contest'
+-            })).attr('placeholder');
+-
+-            $('#search-contest').select2({
+-                theme: '{{ DMOJ_SELECT2_THEME }}',
+-                placeholder: placeholder,
+-                ajax: {
+-                    url: '{{ url('contest_user_search_select2_ajax', contest.key) }}',
+-                    delay: 300
+-                },
+-                minimumInputLength: 1,
+-                templateResult: function (data) {
+-                    return $('<span>')
+-                        .append($('<img>', {
+-                            class: 'user-search-image',
+-                            src: data.gravatar_url,
+-                            width: 24,
+-                            height: 24,
+-                        }))
+-                        .append($('<span>', {
+-                            class: data.display_rank + ' user-search-name',
+-                        }).text(data.text));
+-                }
+-            }).on('change', function () {
+-                window.location.href = url.replace('__username__', $(this).val());
+-            });
++
+ 
+             $('#show-personal-info-checkbox').click(function () {
+                 $('.personal-info').toggle();
+                 localStorage.setItem('show-personal-info', $('.personal-info').is(':visible') ? 'true' : 'false');
+             });
+ 
+             if (localStorage.getItem('show-personal-info') == 'true') {
+                 $('.personal-info').show();
+                 $('#show-personal-info-checkbox').prop('checked', true);
+             }

@@ -1,0 +1,44 @@
+# Review package: 0597a0f..b303440
+
+## Commits
+b303440 fix: validate checker_args for bridged checker
+
+## Files changed
+ judge/utils/problem_data.py | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+## Diff
+diff --git a/judge/utils/problem_data.py b/judge/utils/problem_data.py
+old mode 100644
+new mode 100755
+index bea3520..d51a56a
+--- a/judge/utils/problem_data.py
++++ b/judge/utils/problem_data.py
+@@ -139,20 +139,27 @@ class ProblemDataCompiler(object):
+                 if len(custom_checker_path) != 2:
+                     raise ProblemDataError(_('How did you corrupt the custom checker path?'))
+                 try:
+                     checker_ext = custom_checker_path[1].split('.')[-1]
+                 except Exception as e:
+                     raise ProblemDataError(e)
+ 
+                 if checker_ext not in ['cpp', 'pas', 'java']:
+                     raise ProblemDataError(_('Only C++, Pascal, or Java checkers are supported.'))
+ 
++                if not case.checker_args:
++                    raise ProblemDataError(_('How did you corrupt the checker arguments?'))
++
++                return {
++                    'name': case.checker,
++                    'args': json.loads(case.checker_args),
++                }
+             if case.checker_args:
+                 return {
+                     'name': case.checker,
+                     'args': json.loads(case.checker_args),
+                 }
+             return case.checker
+ 
+         def get_file_name_and_ext(file):
+             file_path = split_path_first(file)
+             if len(file_path) != 2:
