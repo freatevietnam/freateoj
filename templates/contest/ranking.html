@@ -93,34 +93,7 @@
                 window.renderRankingTable(window.RANKING_DATA);
             }
 
-            var url = '{{ url('contest_participation', contest.key, '__username__') }}';
-            var placeholder = $('#search-contest').replaceWith($('<select>').attr({
-                id: 'search-contest'
-            })).attr('placeholder');
 
-            $('#search-contest').select2({
-                theme: '{{ DMOJ_SELECT2_THEME }}',
-                placeholder: placeholder,
-                ajax: {
-                    url: '{{ url('contest_user_search_select2_ajax', contest.key) }}',
-                    delay: 300
-                },
-                minimumInputLength: 1,
-                templateResult: function (data) {
-                    return $('<span>')
-                        .append($('<img>', {
-                            class: 'user-search-image',
-                            src: data.gravatar_url,
-                            width: 24,
-                            height: 24,
-                        }))
-                        .append($('<span>', {
-                            class: data.display_rank + ' user-search-name',
-                        }).text(data.text));
-                }
-            }).on('change', function () {
-                window.location.href = url.replace('__username__', $(this).val());
-            });
 
             $('#show-personal-info-checkbox').click(function () {
                 $('.personal-info').toggle();
