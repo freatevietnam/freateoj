@@ -1,5 +1,9 @@
 <script type="text/javascript" src="{{ static('libs/chart.js/Chart.js') }}"></script>
 <script type="text/javascript">
+    function chartFontColor() {
+        return document.body.classList.contains('dark') ? '#eee' : '#666';
+    }
+
     function draw_pie_chart(data, $chart, opts) {
         var ctx = $chart.find('canvas')[0].getContext('2d');
         var options = Object.assign({
@@ -9,7 +13,7 @@
             legend: {
                 position: 'right',
                 labels: {
-                    fontColor: 'black',
+                    fontColor: chartFontColor(),
                     boxWidth: 20,
                 },
             },
@@ -33,6 +37,9 @@
                 maintainAspectRatio: false,
                 legend: {
                     display: false,
+                    labels: {
+                        fontColor: chartFontColor(),
+                    },
                 },
                 tooltips: {
                     callbacks: {
@@ -136,6 +143,7 @@
                                     strokeStyle: dataset.borderColor,
                                     pointStyle: dataset.pointStyle,
                                     datasetIndex: i,
+                                    fontColor: chartFontColor(),
                                 };
                             }, this);
 
@@ -144,6 +152,7 @@
                                 fillStyle: 'transparent',
                                 strokeStyle: 'transparent',
                                 datasetIndex: -1,
+                                fontColor: chartFontColor(),
                             });
 
                             return labels;
@@ -227,6 +236,7 @@
                                     strokeStyle: dataset.borderColor,
                                     pointStyle: dataset.pointStyle,
                                     datasetIndex: i,
+                                    fontColor: chartFontColor(),
                                 };
                             }, this);
 
@@ -235,6 +245,7 @@
                                 fillStyle: 'transparent',
                                 strokeStyle: 'transparent',
                                 datasetIndex: -1,
+                                fontColor: chartFontColor(),
                             });
 
                             return labels;
@@ -308,6 +319,7 @@
                                     strokeStyle: dataset.borderColor,
                                     pointStyle: dataset.pointStyle,
                                     datasetIndex: i,
+                                    fontColor: chartFontColor(),
                                 };
                             }, this);
 
@@ -322,6 +334,7 @@
                                 fillStyle: 'transparent',
                                 strokeStyle: 'transparent',
                                 datasetIndex: -1,
+                                fontColor: chartFontColor(),
                             });
 
                             return labels;
