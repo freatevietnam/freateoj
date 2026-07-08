@@ -112,9 +112,11 @@ class TestMarkdown(SimpleTestCase):
         self.assertHTMLEqual(markdown('<script>void(0)</script>', self.BLEACHED_STYLE),
                              '&lt;script&gt;void(0)&lt;/script&gt;')
         self.assertHTMLEqual(markdown('<img style="display: block; margin: 0 auto">', self.BLEACHED_STYLE),
-                             '<p><img style="display: block; margin: 0 auto;"></p>')
-        # self.assertHTMLEqual(markdown('<style>a { color: red; }</style>', self.BLEACHED_STYLE),
-        #                      '<style>a { color: red; }</style>')
+                             '<p><img></p>')
+
+    def test_bleach_style_tag(self):
+        result = markdown('<style>body { color: red; }</style>', self.BLEACHED_STYLE)
+        self.assertNotIn('<style>', result)
 
     def test_bleach_mathml(self):
         self.assertHTMLEqual(markdown(MATHML_N, self.BLEACHED_STYLE), MATHML_N)
