@@ -199,6 +199,8 @@ class Contest(models.Model):
                                                        'Leave it blank to disable.'),
                                            blank=True, default='', max_length=255)
 
+    replay_version = models.IntegerField(default=0)
+
     @cached_property
     def format_class(self):
         return contest_format.formats[self.format_name]
@@ -420,6 +422,11 @@ class Contest(models.Model):
             # Keep frozen even if the contest is ended
             return self._now >= self.frozen_time
         return False
+
+    @property
+    def can_replay(self):
+        return (self.ended and not self.time_limit and 
+                self.scoreboard_visibility and self.format_name not in ('ioi', 'ioi16'))
 
     class Inaccessible(Exception):
         pass

@@ -175,6 +175,9 @@ FREATEOJ_LOW_POWER_MODE_CONFIG = {
     'heat_map_limit': 20_000,
 }
 
+FREATEOJ_CONTEST_REPLAY_MEDIA_DIR = '/tmp/contest-replay'
+FREATEOJ_CONTEST_REPLAY_INTERNAL = False
+
 # maximum number of problems in a contest
 MAX_CONTEST_PROBLEMS_COUNT = None
 

@@ -1181,6 +1181,31 @@ class ContestParticipationDisqualify(ContestMixin, SingleObjectMixin, View):
         return HttpResponseRedirect(reverse('contest_ranking', args=(self.object.key,)))
 
 
+class ContestReplayData(ContestMixin, View):
+    def get(self, request, contest, version):
+        self.object = self.get_object()
+        
+        if not self.object.can_replay:
+            raise Http404()
+        
+        if version != self.object.replay_version:
+            raise Http404()
+        
+        replay_dir = settings.FREATEOJ_CONTEST_REPLAY_MEDIA_DIR
+        replay_file = os.path.join(replay_dir, f'{self.object.key}_v{version}.json')
+        
+        if not os.path.exists(replay_file):
+            raise Http404()
+        
+        import json
+        with open(replay_file, 'r') as f:
+            data = json.load(f)
+        
+        response = JsonResponse(data)
+        response['Cache-Control'] = 'public, max-age=3600'
+        return response
+
+
 class ContestMossMixin(ContestMixin, PermissionRequiredMixin):
     permission_required = 'judge.moss_contest'
     permission_denied_message = _('You are not allowed to run MOSS.')

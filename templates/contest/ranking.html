@@ -485,6 +485,10 @@
             {% if not is_ICPC_format %}
             <a href="#" onclick="download_table_as_csv()" style="float: right;">{{ _('Download as CSV') }}</a>
             {% endif %}
+            {% if contest.can_replay %}
+            <a href="{{ url('contest_replay_data', contest.key, contest.replay_version) }}" 
+               class="button" style="float: right; margin-right: 1em;">{{ _('Replay') }}</a>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}
