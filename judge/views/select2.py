@@ -170,16 +170,6 @@ class UserSearchSelect2View(BaseListView):
         return str(obj)
 
 
-class ContestUserSearchSelect2View(UserSearchSelect2View):
-    def get_queryset(self):
-        contest = get_object_or_404(Contest, key=self.kwargs['contest'])
-        if not contest.is_accessible_by(self.request.user) or not contest.can_see_full_scoreboard(self.request.user):
-            raise Http404()
-
-        return Profile.objects.filter(contest_history__contest=contest,
-                                      user__username__icontains=self.term).distinct()
-
-
 class OrganizationUserSearchSelect2View(UserSearchSelect2View):
     def get_queryset(self):
         org = get_object_or_404(Organization, slug=self.kwargs['slug'])
