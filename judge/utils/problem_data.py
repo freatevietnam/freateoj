@@ -146,6 +146,13 @@ class ProblemDataCompiler(object):
                 if checker_ext not in ['cpp', 'pas', 'java']:
                     raise ProblemDataError(_('Only C++, Pascal, or Java checkers are supported.'))
 
+                if not case.checker_args:
+                    raise ProblemDataError(_('How did you corrupt the checker arguments?'))
+
+                return {
+                    'name': case.checker,
+                    'args': json.loads(case.checker_args),
+                }
             if case.checker_args:
                 return {
                     'name': case.checker,
