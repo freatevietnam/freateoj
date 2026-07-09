@@ -240,7 +240,7 @@
 
 <div>
     {% block edit_contest %}
-        {% if request.user.is_staff %}
+        {% if request.user.is_staff and contest %}
             <div class="alert alert-warning alert-dismissable">
                 <a class="close">x</a>
                 <a href="{{ url('admin:judge_contest_change', contest.id) }}">{{ _('Edit contest in admin panel for more options') }}</a>
@@ -250,7 +250,7 @@
     <form action="" method="post" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
         {% csrf_token %}
         {{ contest_problem_formset.management_form }}
-        <div id="contest-data" data-org-id="{{ contest.organization_id|default('') }}"
+        <div id="contest-data" data-org-id="{{ contest.organization_id if contest else '' }}"
              data-public-url="{{ url('problem_select2_public') }}"
              data-org-url-pattern="/select2/problem/org/"></div>
         {% if contest_problem_formset.non_form_errors() %}
