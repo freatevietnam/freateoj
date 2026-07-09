@@ -160,7 +160,8 @@ def send_email_task(self, email_type, user_id, context):
             'error': str(exc),
         }
 
-    def _get_email_config(self, email_type, context):
+
+def _get_email_config(email_type, context):
         """Build email configuration based on type."""
         site_name = getattr(settings, 'SITE_NAME', 'FreateOJ')
         from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@freate.io.vn')
@@ -177,6 +178,10 @@ def send_email_task(self, email_type, user_id, context):
             'password_reset': {
                 'subject': f'Password reset for {site_name}',
                 'template': 'registration/password_reset_email',
+            },
+            'ticket': {
+                'subject': f'[{site_name}] Ticket Update',
+                'template': 'ticket/email_update',
             },
         }
         
@@ -580,6 +585,30 @@ Default timeout: 60 seconds (configurable via `EMAIL_SEND_TIMEOUT` in settings.p
 1. **Unit Tests**: Rate limiter, Celery tasks
 2. **Integration Tests**: API endpoints, Socket.IO events
 3. **E2E Tests**: Full email flow with progress bar
+
+## Fallback Mechanism
+
+If Celery is unavailable or fails to start, the system falls back to synchronous email sending:
+
+```python
+# In email_api.py
+try:
+    task = send_email_task.delay(email_type, request.user.id, context)
+    return JsonResponse({
+        'task_id': task.id,
+        'status': 'queued',
+        'remaining': remaining,
+    })
+except (ConnectionRefusedError, OperationalError):
+    # Celery not available, send synchronously
+    from judge.utils.email import send_email_sync
+    result = send_email_sync(email_type, context)
+    return JsonResponse({
+        'task_id': None,
+        'status': 'completed' if result['status'] == 'success' else 'error',
+        'result': result,
+    })
+```
 
 ## Migration Notes
 
