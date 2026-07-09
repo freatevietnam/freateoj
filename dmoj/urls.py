@@ -14,6 +14,7 @@ from judge.sitemap import sitemaps
 from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, notification, \
     organization, preview, problem, problem_download, problem_manage, ranked_submission, register, stats, status, \
     submission, tag, tasks, ticket, two_factor, user, widgets
+from judge.views import email_api
 from judge.views.magazine import MagazinePage
 from judge.views.misc_config import MiscConfigEdit
 from judge.views.problem_data import ProblemDataView, ProblemSubmissionDiff, \
@@ -440,6 +441,10 @@ urlpatterns = [
     path('magazine/', MagazinePage.as_view(), name='magazine'),
 
     path('misc_config/', MiscConfigEdit.as_view(), name='misc_config'),
+    path('api/email/', include([
+        path('send/', email_api.send_email, name='email_send'),
+        path('status/<str:task_id>/', email_api.email_status, name='email_status'),
+    ])),
 ]
 
 
