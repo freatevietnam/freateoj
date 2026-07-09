@@ -82,7 +82,7 @@ def send_email_task(self, email_type, user_id, context):
         )
 
         self.update_state(state='PROGRESS', meta={'progress': 100})
-        emit_email_event(self.id, 'progress', {'progress': 100})
+        emit_email_event(self.id, 'success', {'email_type': email_type, 'remaining': remaining})
 
         return {
             'status': 'success',
