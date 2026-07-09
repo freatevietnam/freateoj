@@ -107,14 +107,13 @@ nav {
         display: block;
         position: relative;
 
-        &::after {
-            content: '';
+        .nav-underline {
             position: absolute;
             bottom: 8px;
             height: 3px;
             background: $highlight_blue;
             border-radius: 2px;
-            transition: left 0.3s ease, width 0.3s ease;
+            transition: left 0.3s ease, width 0.3s ease, opacity 0.3s ease;
             pointer-events: none;
             opacity: 0;
         }
@@ -508,7 +507,7 @@ body[data-theme="dark"] {
         }
     }
 
-    nav ul::after {
+    nav ul .nav-underline {
         background: $highlight_blue;
     }
 

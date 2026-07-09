@@ -155,6 +155,27 @@ $(function () {
         $nav_list.removeClass('show-list');
     });
 
+    // Sliding underline for navbar
+    var $navUl = $('#nav-list > li').parent();
+    var $underline = $('<div class="nav-underline"></div>').appendTo($navUl);
+
+    $('#nav-list > li').on('mouseenter', function() {
+        var $item = $(this);
+        var $link = $item.children('a, button').first();
+        if (!$link.length) return;
+        
+        var left = $link.position().left;
+        var width = $link.outerWidth();
+        
+        $underline.css({
+            left: left + 'px',
+            width: width + 'px',
+            opacity: 1
+        });
+    }).on('mouseleave', function() {
+        $underline.css('opacity', 0);
+    });
+
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
             if (!(/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type)) && !this.crossDomain)
