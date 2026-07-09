@@ -879,7 +879,7 @@ class ProblemClone(ProblemMixin, PermissionRequiredMixin, TitleMixin, SingleObje
 
 
 class ProblemCreate(PermissionRequiredMixin, TitleMixin, CreateView):
-    template_name = 'problem/suggest.html'
+    template_name = 'problem/editor.html'
     model = Problem
     form_class = ProblemEditForm
     permission_required = 'judge.add_problem'

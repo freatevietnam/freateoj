@@ -250,7 +250,7 @@
     <form action="" method="post" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
         {% csrf_token %}
         {{ contest_problem_formset.management_form }}
-        <div id="contest-data" data-org-id="{{ contest.organization_id|default:'' }}"
+        <div id="contest-data" data-org-id="{{ contest.organization_id|default('') }}"
              data-public-url="{% url 'problem_select2_public' %}"
              data-org-url-pattern="/select2/problem/org/"></div>
         {% if contest_problem_formset.non_form_errors() %}
