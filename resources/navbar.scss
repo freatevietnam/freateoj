@@ -109,10 +109,10 @@ nav {
 
         .nav-underline {
             position: absolute;
-            bottom: 8px;
-            height: 3px;
-            background: $highlight_blue;
-            border-radius: 2px;
+            top: 4px;
+            bottom: 4px;
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 8px;
             transition: left 0.3s ease, width 0.3s ease, opacity 0.3s ease;
             pointer-events: none;
             opacity: 0;
@@ -503,6 +503,10 @@ body[data-theme="dark"] {
 
         .nav-divider {
             border-right-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-underline {
+            background: rgba(255, 255, 255, 0.1);
         }
     }
 
