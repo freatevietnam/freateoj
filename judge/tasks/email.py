@@ -82,10 +82,7 @@ def send_email_task(self, email_type, user_id, context):
         )
 
         self.update_state(state='PROGRESS', meta={'progress': 100})
-        emit_email_event(self.id, 'success', {
-            'email_type': email_type,
-            'remaining': remaining,
-        })
+        emit_email_event(self.id, 'progress', {'progress': 100})
 
         return {
             'status': 'success',
@@ -97,7 +94,3 @@ def send_email_task(self, email_type, user_id, context):
         logger.error(f'Failed to send {email_type} email: {exc}')
         emit_email_event(self.id, 'error', {'error': str(exc)})
         self.retry(exc=exc, countdown=60)
-        return {
-            'status': 'error',
-            'error': str(exc),
-        }
