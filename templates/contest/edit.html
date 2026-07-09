@@ -251,7 +251,7 @@
         {% csrf_token %}
         {{ contest_problem_formset.management_form }}
         <div id="contest-data" data-org-id="{{ contest.organization_id|default('') }}"
-             data-public-url="{% url 'problem_select2_public' %}"
+             data-public-url="{{ url('problem_select2_public') }}"
              data-org-url-pattern="/select2/problem/org/"></div>
         {% if contest_problem_formset.non_form_errors() %}
             {{ contest_problem_formset.non_form_errors() }}

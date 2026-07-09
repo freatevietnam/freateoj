@@ -88,13 +88,13 @@
 
 {% block body %}
 <div>
-    {% if request.user.is_staff %}
+    {% if request.user.is_staff and object %}
         <div class="alert alert-warning alert-dismissable">
             <a class="close">x</a>
             <a href="{{ url('admin:judge_problem_change', object.id) }}">{{ _('Edit problem in admin panel for more options') }}</a>
         </div>
     {% endif %}
-    {% if perms.judge.import_polygon_package %}
+    {% if perms.judge.import_polygon_package and object %}
         <div class="alert alert-warning alert-dismissable">
             <a class="close">x</a>
             <a href="{{ url('problem_update_polygon', object.code) }}">{{ _('Update problem from Codeforces Polygon package') }}</a>
