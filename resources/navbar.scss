@@ -620,6 +620,10 @@ body[data-theme="dark"] {
             .nav-divider {
                 border-right-color: rgba(255, 255, 255, 0.15);
             }
+
+            .nav-underline {
+                background: rgba(255, 255, 255, 0.1);
+            }
         }
 
         #navicon {
