@@ -23,10 +23,10 @@ def send_email(request):
     if email_type not in valid_types:
         return JsonResponse({'error': 'Invalid email type'}, status=400)
 
-    # Rate limit check
+    # Rate limit check (only check remaining, don't increment yet - task will increment)
     limiter = EmailRateLimiter(email_type)
-    allowed, remaining = limiter.is_allowed(request.user.id)
-    if not allowed:
+    remaining = limiter.get_remaining(request.user.id)
+    if remaining <= 0:
         return JsonResponse({
             'error': 'Rate limit exceeded',
             'remaining': remaining,
