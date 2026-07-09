@@ -176,6 +176,25 @@ $(function () {
         $underline.css('opacity', 0);
     });
 
+    // Set initial underline position to active item
+    var $activeItem = $('#nav-list > li').has('.active');
+    if ($activeItem.length) {
+        var $link = $activeItem.children('a, button').first();
+        $underline.css({
+            left: $link.position().left + 'px',
+            width: $link.outerWidth() + 'px',
+            opacity: 1
+        });
+    }
+
+    // Update underline on resize
+    $(window).on('resize', function() {
+        var $hoveredItem = $('#nav-list > li:hover');
+        if ($hoveredItem.length) {
+            $hoveredItem.trigger('mouseenter');
+        }
+    });
+
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
             if (!(/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type)) && !this.crossDomain)
