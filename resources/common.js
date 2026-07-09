@@ -159,19 +159,23 @@ $(function () {
     var $navUl = $('#nav-list > li').parent();
     var $underline = $('<div class="nav-underline"></div>').appendTo($navUl);
 
-    $('#nav-list > li').on('mouseenter', function() {
-        var $item = $(this);
-        var $link = $item.children('a, button').first();
+    function updateUnderline($link) {
         if (!$link.length) return;
-        
-        var left = $link.position().left;
+        var navLeft = $navUl.offset().left;
+        var linkLeft = $link.offset().left;
         var width = $link.outerWidth();
         
         $underline.css({
-            left: left + 'px',
+            left: (linkLeft - navLeft) + 'px',
             width: width + 'px',
             opacity: 1
         });
+    }
+
+    $('#nav-list > li').on('mouseenter', function() {
+        var $item = $(this);
+        var $link = $item.children('a, button').first();
+        updateUnderline($link);
     }).on('mouseleave', function() {
         $underline.css('opacity', 0);
     });
@@ -180,11 +184,7 @@ $(function () {
     var $activeItem = $('#nav-list > li').has('.active');
     if ($activeItem.length) {
         var $link = $activeItem.children('a, button').first();
-        $underline.css({
-            left: $link.position().left + 'px',
-            width: $link.outerWidth() + 'px',
-            opacity: 1
-        });
+        updateUnderline($link);
     }
 
     // Update underline on resize
