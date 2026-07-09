@@ -1,12 +1,14 @@
 import logging
 from celery import shared_task
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from judge.utils.rate_limit import EmailRateLimiter
 from judge.utils.socket_events import emit_email_event
 
 logger = logging.getLogger(__name__)
+User = get_user_model()
 
 
 def _get_email_config(email_type, context):
@@ -54,6 +56,17 @@ def send_email_task(self, email_type, user_id, context):
         self.update_state(state='PROGRESS', meta={'progress': 10})
         emit_email_event(self.id, 'progress', {'progress': 10})
 
+        # Look up user by ID
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            error_msg = f'User with id {user_id} not found.'
+            emit_email_event(self.id, 'error', {'error': error_msg})
+            return {
+                'status': 'error',
+                'error': error_msg,
+            }
+
         limiter = EmailRateLimiter(email_type)
         allowed, remaining = limiter.is_allowed(user_id)
         if not allowed:
@@ -67,6 +80,8 @@ def send_email_task(self, email_type, user_id, context):
         self.update_state(state='PROGRESS', meta={'progress': 30})
         emit_email_event(self.id, 'progress', {'progress': 30})
 
+        # Add user to context for template rendering
+        context['user'] = user
         email_config = _get_email_config(email_type, context)
 
         self.update_state(state='PROGRESS', meta={'progress': 50})

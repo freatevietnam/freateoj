@@ -1,4 +1,5 @@
 import logging
+from django.core.cache import cache
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.decorators import login_required
@@ -6,6 +7,9 @@ from judge.tasks.email import send_email_task
 from judge.utils.rate_limit import EmailRateLimiter
 
 logger = logging.getLogger(__name__)
+
+# Cache key prefix for task ownership
+TASK_OWNER_PREFIX = 'email_task_owner:'
 
 
 @require_POST
@@ -32,10 +36,8 @@ def send_email(request):
             'remaining': remaining,
         }, status=429)
 
-    # Build context
-    context = {
-        'user': request.user,
-    }
+    # Build context (user will be looked up by ID in the task)
+    context = {}
 
     # Add extra context based on email_type
     if email_type == 'registration':
@@ -54,6 +56,9 @@ def send_email(request):
     # Queue task
     try:
         task = send_email_task.delay(email_type, request.user.id, context)
+        # Store task ownership in cache (expire after 1 hour)
+        cache_key = f'{TASK_OWNER_PREFIX}{task.id}'
+        cache.set(cache_key, request.user.id, 3600)
         return JsonResponse({
             'task_id': task.id,
             'status': 'queued',
@@ -74,6 +79,12 @@ def email_status(request, task_id):
     Response: {status: str, progress: int}
     """
     from celery.result import AsyncResult
+
+    # Verify task ownership
+    cache_key = f'{TASK_OWNER_PREFIX}{task_id}'
+    owner_id = cache.get(cache_key)
+    if owner_id is None or owner_id != request.user.id:
+        return JsonResponse({'error': 'Task not found or access denied'}, status=404)
 
     result = AsyncResult(task_id)
 
