@@ -1,39 +1,39 @@
-# Task 2: Update bleach tests (c12) - Report
+# Task 2 Report: Rate Limiter Utility
 
-## What you implemented
-Updated bleach tests to match new behavior from Task 1 (style stripping).
+## Status: DONE
 
-### Changes made:
-1. Updated `test_bleach` method in `judge/jinja2/markdown/test_markdown.py`:
-   - Changed expected output for `<img style="...">` from `<p><img style="display: block; margin: 0 auto;"></p>` to `<p><img></p>`
-   - Removed commented-out style tag test (now tested in new method)
-2. Added new `test_bleach_style_tag` method:
-   - Tests that `<style>` tags are stripped by bleach
+## What I Implemented
 
-## What you tested and test results
-- **Test command**: `python manage.py test judge.jinja2.markdown.test_markdown -v 2`
-- **Result**: All 7 tests passed (0.055s)
-  - test_simple ✓
-  - test_text_prefix ✓
-  - test_bleach ✓
-  - test_bleach_mathml ✓
-  - test_bleach_style_tag ✓
-  - test_no_bleach ✓
-  - test_post_process ✓
+Created `judge/utils/rate_limit.py` with the `EmailRateLimiter` class as specified in the task brief:
 
-## Files changed
-- `judge/jinja2/markdown/test_markdown.py` (5 insertions, 3 deletions)
+- **EmailRateLimiter class** with:
+  - `__init__(api_type)`: Validates api_type against `settings.EMAIL_RATE_LIMITS`
+  - `_get_cache_key(user_id)`: Generates cache key in format `email_rate:{api_type}:{user_id}`
+  - `is_allowed(user_id)`: Checks rate limit and increments counter, returns `(allowed: bool, remaining: int)`
+  - `get_remaining(user_id)`: Returns remaining requests without incrementing
 
-## Self-review findings
-- All tests pass with the new style stripping behavior
-- The `test_bleach` method now correctly expects `<img>` without style attribute
-- The new `test_bleach_style_tag` method verifies `<style>` tags are stripped
-- Existing tests (test_bleach_mathml, test_no_bleach, test_post_process) continue to work
+- **Race condition handling**: As confirmed with user, the slight over-counting during high concurrency is acceptable for spam prevention use case.
 
-## Issues or concerns
-- None identified. Tests align with the bleach config changes from Task 1.
+## Files Changed
 
-## Commit information
-- **Commit SHA**: bde3145
-- **Commit message**: test: update bleach tests for style stripping
-- **Files modified**: judge/jinja2/markdown/test_markdown.py
+- Created: `judge/utils/rate_limit.py` (37 lines)
+
+## Test Results
+
+- Import verification: `python3 -c "from judge.utils.rate_limit import EmailRateLimiter; print('OK')"` → **OK**
+- Class instantiation verified with valid api_type
+- ValueError raised for invalid api_type (as per spec)
+
+## Self-Review Findings
+
+- ✓ Matches exact specification from task brief
+- ✓ Uses existing Django cache pattern (consistent with `judge/utils/cache_helper.py`)
+- ✓ Follows project naming conventions
+- ✓ No over-engineering - only requested functionality implemented
+- ✓ Clean, maintainable code with proper docstrings
+- ✓ Edge cases handled: unknown api_type raises ValueError, remaining never negative
+
+## Notes
+
+- The `EMAIL_RATE_LIMITS` setting was added in Task 1 (already present in `dmoj/settings.py`)
+- The class is ready for use by API endpoints and Celery tasks in subsequent tasks
