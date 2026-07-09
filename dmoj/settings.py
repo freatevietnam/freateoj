@@ -280,6 +280,17 @@ FREATEOJ_PROBLEM_GARBAGE_COLLECTOR_CRONTAB_KWARGS = {'minute': 0, 'hour': 0}
 DMOJ_PROBLEM_STATEMENT_DISALLOWED_CHARACTERS = {'“', '”', '‘', '’', '−', 'ﬀ', 'ﬁ', 'ﬂ', 'ﬃ', 'ﬄ'}
 DMOJ_RATING_COLORS = True
 DMOJ_EMAIL_THROTTLING = (10, 60)
+EMAIL_SEND_TIMEOUT = 60  # seconds
+
+# Rate limits per email API type
+# count: max requests, window: time window in seconds
+EMAIL_RATE_LIMITS = {
+    'registration': {'count': 3, 'window': 300},        # 3 per 5 min
+    'resend_verification': {'count': 3, 'window': 300},  # 3 per 5 min
+    'password_reset': {'count': 5, 'window': 300},       # 5 per 5 min
+    'ticket': {'count': 10, 'window': 60},               # 10 per min
+}
+
 FREATEOJ_DISCORD_WEBHOOK_THROTTLING = (10, 60)  # Max 10 messages in 60 seconds
 
 # Maximum number of submissions a single user can queue without the `spam_submission` permission
