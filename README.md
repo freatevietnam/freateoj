@@ -67,6 +67,7 @@ Ideas and inspiration for FreateOJ are taken from:
 
 - [VNOJ - Viet Nam Online Judge](https://github.com/VNOI-Admin/OJ)
 - [OREOJ - ORE Online Judge](https://ojkhanhhoa.site/)
+- [CTOJ - Chuyen Tin Online Judge](https://oj.chuyentin.pro/)
 
 ## License
 
