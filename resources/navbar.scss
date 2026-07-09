@@ -221,7 +221,6 @@ nav {
 
             &:hover > ul, &:active > ul, &:focus > ul {
                 display: block !important;
-                animation: navDropdownIn 200ms ease-out both;
             }
 
             &.home-nav-element a:hover {
