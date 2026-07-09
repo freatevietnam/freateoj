@@ -38,7 +38,7 @@ Created automated integration tests for the email progress and notification syst
 - Tests cover both success and error cases
 - No overbuilding - tests focus on specified requirements
 
-**Commit:** Not yet committed (awaiting review)
+**Commit:** `7b63568` — `feat: add automated integration tests for email progress and notification system`
 
 **Notes:**
 - The standalone test script can be run without the full Django environment
