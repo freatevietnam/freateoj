@@ -1,0 +1,18 @@
+<b>{{ _('Hello %(username)s,', username=user.username) }}</b>
+<br><br>
+{{ _('You have a new update on ticket #%(ticket_id)s.', ticket_id=ticket_id) }}
+<br><br>
+{{ _('Message:') }}
+<br>
+<div style="background: #f5f5f5; padding: 15px; margin: 15px 0; border-radius: 5px;">
+    {{ message|linebreaks }}
+</div>
+<br>
+{{ _('You can view and reply to this ticket by visiting:') }}
+<p style="margin-left:1em">
+    <a href="http://{{ site_domain }}/tickets/{{ ticket_id }}/">http://{{ site_domain }}/tickets/{{ ticket_id }}/</a>
+</p>
+
+{{ _('If you no longer wish to receive ticket notifications, please update your notification preferences.') }}
+<br><br>
+{{ _('See you soon!') }}

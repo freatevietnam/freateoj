@@ -1,0 +1,14 @@
+{{ _('Hello %(username)s,', username=user.username) }}
+
+{{ _('You have a new update on ticket #%(ticket_id)s.', ticket_id=ticket_id) }}
+
+{{ _('Message:') }}
+
+{{ message }}
+
+{{ _('You can view and reply to this ticket by visiting:') }}
+http://{{ site_domain }}/tickets/{{ ticket_id }}/
+
+{{ _('If you no longer wish to receive ticket notifications, please update your notification preferences.') }}
+
+{{ _('See you soon!') }}

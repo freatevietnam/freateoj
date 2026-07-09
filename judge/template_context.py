@@ -66,6 +66,7 @@ def general_info(request):
         'REGISTRATION_OPEN': settings.REGISTRATION_OPEN,
         'perms': PermWrapper(request.user),
         'HAS_WEBAUTHN': bool(settings.WEBAUTHN_RP_ID),
+        'EMAIL_SEND_TIMEOUT': getattr(settings, 'EMAIL_SEND_TIMEOUT', 60),
     }
     if hasattr(request.user, 'profile'):
         info['NOTIFICATION_SECRET'] = request.profile.notification_secret

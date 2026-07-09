@@ -56,6 +56,10 @@
         
         socket.emit('subscribe', {channels: ['email:' + taskId]});
         
+        socket.off('email_progress');
+        socket.off('email_success');
+        socket.off('email_error');
+        
         socket.on('email_progress', function(data) {
             if (data.task_id === taskId) {
                 updateProgress(data.progress, 'Sending...');
@@ -154,5 +158,5 @@
     };
     
     // Set timeout from Django settings
-    window.EMAIL_SEND_TIMEOUT = 60;  // Default, will be overridden by template
+    window.EMAIL_SEND_TIMEOUT = window.EMAIL_SEND_TIMEOUT || 60;
 })();

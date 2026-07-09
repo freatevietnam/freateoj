@@ -294,9 +294,13 @@
                 id: '{{ request.user.id|escapejs }}',
                 name: '{{ request.user.username|escapejs }}'
             };
+            window.EMAIL_SEND_TIMEOUT = {{ EMAIL_SEND_TIMEOUT|default(60) }};
         </script>
     {% else %}
-        <script>window.user = {};</script>
+        <script>
+            window.user = {};
+            window.EMAIL_SEND_TIMEOUT = {{ EMAIL_SEND_TIMEOUT|default(60) }};
+        </script>
     {% endif %}
 
     {% if misc_config.analytics %}
