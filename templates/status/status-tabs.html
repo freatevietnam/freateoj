@@ -5,4 +5,5 @@
     {% if request.user.is_superuser %}{{ make_tab('OJ', 'fa-server', url('status_oj'), _('OJ')) }}{% endif %}
     {{ make_tab('runtimes', 'fa-code', url('runtime_list'), _('Runtimes')) }}
     {{ make_tab('matrix', 'fa-table', url('version_matrix'), _('Versions')) }}
+    {{ make_tab('combined', 'fa-th-large', url('status_combined'), _('Combined')) }}
 {% endblock %}

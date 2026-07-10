@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block js_media %}
+    <script src="{{ static('libs/tablesorter.js') }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Tab switching
+            $('.status-tab').on('click', function (e) {
+                e.preventDefault();
+                var target = $(this).data('tab');
+                
+                // Update active tab
+                $('.status-tab').removeClass('active');
+                $(this).addClass('active');
+                
+                // Show target content
+                $('.tab-content').removeClass('active');
+                $('#tab-' + target).addClass('active');
+            });
+            
+            // Judge status tooltips
+            var tooltip_classes = 'tooltipped tooltipped-w';
+            var active_judge = null;
+            var active_lang = null;
+
+            function display_tooltip(where) {
+                where.addClass(tooltip_classes).attr('aria-label', where.attr('data-runtime-info'));
+            }
+
+            function install_tooltips() {
+                $('.runtime-tag').each(function () {
+                    var tag = $(this);
+                    tag.mouseenter(function (e) {
+                        active_judge = tag.attr('data-judge');
+                        active_lang = tag.attr('data-lang');
+                        display_tooltip(tag);
+                    }).mouseleave(function (e) {
+                        active_judge = active_lang = null;
+                        tag.removeClass(tooltip_classes).removeAttr('aria-label');
+                    });
+                });
+            }
+
+            // Expand/collapse judge details
+            function install_expand_collapse() {
+                $('.judge-row').off('click').on('click', function () {
+                    var judgeId = $(this).data('judge-id');
+                    var detailsRow = $('#judge-details-' + judgeId);
+                    
+                    // Close other open details
+                    $('.judge-details.expanded').not(detailsRow).removeClass('expanded');
+                    
+                    // Toggle current details
+                    detailsRow.toggleClass('expanded');
+                });
+            }
+
+            // Auto-update judge status
+            var outdated = false;
+
+            function update_judge_table() {
+                if ($('body').hasClass('window-hidden'))
+                    return outdated = true;
+                $.ajax({
+                    url: '{{ url("status_table") }}'
+                }).done(function (data) {
+                    var new_node = $(data);
+
+                    if (active_lang && active_judge) {
+                        var selected = new_node.find('[data-judge=' + active_judge + '][data-lang=' + active_lang + ']');
+                        if (selected)
+                            display_tooltip(selected);
+                    }
+
+                    $('#judge-status tbody').html(new_node.find('tbody').html());
+                    install_tooltips();
+                    install_expand_collapse();
+                }).always(function () {
+                    outdated = false;
+                    setTimeout(update_judge_table, 10000);
+                });
+            }
+
+            $(window).on('dmoj:window-visible', function () {
+                if (outdated)
+                    update_judge_table();
+            });
+
+            setTimeout(update_judge_table, 10000);
+            install_tooltips();
+            install_expand_collapse();
+            
+            // Tablesorter for runtimes table
+            $('#language-list').tablesorter();
+        });
+    </script>
+{% endblock %}
+
+{% block media %}
+    <style>
+        .status-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e8e8e8;
+            padding-bottom: 0;
+        }
+        
+        .status-tab {
+            padding: 12px 24px;
+            font-weight: 600;
+            color: #666;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .status-tab:hover {
+            color: #333;
+            background: #f5f5f5;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .status-tab.active {
+            color: #1e90ff;
+            border-bottom-color: #1e90ff;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .runtime-tag {
+            cursor: pointer;
+        }
+        
+        .tooltipped:after {
+            text-align: left;
+        }
+        
+        .text-muted {
+            color: #6c757d;
+        }
+    </style>
+{% endblock %}
+
+{% block title_ruler %}{% endblock %}
+
+{% block title_row %}
+    <h1>{{ _('System Status') }}</h1>
+{% endblock %}
+
+{% block body %}
+    <div class="status-tabs">
+        <a class="status-tab active" data-tab="judges">
+            <i class="fa fa-server"></i> {{ _('Judges') }}
+        </a>
+        <a class="status-tab" data-tab="runtimes">
+            <i class="fa fa-code"></i> {{ _('Runtimes') }}
+        </a>
+        {% if request.user.is_superuser %}
+        <a class="status-tab" data-tab="matrix">
+            <i class="fa fa-table"></i> {{ _('Version Matrix') }}
+        </a>
+        {% endif %}
+    </div>
+    
+    <!-- Judges Tab -->
+    <div id="tab-judges" class="tab-content active">
+        <div class="h-scrollable-table">
+            <table id="judge-status" class="table striped">
+                {% include "status/judge-status-table.html" %}
+            </table>
+        </div>
+    </div>
+    
+    <!-- Runtimes Tab -->
+    <div id="tab-runtimes" class="tab-content">
+        <div class="h-scrollable-table">
+            <table id="language-list" class="table striped">
+                <thead>
+                <tr>
+                    <th>{{ _('ID') }}</th>
+                    <th>{{ _('Name') }}</th>
+                    <th>{{ _('Runtime Info') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for language in languages %}
+                    {% if language.runtime_versions %}
+                        <tr>
+                            <td><span class="language-id">{{ language.short_display_name }}</span></td>
+                            <td><span class="language-name">{{ language.name }}</span></td>
+                            <td>
+                                <div class="runtime-info">
+                                    <span class="runtime-version">{{ runtime_versions(language.runtime_versions()) }}</span>
+                                    {% if language.description %}
+                                        <div class="language-description">
+                                            {% cache 86400 'language_html' language.id %}
+                                                {{ language.description|markdown('language') }}
+                                            {% endcache %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Version Matrix Tab -->
+    {% if request.user.is_superuser %}
+    <div id="tab-matrix" class="tab-content">
+        <div class="h-scrollable-table">
+            <table id="judge-versions" class="table striped">
+                <thead>
+                <tr>
+                    <th>{{ _('Language') }}</th>
+                    {% for judge in matrix_judges %}
+                        <th>{{ judge }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for language in matrix_languages %}
+                    <tr>
+                        <th>{{ language.name }}</th>
+                        {% for judge in matrix_judges %}
+                            {% set versions = matrix[judge][language.id] %}
+                            <td class="version version-
+                                {%- if not versions -%}
+                                    blank
+                                {%- elif versions.is_latest -%}
+                                    latest
+                                {%- else -%}
+                                    outdated
+                                {%- endif %}">
+                                {%- for version in versions -%}
+                                    {{ version.name }}{% if version.version %}&nbsp;{{ version.version }}{% endif %}
+                                    {% if not loop.last %}<br>{% endif %}
+                                {%- else -%}
+                                    &mdash;
+                                {%- endfor -%}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

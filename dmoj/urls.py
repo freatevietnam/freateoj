@@ -328,6 +328,7 @@ urlpatterns = [
     path('runtimes/', language.LanguageList.as_view(), name='runtime_list'),
     path('runtimes/matrix/', status.version_matrix, name='version_matrix'),
     path('status/', status.status_all, name='status_all'),
+    path('status/combined/', status.status_combined, name='status_combined'),
     path('status/oj/', status.status_oj, name='status_oj'),
 
     path('blogs/', paged_list_view(blog.ModernBlogList, 'blog_modern_list')),
