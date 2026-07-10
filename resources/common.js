@@ -182,9 +182,18 @@ $(function () {
 
     // Set initial underline position to active item
     var $activeItem = $('#nav-list > li').has('.active');
-    if ($activeItem.length) {
-        var $link = $activeItem.children('a, button').first();
-        updateUnderline($link);
+    function setInitialUnderline() {
+        if ($activeItem.length) {
+            var $link = $activeItem.children('a, button').first();
+            updateUnderline($link);
+        }
+    }
+
+    // Wait for fonts to load before setting initial position
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(setInitialUnderline);
+    } else {
+        setInitialUnderline();
     }
 
     // Update underline on resize
@@ -192,6 +201,9 @@ $(function () {
         var $hoveredItem = $('#nav-list > li:hover');
         if ($hoveredItem.length) {
             $hoveredItem.trigger('mouseenter');
+        } else if ($activeItem.length) {
+            var $link = $activeItem.children('a, button').first();
+            updateUnderline($link);
         }
     });
 
