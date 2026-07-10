@@ -4,14 +4,21 @@
 // Language List (Runtimes) Page
 #language-list {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     
     thead {
         th {
-            padding: 12px 16px;
+            padding: 14px 20px;
             text-align: left;
             font-weight: 600;
-            color: $color_primary75;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: $color_primary50;
             border-bottom: 2px solid $color_primary25;
             background: $color_primary5;
         }
@@ -26,7 +33,7 @@
             }
             
             &:nth-child(even) {
-                background: $color_primary5;
+                background: rgba($color_primary5, 0.5);
                 
                 &:hover {
                     background: $color_primary10;
@@ -34,74 +41,85 @@
             }
             
             td {
-                padding: 12px 16px;
+                padding: 16px 20px;
                 border-bottom: 1px solid $color_primary10;
-                vertical-align: middle;
+                vertical-align: top;
+                line-height: 1.6;
             }
         }
     }
 }
 
 .language-id {
-    display: inline-block;
-    padding: 4px 10px;
-    background: $color_primary10;
-    color: $color_primary75;
-    border-radius: 4px;
-    font-family: monospace;
-    font-weight: 500;
-    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    background: linear-gradient(135deg, $gradient_start, $gradient_end);
+    color: white;
+    border-radius: 6px;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
+    font-weight: 600;
+    font-size: 0.85em;
+    letter-spacing: 0.3px;
 }
 
 .language-name {
     font-weight: 600;
+    font-size: 1.05em;
     color: $color_primary100;
 }
 
 .runtime-info {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     
     .runtime-version {
-        font-family: monospace;
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
         font-size: 0.9em;
+        font-weight: 500;
         color: $color_primary66;
-        padding: 4px 8px;
+        padding: 6px 12px;
         background: $color_primary5;
-        border-radius: 4px;
+        border: 1px solid $color_primary25;
+        border-radius: 6px;
         display: inline-block;
     }
     
     .compile-options {
-        font-family: monospace;
-        font-size: 0.85em;
+        font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
+        font-size: 0.82em;
         color: $color_primary50;
-        padding: 8px 12px;
+        padding: 12px 16px;
         background: $color_primary5;
         border: 1px solid $color_primary10;
-        border-radius: 4px;
+        border-radius: 8px;
         white-space: pre-wrap;
         word-break: break-all;
+        line-height: 1.6;
     }
     
     .language-description {
         margin-top: 8px;
-        padding: 12px;
+        padding: 16px;
         background: $color_primary5;
-        border-radius: 4px;
-        border-left: 3px solid $gradient_start;
+        border-radius: 8px;
+        border-left: 4px solid $gradient_start;
     }
 }
 
 // Version Matrix Page
 #judge-versions {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     
     th, td {
-        padding: 10px 12px;
-        border: 1px solid $color_primary25;
+        padding: 12px 16px;
+        border: 1px solid $color_primary10;
         text-align: left;
     }
     
@@ -109,7 +127,11 @@
         th {
             background: $color_primary5;
             font-weight: 600;
-            color: $color_primary75;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: $color_primary50;
+            border-bottom: 2px solid $color_primary25;
             position: sticky;
             top: 0;
             z-index: 1;
@@ -117,6 +139,7 @@
         
         th:first-child {
             background: $color_primary10;
+            color: $color_primary75;
         }
     }
     
@@ -129,7 +152,7 @@
             }
             
             &:nth-child(even) {
-                background: $color_primary5;
+                background: rgba($color_primary5, 0.5);
                 
                 &:hover {
                     background: $color_primary10;
@@ -139,28 +162,33 @@
         
         th {
             background: $color_primary5;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.95em;
             white-space: nowrap;
+            color: $color_primary75;
         }
     }
 }
 
 .version {
-    font-family: monospace;
-    font-size: 0.9em;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
+    font-size: 0.88em;
+    font-weight: 500;
     
     &.latest {
-        color: #44AD41;
+        color: #3d9a3a;
         background: rgba(#44AD41, 0.1);
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(#44AD41, 0.2);
     }
     
     &.outdated {
-        color: #FAB623;
+        color: #e65100;
         background: rgba(#FAB623, 0.1);
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(#FAB623, 0.2);
     }
     
     &.blank {
@@ -173,15 +201,15 @@
     #language-list {
         thead {
             th {
-                padding: 8px 12px;
-                font-size: 0.85em;
+                padding: 10px 14px;
+                font-size: 0.75em;
             }
         }
         
         tbody {
             tr {
                 td {
-                    padding: 10px 12px;
+                    padding: 12px 14px;
                     font-size: 0.9em;
                 }
             }
@@ -190,7 +218,8 @@
     
     .runtime-info {
         .compile-options {
-            font-size: 0.8em;
+            font-size: 0.78em;
+            padding: 10px 12px;
         }
     }
     
@@ -198,7 +227,7 @@
         font-size: 0.85em;
         
         th, td {
-            padding: 8px 10px;
+            padding: 10px 12px;
         }
     }
 }
