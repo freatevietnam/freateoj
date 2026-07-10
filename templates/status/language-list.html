@@ -1,23 +1,4 @@
 {% extends "base.html" %}
-{% block media %}
-    <style>
-        .table td.language {
-            white-space: nowrap;
-        }
-
-        .table td.info .content-description {
-            margin: -1em 1em -1em 1em;
-        }
-
-        td.info {
-            width: 100%;
-        }
-
-        .table td {
-            text-align: left;
-        }
-    </style>
-{% endblock %}
 
 {% block title_ruler %}{% endblock %}
 
@@ -28,7 +9,7 @@
 
 {% block body %}
     <div class="h-scrollable-table">
-        <table class="table striped">
+        <table id="language-list" class="table striped">
             <thead>
             <tr>
                 <th>{{ _('ID') }}</th>
@@ -41,17 +22,19 @@
                 {# All online languages have runtime_versions, even if we're not going to display them #}
                 {% if language.runtime_versions %}
                     <tr>
-                        <td>{{ language.short_display_name }}</td>
-                        <td class="language">{{ language.name }}</td>
-                        <td class="info">
-                            <code>{{ runtime_versions(language.runtime_versions()) }}</code>
-                            {% if language.description %}
-                                <div class="content-description">
-                                    {% cache 86400 'language_html' language.id %}
-                                        {{ language.description|markdown('language') }}
-                                    {% endcache %}
-                                </div>
-                            {% endif %}
+                        <td><span class="language-id">{{ language.short_display_name }}</span></td>
+                        <td><span class="language-name">{{ language.name }}</span></td>
+                        <td>
+                            <div class="runtime-info">
+                                <span class="runtime-version">{{ runtime_versions(language.runtime_versions()) }}</span>
+                                {% if language.description %}
+                                    <div class="language-description">
+                                        {% cache 86400 'language_html' language.id %}
+                                            {{ language.description|markdown('language') }}
+                                        {% endcache %}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                 {% endif %}

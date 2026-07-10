@@ -1,0 +1,204 @@
+@use 'sass:color';
+@use "vars" as *;
+
+// Language List (Runtimes) Page
+#language-list {
+    width: 100%;
+    border-collapse: collapse;
+    
+    thead {
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: $color_primary75;
+            border-bottom: 2px solid $color_primary25;
+            background: $color_primary5;
+        }
+    }
+    
+    tbody {
+        tr {
+            transition: all 0.2s ease;
+            
+            &:hover {
+                background: $color_primary10;
+            }
+            
+            &:nth-child(even) {
+                background: $color_primary5;
+                
+                &:hover {
+                    background: $color_primary10;
+                }
+            }
+            
+            td {
+                padding: 12px 16px;
+                border-bottom: 1px solid $color_primary10;
+                vertical-align: middle;
+            }
+        }
+    }
+}
+
+.language-id {
+    display: inline-block;
+    padding: 4px 10px;
+    background: $color_primary10;
+    color: $color_primary75;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.language-name {
+    font-weight: 600;
+    color: $color_primary100;
+}
+
+.runtime-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    .runtime-version {
+        font-family: monospace;
+        font-size: 0.9em;
+        color: $color_primary66;
+        padding: 4px 8px;
+        background: $color_primary5;
+        border-radius: 4px;
+        display: inline-block;
+    }
+    
+    .compile-options {
+        font-family: monospace;
+        font-size: 0.85em;
+        color: $color_primary50;
+        padding: 8px 12px;
+        background: $color_primary5;
+        border: 1px solid $color_primary10;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    
+    .language-description {
+        margin-top: 8px;
+        padding: 12px;
+        background: $color_primary5;
+        border-radius: 4px;
+        border-left: 3px solid $gradient_start;
+    }
+}
+
+// Version Matrix Page
+#judge-versions {
+    width: 100%;
+    border-collapse: collapse;
+    
+    th, td {
+        padding: 10px 12px;
+        border: 1px solid $color_primary25;
+        text-align: left;
+    }
+    
+    thead {
+        th {
+            background: $color_primary5;
+            font-weight: 600;
+            color: $color_primary75;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        
+        th:first-child {
+            background: $color_primary10;
+        }
+    }
+    
+    tbody {
+        tr {
+            transition: background-color 0.2s ease;
+            
+            &:hover {
+                background: $color_primary10;
+            }
+            
+            &:nth-child(even) {
+                background: $color_primary5;
+                
+                &:hover {
+                    background: $color_primary10;
+                }
+            }
+        }
+        
+        th {
+            background: $color_primary5;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+    }
+}
+
+.version {
+    font-family: monospace;
+    font-size: 0.9em;
+    
+    &.latest {
+        color: #44AD41;
+        background: rgba(#44AD41, 0.1);
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    
+    &.outdated {
+        color: #FAB623;
+        background: rgba(#FAB623, 0.1);
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    
+    &.blank {
+        color: $color_primary33;
+        font-style: italic;
+    }
+}
+
+@media (max-width: 768px) {
+    #language-list {
+        thead {
+            th {
+                padding: 8px 12px;
+                font-size: 0.85em;
+            }
+        }
+        
+        tbody {
+            tr {
+                td {
+                    padding: 10px 12px;
+                    font-size: 0.9em;
+                }
+            }
+        }
+    }
+    
+    .runtime-info {
+        .compile-options {
+            font-size: 0.8em;
+        }
+    }
+    
+    #judge-versions {
+        font-size: 0.85em;
+        
+        th, td {
+            padding: 8px 10px;
+        }
+    }
+}
