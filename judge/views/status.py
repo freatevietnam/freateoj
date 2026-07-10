@@ -19,34 +19,6 @@ def get_judges(request):
 
 
 def status_all(request):
-    see_all, judges = get_judges(request)
-    return render(request, 'status/judge-status.html', {
-        'title': _('Status'),
-        'judges': judges,
-        'runtime_version_data': Judge.runtime_versions(),
-        'see_all_judges': see_all,
-    })
-
-
-def status_oj(request):
-    if not request.user.is_superuser:
-        return HttpResponseBadRequest(_('You must be admin to view this content.'), content_type='text/plain')
-
-    return render(request, 'status/oj-status.html', {
-        'title': _('OJ Status'),
-    })
-
-
-def status_table(request):
-    see_all, judges = get_judges(request)
-    return render(request, 'status/judge-status-table.html', {
-        'judges': judges,
-        'runtime_version_data': Judge.runtime_versions(),
-        'see_all_judges': see_all,
-    })
-
-
-def status_combined(request):
     """Combined status page with judges, runtimes, and version matrix."""
     see_all, judges = get_judges(request)
     
@@ -104,7 +76,7 @@ def status_combined(request):
     matrix_judges = sorted(matrix_data.keys())
     matrix_languages = sorted(languages, key=lambda lang: lang.key)
 
-    return render(request, 'status/combined-status.html', {
+    return render(request, 'status/status.html', {
         'title': _('Status'),
         'judges': judges,
         'runtime_version_data': Judge.runtime_versions(),
@@ -113,6 +85,24 @@ def status_combined(request):
         'matrix_judges': matrix_judges,
         'matrix_languages': matrix_languages,
         'matrix': matrix_data,
+    })
+
+
+def status_oj(request):
+    if not request.user.is_superuser:
+        return HttpResponseBadRequest(_('You must be admin to view this content.'), content_type='text/plain')
+
+    return render(request, 'status/oj-status.html', {
+        'title': _('OJ Status'),
+    })
+
+
+def status_table(request):
+    see_all, judges = get_judges(request)
+    return render(request, 'status/judge-status-table.html', {
+        'judges': judges,
+        'runtime_version_data': Judge.runtime_versions(),
+        'see_all_judges': see_all,
     })
 
 
@@ -132,61 +122,3 @@ def compare_version_list(x, y):
             if a.version != b.version:
                 return False
     return True
-
-
-def version_matrix(request):
-    matrix = defaultdict(partial(defaultdict, LatestList))
-    latest = defaultdict(list)
-    groups = defaultdict(list)
-
-    judges = {judge.id: judge.name for judge in Judge.objects.filter(online=True)}
-    languages = Language.objects.filter(judges__online=True).distinct()
-
-    for runtime in RuntimeVersion.objects.filter(judge__online=True).order_by('priority'):
-        matrix[runtime.judge_id][runtime.language_id].append(runtime)
-
-    for judge, data in matrix.items():
-        name_tuple = judges[judge].rpartition('.')
-        groups[name_tuple[0] or name_tuple[-1]].append((judges[judge], data))
-
-    matrix = {}
-    for group, data in groups.items():
-        if len(data) == 1:
-            judge, data = data[0]
-            matrix[judge] = data
-            continue
-
-        ds = list(range(len(data)))
-        size = [1] * len(data)
-        for i, (p, x) in enumerate(data):
-            if ds[i] != i:
-                continue
-            for j, (q, y) in enumerate(data):
-                if i != j and compare_version_list(x, y):
-                    ds[j] = i
-                    size[i] += 1
-                    size[j] = 0
-
-        rep = max(range(len(data)), key=size.__getitem__)
-        matrix[group] = data[rep][1]
-        for i, (j, x) in enumerate(data):
-            if ds[i] != rep:
-                matrix[j] = x
-
-    for data in matrix.values():
-        for language, versions in data.items():
-            versions.versions = [version.parse(runtime.version) for runtime in versions]
-            if versions.versions > latest[language]:
-                latest[language] = versions.versions
-
-    for data in matrix.values():
-        for language, versions in data.items():
-            versions.is_latest = versions.versions == latest[language]
-
-    languages = sorted(languages, key=lambda lang: lang.key)
-    return render(request, 'status/versions.html', {
-        'title': _('Version'),
-        'judges': sorted(matrix.keys()),
-        'languages': languages,
-        'matrix': matrix,
-    })
