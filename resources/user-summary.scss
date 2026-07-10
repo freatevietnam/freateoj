@@ -1,83 +1,61 @@
 @use 'sass:color';
 @use "vars" as *;
 
-.user-summary-modal {
+.user-summary-tooltip {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.user-summary-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-}
-
-.user-summary-content {
-    position: relative;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 400px;
+    max-width: 380px;
     width: 90%;
-    padding: 24px;
-    animation: modalSlideIn 0.3s ease;
+    animation: tooltipFadeIn 0.2s ease;
+    pointer-events: auto;
 }
 
-@keyframes modalSlideIn {
+@keyframes tooltipFadeIn {
     from {
         opacity: 0;
-        transform: translateY(-20px) scale(0.95);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 }
 
-.user-summary-close {
+.user-summary-tooltip .user-summary-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    position: relative;
+}
+
+.user-summary-tooltip .user-summary-arrow {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: $color_primary50;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-    
-    &:hover {
-        background: $color_primary10;
-        color: $color_primary75;
-    }
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: white;
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.user-summary-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
+.user-summary-tooltip.above .user-summary-arrow {
+    top: auto;
+    bottom: -6px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.user-summary-avatar {
-    width: 64px;
-    height: 64px;
+.user-summary-tooltip .user-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.user-summary-tooltip .user-summary-avatar {
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     overflow: hidden;
     background: $color_primary10;
@@ -90,13 +68,13 @@
     }
 }
 
-.user-summary-info {
+.user-summary-tooltip .user-summary-info {
     flex: 1;
     min-width: 0;
     
     h3 {
-        margin: 0 0 4px 0;
-        font-size: 1.2em;
+        margin: 0 0 2px 0;
+        font-size: 1em;
         font-weight: 600;
         color: $color_primary100;
         white-space: nowrap;
@@ -105,18 +83,18 @@
     }
 }
 
-.user-summary-username {
+.user-summary-tooltip .user-summary-username {
     display: block;
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: $color_primary50;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
-.user-summary-rank {
+.user-summary-tooltip .user-summary-rank {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75em;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.65em;
     font-weight: 600;
     text-transform: uppercase;
     
@@ -129,62 +107,63 @@
     &.rank-grandmaster { background: #ffcdd2; color: #b71c1c; }
 }
 
-.user-summary-stats {
+.user-summary-tooltip .user-summary-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-    padding: 16px;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 10px;
     background: $color_primary5;
     border-radius: 8px;
 }
 
-.user-summary-stat {
+.user-summary-tooltip .user-summary-stat {
     text-align: center;
     
     .stat-value {
         display: block;
-        font-size: 1.2em;
+        font-size: 1em;
         font-weight: 700;
         color: $color_primary100;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
     
     .stat-label {
-        font-size: 0.75em;
+        font-size: 0.6em;
         color: $color_primary50;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
     }
 }
 
-.user-summary-meta {
-    margin-bottom: 20px;
+.user-summary-tooltip .user-summary-meta {
+    margin-bottom: 12px;
     
     .user-summary-meta-item {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 0;
-        font-size: 0.9em;
+        gap: 6px;
+        padding: 4px 0;
+        font-size: 0.8em;
         color: $color_primary66;
         
         i {
-            width: 16px;
+            width: 14px;
             color: $color_primary50;
+            font-size: 0.9em;
         }
     }
 }
 
-.user-summary-actions {
+.user-summary-tooltip .user-summary-actions {
     display: flex;
-    gap: 12px;
     
     .btn {
         flex: 1;
-        padding: 12px 20px;
-        border-radius: 8px;
+        padding: 8px 16px;
+        border-radius: 6px;
         font-weight: 600;
+        font-size: 0.85em;
         text-align: center;
         text-decoration: none;
         transition: all 0.2s ease;
@@ -202,17 +181,42 @@
     }
 }
 
-@media (max-width: 480px) {
-    .user-summary-content {
-        padding: 20px;
+// Mobile styles
+@media (max-width: 768px) {
+    .user-summary-tooltip {
+        max-width: 320px;
     }
     
-    .user-summary-stats {
+    .user-summary-tooltip .user-summary-content {
+        padding: 14px;
+    }
+    
+    .user-summary-tooltip .user-summary-stats {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    .user-summary-header {
+    .user-summary-tooltip .user-summary-header {
         flex-direction: column;
         text-align: center;
+    }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+    .user-summary-tooltip .user-summary-content {
+        background: #2d2d2d;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .user-summary-tooltip .user-summary-arrow {
+        background: #2d2d2d;
+    }
+    
+    .user-summary-tooltip .user-summary-info h3 {
+        color: #f0f0f0;
+    }
+    
+    .user-summary-tooltip .user-summary-stat .stat-value {
+        color: #f0f0f0;
     }
 }
