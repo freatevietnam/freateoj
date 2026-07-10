@@ -143,21 +143,75 @@
     }
 }
 
-.user-summary-tooltip .user-summary-meta {
+// Activity Grid
+.user-summary-tooltip .user-summary-activity {
     margin-bottom: 12px;
+    padding: 10px;
+    background: $color_primary10;
+    border-radius: 8px;
+    border: 1px solid $color_primary25;
+    overflow-x: auto;
+}
+
+.user-summary-tooltip .activity-header {
+    font-size: 0.75em;
+    color: $color_primary66;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.user-summary-tooltip .activity-grid {
+    .activity-table {
+        border-collapse: collapse;
+        margin: 0 auto;
+        
+        .day-label {
+            font-size: 0.5em;
+            color: $color_primary50;
+            padding-right: 4px;
+            text-align: right;
+            width: 12px;
+        }
+        
+        .week-header {
+            width: 8px;
+            padding: 0 1px;
+        }
+        
+        .activity-cell {
+            padding: 1px;
+            
+            div {
+                width: 8px;
+                height: 8px;
+                border-radius: 2px;
+                background: $color_primary25;
+            }
+            
+            .activity-0 { background: $color_primary25; }
+            .activity-1 { background: #9be9a8; }
+            .activity-2 { background: #40c463; }
+            .activity-3 { background: #30a14e; }
+            .activity-4 { background: #216e39; }
+        }
+    }
     
-    .user-summary-meta-item {
+    .activity-legend {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 4px 0;
-        font-size: 0.8em;
-        color: $color_primary66;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 8px;
+        font-size: 0.5em;
+        color: $color_primary50;
         
-        i {
-            width: 14px;
-            color: $color_primary50;
-            font-size: 0.9em;
+        .activity-cell {
+            padding: 0;
+            
+            div {
+                width: 8px;
+                height: 8px;
+            }
         }
     }
 }
@@ -208,4 +262,21 @@
         flex-direction: column;
         text-align: center;
     }
+    
+    .user-summary-tooltip .activity-grid {
+        .activity-table {
+            .activity-cell div {
+                width: 6px;
+                height: 6px;
+            }
+        }
+    }
+}
+
+// Dark mode activity colors
+body.dark .user-summary-tooltip {
+    .activity-1 { background: #0e4429; }
+    .activity-2 { background: #006d32; }
+    .activity-3 { background: #26a641; }
+    .activity-4 { background: #39d353; }
 }

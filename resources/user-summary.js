@@ -33,17 +33,9 @@ $(document).ready(function() {
                         <span class="stat-label">PP</span>
                     </div>
                 </div>
-                <div class="user-summary-meta">
-                    <div class="user-summary-meta-item">
-                        <i class="fa fa-calendar"></i>
-                        <span>Joined: </span>
-                        <span id="user-summary-join-date"></span>
-                    </div>
-                    <div class="user-summary-meta-item">
-                        <i class="fa fa-clock"></i>
-                        <span>Last login: </span>
-                        <span id="user-summary-last-login"></span>
-                    </div>
+                <div class="user-summary-activity">
+                    <div class="activity-header" id="user-summary-activity-header"></div>
+                    <div class="activity-grid" id="user-summary-activity-grid"></div>
                 </div>
                 <div class="user-summary-actions">
                     <a id="user-summary-profile-btn" href="" class="btn btn-primary">View Profile</a>
@@ -105,6 +97,92 @@ $(document).ready(function() {
         });
     }
     
+    // Draw submission activity grid
+    function drawActivityGrid(submissionActivity) {
+        var $grid = $('#user-summary-activity-grid');
+        $grid.empty();
+        
+        var activityLevels = 5;
+        var currentYear = new Date().getFullYear();
+        var today = new Date();
+        var oneYearAgo = new Date(today);
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        
+        // Get max activity for normalization
+        var maxActivity = 1;
+        for (var date in submissionActivity) {
+            if (submissionActivity[date] > maxActivity) {
+                maxActivity = submissionActivity[date];
+            }
+        }
+        
+        // Calculate total submissions
+        var totalSubmissions = 0;
+        for (var date in submissionActivity) {
+            totalSubmissions += submissionActivity[date];
+        }
+        
+        // Update header
+        $('#user-summary-activity-header').text(totalSubmissions + ' submissions in the past year');
+        
+        // Create 52 weeks x 7 days grid
+        var startDate = new Date(oneYearAgo);
+        startDate.setDate(startDate.getDate() - startDate.getDay()); // Start from Sunday
+        
+        var weeks = 53;
+        var days = 7;
+        
+        // Create grid container
+        var $table = $('<table class="activity-table"></table>');
+        
+        // Day labels
+        var dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        var $headerRow = $('<tr></tr>');
+        $headerRow.append('<td class="day-label"></td>');
+        for (var w = 0; w < weeks; w++) {
+            $headerRow.append('<td class="week-header"></td>');
+        }
+        $table.append($headerRow);
+        
+        // Activity rows
+        for (var d = 0; d < days; d++) {
+            var $row = $('<tr></tr>');
+            $row.append('<td class="day-label">' + dayLabels[d] + '</td>');
+            
+            for (var w = 0; w < weeks; w++) {
+                var cellDate = new Date(startDate);
+                cellDate.setDate(cellDate.getDate() + (w * 7) + d);
+                
+                var isodate = cellDate.toISOString().split('T')[0];
+                var activity = submissionActivity[isodate] || 0;
+                var level = activity > 0 ? Math.ceil((activity / maxActivity) * (activityLevels - 1)) : 0;
+                
+                var $cell = $('<td class="activity-cell"></td>');
+                var $div = $('<div class="activity-' + level + '"></div>');
+                
+                if (activity > 0) {
+                    $div.attr('title', activity + ' submissions on ' + cellDate.toLocaleDateString());
+                }
+                
+                $cell.append($div);
+                $row.append($cell);
+            }
+            
+            $table.append($row);
+        }
+        
+        $grid.append($table);
+        
+        // Add legend
+        var $legend = $('<div class="activity-legend"></div>');
+        $legend.append('<span class="legend-text">Less</span>');
+        for (var i = 0; i < activityLevels; i++) {
+            $legend.append('<div class="activity-cell"><div class="activity-' + i + '"></div></div>');
+        }
+        $legend.append('<span class="legend-text">More</span>');
+        $grid.append($legend);
+    }
+    
     // Show user summary tooltip
     function showUserSummary(username, $link) {
         if (currentUsername === username && $('#user-summary-tooltip').is(':visible')) {
@@ -134,9 +212,6 @@ $(document).ready(function() {
                 $('#user-summary-solved').text(data.problems_solved || 0);
                 $('#user-summary-pp').text(data.performance_points || 0);
                 
-                $('#user-summary-join-date').text(data.join_date || '-');
-                $('#user-summary-last-login').text(data.last_login || '-');
-                
                 if (data.avatar_url) {
                     $('#user-summary-avatar').attr('src', data.avatar_url).show();
                 } else {
@@ -144,6 +219,9 @@ $(document).ready(function() {
                 }
                 
                 $('#user-summary-profile-btn').attr('href', data.profile_url);
+                
+                // Draw activity grid
+                drawActivityGrid(data.submission_activity || {});
                 
                 // Reposition after content loaded
                 positionTooltip($link);

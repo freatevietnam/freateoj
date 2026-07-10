@@ -1,7 +1,14 @@
+import json
+from datetime import datetime, timedelta
+
+from django.db.models import Count, F
+from django.db.models.fields import DateField
+from django.db.models.functions import Cast
 from django.http import JsonResponse
+from django.utils import timezone
 
 from judge.jinja2.gravatar import gravatar
-from judge.models import Profile
+from judge.models import Profile, Submission
 
 
 def user_summary(request, username):
@@ -14,6 +21,23 @@ def user_summary(request, username):
     # Get gravatar URL
     avatar_url = gravatar(profile.user.email, 96)
     
+    # Get submission activity data (last year)
+    utc_offset = timezone_offset = timezone.now().astimezone().utcoffset().total_seconds()
+    one_year_ago = timezone.now() - timedelta(days=365)
+    
+    submissions = (
+        Submission.objects
+        .filter(user=profile, date__gte=one_year_ago)
+        .annotate(date_only=Cast(F('date') + timedelta(seconds=timezone_offset), DateField()))
+        .values('date_only')
+        .annotate(cnt=Count('id'))
+    )
+    
+    submission_activity = {
+        date_counts['date_only'].isoformat(): date_counts['cnt'] 
+        for date_counts in submissions
+    }
+    
     data = {
         'username': profile.user.username,
         'display_name': profile.display_name,
@@ -21,11 +45,10 @@ def user_summary(request, username):
         'rank': profile.display_rank,
         'problems_solved': profile.problem_count,
         'performance_points': profile.performance_points,
-        'join_date': profile.user.date_joined.strftime('%d/%m/%Y'),
-        'last_login': profile.user.last_login.strftime('%d/%m/%Y') if profile.user.last_login else None,
         'avatar_url': avatar_url,
         'about': profile.about if hasattr(profile, 'about') else '',
         'profile_url': f'/user/{profile.user.username}/',
+        'submission_activity': submission_activity,
     }
     
     return JsonResponse(data)
