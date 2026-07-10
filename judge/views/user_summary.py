@@ -1,19 +1,21 @@
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 
 from judge.models import Profile
 
 
 def user_summary(request, username):
     """AJAX endpoint to get user summary data for popup."""
-    profile = get_object_or_404(Profile, user__username=username)
+    try:
+        profile = Profile.objects.get(user__username=username)
+    except Profile.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
     
     data = {
         'username': profile.user.username,
         'display_name': profile.display_name,
         'rating': profile.rating,
         'rank': profile.display_rank,
-        'problems_solved': profile.solved,
+        'problems_solved': profile.problem_count,
         'problems_attempted': profile.total,
         'performance_points': profile.performance_points,
         'join_date': profile.user.date_joined.strftime('%d/%m/%Y'),
