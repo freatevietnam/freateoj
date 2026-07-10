@@ -65,6 +65,8 @@ Report security vulnerabilities to **freatevietnam@gmail.com**. See [SECURITY.md
 
 Ideas and inspiration for FreateOJ are taken from:
 
+- [DMOJ - Don Mills Online Judge](https://dmoj.ca/) ([source code](https://github.com/DMOJ/online-judge))
+- [LQDOJ - Le Quy Don Online Judge](https://lqdoj.edu.vn/) ([source code](https://github.com/LQDJudge/online-judge))
 - [VNOJ - Viet Nam Online Judge](https://github.com/VNOI-Admin/OJ)
 - [OREOJ - ORE Online Judge](https://ojkhanhhoa.site/)
 - [CTOJ - Chuyen Tin Online Judge](https://oj.chuyentin.pro/)
