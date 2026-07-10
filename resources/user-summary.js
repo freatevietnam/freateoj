@@ -18,6 +18,7 @@ $(document).ready(function() {
                         <span id="user-summary-username" class="user-summary-username"></span>
                         <span id="user-summary-rank" class="user-summary-rank"></span>
                     </div>
+                    <div class="user-summary-badges" id="user-summary-badges"></div>
                 </div>
                 <div class="user-summary-stats">
                     <div class="user-summary-stat">
@@ -95,6 +96,26 @@ $(document).ready(function() {
             left: left + 'px',
             top: top + 'px'
         });
+    }
+    
+    // Render badges
+    function renderBadges(badges, displayBadge) {
+        var $badges = $('#user-summary-badges');
+        $badges.empty();
+        
+        // Show display badge first (the one shown next to username on profile)
+        if (displayBadge && displayBadge.mini) {
+            $badges.append('<img class="user-summary-badge" src="' + displayBadge.mini + '" alt="' + displayBadge.name + '" title="' + displayBadge.name + '">');
+        }
+        
+        // Then show other badges
+        if (badges && badges.length > 0) {
+            badges.forEach(function(badge) {
+                // Skip if it's the same as display badge
+                if (displayBadge && badge.name === displayBadge.name) return;
+                $badges.append('<img class="user-summary-badge" src="' + (badge.mini || badge.full_size) + '" alt="' + badge.name + '" title="' + badge.name + '">');
+            });
+        }
     }
     
     // Draw submission activity grid
@@ -219,6 +240,9 @@ $(document).ready(function() {
                 }
                 
                 $('#user-summary-profile-btn').attr('href', data.profile_url);
+                
+                // Render badges
+                renderBadges(data.badges, data.display_badge);
                 
                 // Draw activity grid
                 drawActivityGrid(data.submission_activity || {});

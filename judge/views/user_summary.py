@@ -38,6 +38,24 @@ def user_summary(request, username):
         for date_counts in submissions
     }
     
+    # Get badges
+    badges = []
+    for badge in profile.badges.all()[:5]:  # Limit to 5 badges
+        badges.append({
+            'name': badge.name,
+            'mini': badge.mini,
+            'full_size': badge.full_size,
+        })
+    
+    # Get display badge
+    display_badge = None
+    if profile.display_badge:
+        display_badge = {
+            'name': profile.display_badge.name,
+            'mini': profile.display_badge.mini,
+            'full_size': profile.display_badge.full_size,
+        }
+    
     data = {
         'username': profile.user.username,
         'display_name': profile.display_name,
@@ -49,6 +67,8 @@ def user_summary(request, username):
         'about': profile.about if hasattr(profile, 'about') else '',
         'profile_url': f'/user/{profile.user.username}/',
         'submission_activity': submission_activity,
+        'badges': badges,
+        'display_badge': display_badge,
     }
     
     return JsonResponse(data)

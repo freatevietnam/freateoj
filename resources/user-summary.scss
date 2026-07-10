@@ -89,6 +89,25 @@
     }
 }
 
+.user-summary-tooltip .user-summary-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+.user-summary-tooltip .user-summary-badge {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: 4px;
+    
+    &:hover {
+        transform: scale(1.2);
+        transition: transform 0.15s ease;
+    }
+}
+
 .user-summary-tooltip .user-summary-username {
     display: block;
     font-size: 0.8em;
