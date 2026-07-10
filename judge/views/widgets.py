@@ -12,12 +12,14 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 from judge.models import Submission
+from judge.utils.rate_limit import rate_limit
 
 __all__ = ['rejudge_submission']
 
 
 @login_required
 @require_POST
+@rate_limit('rejudge_submission')
 def rejudge_submission(request):
     if 'id' not in request.POST or not request.POST['id'].isdigit():
         return HttpResponseBadRequest()

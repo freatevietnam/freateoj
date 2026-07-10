@@ -291,6 +291,37 @@ EMAIL_RATE_LIMITS = {
     'ticket': {'count': 10, 'window': 60},               # 10 per min
 }
 
+# Global API rate limits
+# count: max requests, window: time window in seconds
+RATE_LIMITS = {
+    # Comment APIs
+    'comment_vote': {'count': 30, 'window': 60},         # 30 per min
+    'comment_hide': {'count': 10, 'window': 60},         # 10 per min
+    
+    # Blog APIs
+    'blog_vote': {'count': 30, 'window': 60},            # 30 per min
+    
+    # User APIs
+    'generate_api_token': {'count': 5, 'window': 300},   # 5 per 5 min
+    'remove_api_token': {'count': 5, 'window': 300},     # 5 per 5 min
+    'generate_scratch_codes': {'count': 3, 'window': 300}, # 3 per 5 min
+    'set_theme': {'count': 30, 'window': 60},            # 30 per min
+    
+    # Widget APIs
+    'rejudge_submission': {'count': 10, 'window': 60},   # 10 per min
+    
+    # Submission APIs
+    'abort_submission': {'count': 5, 'window': 60},      # 5 per min
+    
+    # Ticket APIs
+    'ticket_create': {'count': 5, 'window': 300},        # 5 per 5 min
+    'ticket_message': {'count': 20, 'window': 60},       # 20 per min
+    
+    # Problem/Contest APIs
+    'problem_create': {'count': 5, 'window': 3600},      # 5 per hour
+    'contest_create': {'count': 5, 'window': 3600},      # 5 per hour
+}
+
 FREATEOJ_DISCORD_WEBHOOK_THROTTLING = (10, 60)  # Max 10 messages in 60 seconds
 
 # Maximum number of submissions a single user can queue without the `spam_submission` permission

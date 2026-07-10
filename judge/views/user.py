@@ -44,6 +44,7 @@ from judge.utils.infinite_paginator import InfinitePaginationMixin
 from judge.utils.problems import contest_completed_ids, user_completed_ids
 from judge.utils.pwned import PwnedPasswordsValidator
 from judge.utils.ranker import ranker
+from judge.utils.rate_limit import rate_limit
 from judge.utils.subscription import Subscription
 from judge.utils.unicode import utf8text
 from judge.utils.views import DiggPaginatorMixin, QueryStringSortMixin, SingleObjectFormView, TitleMixin, \
@@ -533,6 +534,7 @@ def edit_profile(request):
 
 @require_POST
 @login_required
+@rate_limit('generate_api_token')
 def generate_api_token(request):
     profile = request.profile
     with revisions.create_revision(atomic=True):
@@ -542,6 +544,7 @@ def generate_api_token(request):
 
 
 @require_POST
+@rate_limit('set_theme')
 def set_theme(request):
     theme = request.POST.get('theme', 'light')
     if theme not in ('light', 'dark', 'auto'):
@@ -557,6 +560,7 @@ def set_theme(request):
 
 @require_POST
 @login_required
+@rate_limit('remove_api_token')
 def remove_api_token(request):
     profile = request.profile
     with revisions.create_revision(atomic=True):
@@ -569,6 +573,7 @@ def remove_api_token(request):
 
 @require_POST
 @login_required
+@rate_limit('generate_scratch_codes')
 def generate_scratch_codes(request):
     profile = request.profile
     with revisions.create_revision(atomic=True):

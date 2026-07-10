@@ -17,6 +17,7 @@ from reversion.models import Version
 
 from judge.dblock import LockModel
 from judge.models import Comment, CommentVote
+from judge.utils.rate_limit import rate_limit
 from judge.utils.views import TitleMixin
 from judge.widgets import MartorWidget
 
@@ -25,6 +26,7 @@ __all__ = ['upvote_comment', 'downvote_comment', 'CommentEditAjax', 'CommentCont
 
 
 @login_required
+@rate_limit('comment_vote')
 def vote_comment(request, delta):
     if abs(delta) != 1:
         return HttpResponseBadRequest(_('Messing around, are we?'), content_type='text/plain')
@@ -183,6 +185,7 @@ class CommentVotesAjax(PermissionRequiredMixin, CommentMixin, DetailView):
 
 
 @require_POST
+@rate_limit('comment_hide')
 def comment_hide(request):
     if not request.user.has_perm('judge.change_comment'):
         raise PermissionDenied()

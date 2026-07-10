@@ -24,12 +24,14 @@ from judge.tasks.webhook import on_new_blogpost
 from judge.utils.cachedict import CacheDict
 from judge.utils.diggpaginator import DiggPaginator
 from judge.utils.opengraph import generate_opengraph
+from judge.utils.rate_limit import rate_limit
 from judge.utils.tickets import filter_visible_tickets
 from judge.utils.unicode import remove_accents
 from judge.utils.views import TitleMixin, generic_message
 
 
 @login_required
+@rate_limit('blog_vote')
 def vote_blog(request, delta):
     if abs(delta) != 1:
         return HttpResponseBadRequest(_('Messing around, are we?'), content_type='text/plain')

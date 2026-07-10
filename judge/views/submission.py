@@ -31,6 +31,7 @@ from judge.utils.lazy import memo_lazy
 from judge.utils.problem_data import get_problem_testcases_data
 from judge.utils.problems import get_result_data, user_completed_ids, user_editable_ids, user_tester_ids
 from judge.utils.raw_sql import join_sql_subquery, use_straight_join
+from judge.utils.rate_limit import rate_limit
 from judge.utils.views import DiggPaginatorMixin, TitleMixin, add_file_response, generic_message
 
 
@@ -324,6 +325,7 @@ class SubmissionSourceDownload(SubmissionDetailBase):
 
 
 @require_POST
+@rate_limit('submission_abort')
 def abort_submission(request, submission):
     submission = get_object_or_404(Submission, id=int(submission))
     if (not request.user.has_perm('judge.abort_any_submission') and
