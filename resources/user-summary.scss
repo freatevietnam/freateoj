@@ -1,0 +1,218 @@
+@use 'sass:color';
+@use "vars" as *;
+
+.user-summary-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-summary-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.user-summary-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    padding: 24px;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.user-summary-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: $color_primary50;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: $color_primary10;
+        color: $color_primary75;
+    }
+}
+
+.user-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.user-summary-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: $color_primary10;
+    flex-shrink: 0;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.user-summary-info {
+    flex: 1;
+    min-width: 0;
+    
+    h3 {
+        margin: 0 0 4px 0;
+        font-size: 1.2em;
+        font-weight: 600;
+        color: $color_primary100;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.user-summary-username {
+    display: block;
+    font-size: 0.9em;
+    color: $color_primary50;
+    margin-bottom: 4px;
+}
+
+.user-summary-rank {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    
+    &.rank-newbie { background: #e0e0e0; color: #666; }
+    &.rank-pupil { background: #d4edda; color: #155724; }
+    &.rank-specialist { background: #cce5ff; color: #004085; }
+    &.rank-expert { background: #b8daff; color: #004085; }
+    &.rank-candidate master { background: #d4baff; color: #4a148c; }
+    &.rank-master { background: #ffe0b2; color: #e65100; }
+    &.rank-grandmaster { background: #ffcdd2; color: #b71c1c; }
+}
+
+.user-summary-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: $color_primary5;
+    border-radius: 8px;
+}
+
+.user-summary-stat {
+    text-align: center;
+    
+    .stat-value {
+        display: block;
+        font-size: 1.2em;
+        font-weight: 700;
+        color: $color_primary100;
+        margin-bottom: 4px;
+    }
+    
+    .stat-label {
+        font-size: 0.75em;
+        color: $color_primary50;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+.user-summary-meta {
+    margin-bottom: 20px;
+    
+    .user-summary-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 0;
+        font-size: 0.9em;
+        color: $color_primary66;
+        
+        i {
+            width: 16px;
+            color: $color_primary50;
+        }
+    }
+}
+
+.user-summary-actions {
+    display: flex;
+    gap: 12px;
+    
+    .btn {
+        flex: 1;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        
+        &.btn-primary {
+            background: $gradient_start;
+            color: white;
+            
+            &:hover {
+                background: darken($gradient_start, 10%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba($gradient_start, 0.3);
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .user-summary-content {
+        padding: 20px;
+    }
+    
+    .user-summary-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .user-summary-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}

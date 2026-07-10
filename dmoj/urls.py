@@ -13,7 +13,7 @@ from judge.feed import AtomBlogFeed, AtomCommentFeed, AtomProblemFeed, BlogFeed,
 from judge.sitemap import sitemaps
 from judge.views import TitledTemplateView, api, blog, comment, contests, language, license, notification, \
     organization, preview, problem, problem_download, problem_manage, ranked_submission, register, stats, status, \
-    submission, tag, tasks, ticket, two_factor, user, widgets
+    submission, tag, tasks, ticket, two_factor, user, user_summary, widgets
 from judge.views import email_api
 from judge.views.magazine import MagazinePage
 from judge.views.misc_config import MiscConfigEdit
@@ -348,6 +348,7 @@ urlpatterns = [
         path('single_submission', submission.single_submission, name='submission_single_query'),
         path('submission_testcases', submission.SubmissionTestCaseQuery.as_view(), name='submission_testcases_query'),
         path('status-table', status.status_table, name='status_table'),
+        path('user-summary/<str:username>/', user_summary.user_summary, name='user_summary'),
 
         path('template', problem.LanguageTemplateAjax.as_view(), name='language_template_ajax'),
 
