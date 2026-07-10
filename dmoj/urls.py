@@ -326,7 +326,6 @@ urlpatterns = [
     ])),
 
     path('status/', status.status_all, name='status_all'),
-    path('status/oj/', status.status_oj, name='status_oj'),
 
     path('blogs/', paged_list_view(blog.ModernBlogList, 'blog_modern_list')),
     path('posts/', paged_list_view(blog.PostList, 'blog_post_list')),
