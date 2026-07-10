@@ -16,7 +16,6 @@ def user_summary(request, username):
         'rating': profile.rating,
         'rank': profile.display_rank,
         'problems_solved': profile.problem_count,
-        'problems_attempted': profile.total,
         'performance_points': profile.performance_points,
         'join_date': profile.user.date_joined.strftime('%d/%m/%Y'),
         'last_login': profile.user.last_login.strftime('%d/%m/%Y') if profile.user.last_login else None,

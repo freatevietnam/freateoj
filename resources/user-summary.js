@@ -29,10 +29,6 @@ $(document).ready(function() {
                         <span class="stat-label">Solved</span>
                     </div>
                     <div class="user-summary-stat">
-                        <span class="stat-value" id="user-summary-attempted"></span>
-                        <span class="stat-label">Attempted</span>
-                    </div>
-                    <div class="user-summary-stat">
                         <span class="stat-value" id="user-summary-pp"></span>
                         <span class="stat-label">PP</span>
                     </div>
@@ -136,7 +132,6 @@ $(document).ready(function() {
                 
                 $('#user-summary-rating').text(data.rating || '-');
                 $('#user-summary-solved').text(data.problems_solved || 0);
-                $('#user-summary-attempted').text(data.problems_attempted || 0);
                 $('#user-summary-pp').text(data.performance_points || 0);
                 
                 $('#user-summary-join-date').text(data.join_date || '-');
