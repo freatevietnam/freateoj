@@ -22,11 +22,12 @@
 }
 
 .user-summary-tooltip .user-summary-content {
-    background: white;
+    background: $color_primary0;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 16px;
     position: relative;
+    border: 1px solid $color_primary25;
 }
 
 .user-summary-tooltip .user-summary-arrow {
@@ -36,14 +37,18 @@
     transform: translateX(-50%) rotate(45deg);
     width: 12px;
     height: 12px;
-    background: white;
-    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+    background: $color_primary0;
+    border: 1px solid $color_primary25;
+    border-bottom: none;
+    border-right: none;
 }
 
 .user-summary-tooltip.above .user-summary-arrow {
     top: auto;
     bottom: -6px;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid $color_primary25;
+    border-top: none;
+    border-left: none;
 }
 
 .user-summary-tooltip .user-summary-header {
@@ -60,6 +65,7 @@
     overflow: hidden;
     background: $color_primary10;
     flex-shrink: 0;
+    border: 2px solid $color_primary25;
     
     img {
         width: 100%;
@@ -113,8 +119,9 @@
     gap: 8px;
     margin-bottom: 12px;
     padding: 10px;
-    background: $color_primary5;
+    background: $color_primary10;
     border-radius: 8px;
+    border: 1px solid $color_primary25;
 }
 
 .user-summary-tooltip .user-summary-stat {
@@ -167,6 +174,8 @@
         text-align: center;
         text-decoration: none;
         transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
         
         &.btn-primary {
             background: $gradient_start;
@@ -198,25 +207,5 @@
     .user-summary-tooltip .user-summary-header {
         flex-direction: column;
         text-align: center;
-    }
-}
-
-// Dark mode support
-@media (prefers-color-scheme: dark) {
-    .user-summary-tooltip .user-summary-content {
-        background: #2d2d2d;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    .user-summary-tooltip .user-summary-arrow {
-        background: #2d2d2d;
-    }
-    
-    .user-summary-tooltip .user-summary-info h3 {
-        color: #f0f0f0;
-    }
-    
-    .user-summary-tooltip .user-summary-stat .stat-value {
-        color: #f0f0f0;
     }
 }
