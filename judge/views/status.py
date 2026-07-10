@@ -6,7 +6,7 @@ from judge.models import Language
 
 
 def status_all(request):
-    languages = Language.objects.filter(runtime_versions__isnull=False).distinct()
+    languages = Language.objects.filter(runtimeversion__isnull=False).distinct()
     
     context = {
         'languages': languages,
