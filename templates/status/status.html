@@ -163,11 +163,6 @@
         <a class="status-tab" data-tab="runtimes">
             <i class="fa fa-code"></i> {{ _('Runtimes') }}
         </a>
-        {% if request.user.is_superuser %}
-        <a class="status-tab" data-tab="matrix">
-            <i class="fa fa-table"></i> {{ _('Version Matrix') }}
-        </a>
-        {% endif %}
     </div>
     
     <!-- Judges Tab -->
@@ -215,47 +210,4 @@
             </table>
         </div>
     </div>
-    
-    <!-- Version Matrix Tab -->
-    {% if request.user.is_superuser %}
-    <div id="tab-matrix" class="tab-content">
-        <div class="h-scrollable-table">
-            <table id="judge-versions" class="table striped">
-                <thead>
-                <tr>
-                    <th>{{ _('Language') }}</th>
-                    {% for judge in matrix_judges %}
-                        <th>{{ judge }}</th>
-                    {% endfor %}
-                </tr>
-                </thead>
-                <tbody>
-                {% for language in matrix_languages %}
-                    <tr>
-                        <th>{{ language.name }}</th>
-                        {% for judge in matrix_judges %}
-                            {% set versions = matrix[judge][language.id] %}
-                            <td class="version version-
-                                {%- if not versions -%}
-                                    blank
-                                {%- elif versions.is_latest -%}
-                                    latest
-                                {%- else -%}
-                                    outdated
-                                {%- endif %}">
-                                {%- for version in versions -%}
-                                    {{ version.name }}{% if version.version %}&nbsp;{{ version.version }}{% endif %}
-                                    {% if not loop.last %}<br>{% endif %}
-                                {%- else -%}
-                                    &mdash;
-                                {%- endfor -%}
-                            </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    {% endif %}
 {% endblock %}
