@@ -8,7 +8,7 @@ from packaging import version
 
 from judge.models import Judge, Language, RuntimeVersion
 
-__all__ = ['status_all', 'status_table', 'status_combined']
+__all__ = ['status_all', 'status_table']
 
 
 def get_judges(request):
