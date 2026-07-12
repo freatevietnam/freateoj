@@ -8,6 +8,7 @@ import webauthn
 from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator, RegexValidator
@@ -894,3 +895,52 @@ class CompareSubmissionsForm(Form):
     user = forms.ChoiceField(
         widget=HeavySelect2MultipleWidget(data_view='profile_select2', attrs={'style': 'width: 100%'}),
     )
+
+
+class AddUserForm(Form):
+    username = CharField(
+        max_length=30,
+        help_text=_('Required. 30 characters or fewer. Letters, digits, and underscore only.'),
+        validators=[RegexValidator(r'^\w+$', _('Enter a valid username.'))],
+    )
+    email = CharField(
+        widget=forms.EmailInput,
+        help_text=_('Required. A valid email address.'),
+    )
+    password = CharField(
+        widget=forms.PasswordInput,
+        min_length=8,
+        help_text=_('Required. 8 characters or more.'),
+    )
+    password_confirm = CharField(
+        widget=forms.PasswordInput,
+        help_text=_('Required. Enter the same password as before.'),
+    )
+    first_name = CharField(max_length=30, required=False)
+    last_name = CharField(max_length=150, required=False)
+    timezone = CharField(max_length=50, required=False, initial=settings.DEFAULT_USER_TIME_ZONE)
+    language = forms.ModelChoiceField(queryset=Language.objects.all(), required=False)
+    organizations = forms.ModelMultipleChoiceField(queryset=Organization.objects.all(), required=False)
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(_('This username is already taken.'))
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise ValidationError(_('This email is already in use.'))
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
+        if password and password_confirm and password != password_confirm:
+            self.add_error('password_confirm', _('Passwords do not match.'))
+        organizations = cleaned_data.get('organizations')
+        if organizations and organizations.count() > 3:
+            self.add_error('organizations', _('You may not be part of more than 3 organizations.'))
+        return cleaned_data
