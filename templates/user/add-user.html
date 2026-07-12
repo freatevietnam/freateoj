@@ -1,8 +1,8 @@
-{% extends "user/user-base.html" %}
+{% extends "common-content.html" %}
 
-{% block user_content %}
+{% block description %}
     <h2>{{ _('Add User') }}</h2>
-    
+
     {% if messages %}
         {% for message in messages %}
             <div class="ui {{ message.tags }} message">
@@ -10,10 +10,10 @@
             </div>
         {% endfor %}
     {% endif %}
-    
+
     <form method="post" class="ui form">
         {% csrf_token %}
-        
+
         {% for field in form %}
             <div class="field{% if field.errors %} error{% endif %}">
                 <label>{{ field.label }}</label>
@@ -26,7 +26,7 @@
                 {% endfor %}
             </div>
         {% endfor %}
-        
+
         {% if form.non_field_errors %}
             <div class="ui error message">
                 {% for error in form.non_field_errors %}
@@ -34,7 +34,7 @@
                 {% endfor %}
             </div>
         {% endif %}
-        
+
         <button type="submit" class="ui primary button">{{ _('Add User') }}</button>
     </form>
 {% endblock %}
