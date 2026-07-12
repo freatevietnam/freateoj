@@ -1,3 +1,4 @@
+import csv
 import datetime
 import itertools
 import json
@@ -36,7 +37,7 @@ from reversion import revisions
 
 from judge.forms import AddUserForm, CustomAuthenticationForm, ProfileForm, UserBanForm, UserDownloadDataForm, UserForm, \
     newsletter_id
-from judge.models import BlogPost, Organization, Profile, Submission
+from judge.models import BlogPost, Language, Organization, Profile, Submission
 from judge.models import Comment
 from judge.performance_points import get_pp_breakdown
 from judge.ratings import rating_class, rating_progress
@@ -772,3 +773,173 @@ class AddUserGUI(LoginRequiredMixin, View):
             'form': form,
             'title': _('Add User'),
         })
+
+
+class AddUserCSV(LoginRequiredMixin, View):
+    template_name = 'user/import-user.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        return render(request, self.template_name, {
+            'title': _('Import Users'),
+            'preview': False,
+        })
+
+    def post(self, request):
+        if 'commit' in request.POST:
+            return self.commit_users(request)
+
+        csv_file = request.FILES.get('csv_file')
+        if not csv_file:
+            messages.error(request, _('No file selected.'))
+            return render(request, self.template_name, {
+                'title': _('Import Users'),
+                'preview': False,
+            })
+
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, _('Please upload a CSV file.'))
+            return render(request, self.template_name, {
+                'title': _('Import Users'),
+                'preview': False,
+            })
+
+        try:
+            decoded = csv_file.read().decode('utf-8')
+            reader = csv.reader(decoded.splitlines())
+            rows = list(reader)
+        except Exception as e:
+            messages.error(request, _('Error reading CSV file: %s') % str(e))
+            return render(request, self.template_name, {
+                'title': _('Import Users'),
+                'preview': False,
+            })
+
+        if not rows or len(rows) < 2:
+            messages.error(request, _('CSV file must have a header row and at least one data row.'))
+            return render(request, self.template_name, {
+                'title': _('Import Users'),
+                'preview': False,
+            })
+
+        header = [h.strip().lower() for h in rows[0]]
+        expected_header = ['username', 'email', 'password', 'first_name', 'last_name', 'timezone', 'language', 'organizations']
+        if header != expected_header:
+            messages.error(request, _('Invalid CSV header. Expected: %s') % ', '.join(expected_header))
+            return render(request, self.template_name, {
+                'title': _('Import Users'),
+                'preview': False,
+            })
+
+        data_rows = rows[1:101]
+        if len(rows) > 101:
+            messages.warning(request, _('Only the first 100 rows will be imported.'))
+
+        errors = []
+        valid_rows = []
+        for i, row in enumerate(data_rows, start=2):
+            if len(row) != 8:
+                errors.append(_('Row %d: Expected 8 columns, got %d.') % (i, len(row)))
+                continue
+
+            username, email, password, first_name, last_name, timezone_val, language, orgs = row
+
+            row_errors = []
+            if not username:
+                row_errors.append(_('Username is required.'))
+            if not email:
+                row_errors.append(_('Email is required.'))
+            if not password or len(password) < 8:
+                row_errors.append(_('Password must be at least 8 characters.'))
+
+            if row_errors:
+                errors.append(_('Row %d: %s') % (i, '; '.join(row_errors)))
+            else:
+                valid_rows.append({
+                    'username': username,
+                    'email': email,
+                    'password': password,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'timezone': timezone_val,
+                    'language': language,
+                    'organizations': orgs,
+                })
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, self.template_name, {
+                'title': _('Import Users'),
+                'preview': False,
+            })
+
+        request.session['import_users_preview'] = valid_rows
+        request.session['import_users_count'] = len(valid_rows)
+
+        return render(request, self.template_name, {
+            'title': _('Import Users'),
+            'preview': True,
+            'users': valid_rows,
+            'count': len(valid_rows),
+        })
+
+    def commit_users(self, request):
+        preview = request.session.get('import_users_preview', [])
+        if not preview:
+            messages.error(request, _('No preview data found. Please upload a CSV file first.'))
+            return HttpResponseRedirect(reverse('import_users'))
+
+        created = 0
+        skipped = 0
+        for row in preview:
+            try:
+                if User.objects.filter(username=row['username']).exists() or \
+                   User.objects.filter(email=row['email']).exists():
+                    skipped += 1
+                    continue
+
+                user = User.objects.create(
+                    username=row['username'],
+                    email=row['email'],
+                    first_name=row['first_name'],
+                    last_name=row['last_name'],
+                )
+                user.password = make_password(row['password'])
+                user.save()
+
+                profile = Profile.objects.create(user=user)
+
+                if row['timezone']:
+                    profile.timezone = row['timezone']
+
+                if row['language']:
+                    try:
+                        lang = Language.objects.get(name=row['language'])
+                        profile.language = lang
+                    except Language.DoesNotExist:
+                        pass
+
+                if row['organizations']:
+                    org_names = [o.strip() for o in row['organizations'].split(';') if o.strip()]
+                    for org_name in org_names:
+                        try:
+                            org = Organization.objects.get(name=org_name)
+                            profile.organizations.add(org)
+                        except Organization.DoesNotExist:
+                            pass
+
+                profile.save()
+                created += 1
+            except Exception as e:
+                skipped += 1
+
+        del request.session['import_users_preview']
+        del request.session['import_users_count']
+
+        messages.success(request, _('Successfully created %d users. %d skipped.') % (created, skipped))
+        return HttpResponseRedirect(reverse('user_list'))
