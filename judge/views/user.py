@@ -7,6 +7,7 @@ from operator import attrgetter, itemgetter
 import pytz
 from django.conf import settings
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Permission, User
@@ -32,7 +33,7 @@ from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, FormView, ListView, TemplateView, View
 from reversion import revisions
 
-from judge.forms import CustomAuthenticationForm, ProfileForm, UserBanForm, UserDownloadDataForm, UserForm, \
+from judge.forms import AddUserForm, CustomAuthenticationForm, ProfileForm, UserBanForm, UserDownloadDataForm, UserForm, \
     newsletter_id
 from judge.models import BlogPost, Organization, Profile, Submission
 from judge.models import Comment
@@ -724,3 +725,48 @@ class CustomPasswordResetView(PasswordResetView):
         }
 
         return super().post(request, *args, **kwargs)
+
+
+class AddUserGUI(LoginRequiredMixin, View):
+    template_name = 'user/add-user.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        form = AddUserForm()
+        return render(request, self.template_name, {
+            'form': form,
+            'title': _('Add User'),
+        })
+
+    def post(self, request):
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+            )
+            user.password = make_password(form.cleaned_data['password'])
+            user.save()
+
+            profile = Profile.objects.create(user=user)
+
+            if form.cleaned_data['timezone']:
+                profile.timezone = form.cleaned_data['timezone']
+            if form.cleaned_data['language']:
+                profile.language = form.cleaned_data['language']
+            if form.cleaned_data['organizations']:
+                profile.organizations.set(form.cleaned_data['organizations'])
+            profile.save()
+
+            return HttpResponseRedirect(reverse('user_list'))
+
+        return render(request, self.template_name, {
+            'form': form,
+            'title': _('Add User'),
+        })
