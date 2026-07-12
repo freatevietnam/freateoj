@@ -892,7 +892,7 @@ class AddUserCSV(LoginRequiredMixin, View):
         preview = request.session.get('import_users_preview', [])
         if not preview:
             messages.error(request, _('No preview data found. Please upload a CSV file first.'))
-            return HttpResponseRedirect(reverse('import_users'))
+            return HttpResponseRedirect(reverse('user_list'))
 
         created = 0
         skipped = 0
@@ -938,8 +938,8 @@ class AddUserCSV(LoginRequiredMixin, View):
             except Exception as e:
                 skipped += 1
 
-        del request.session['import_users_preview']
-        del request.session['import_users_count']
+        request.session.pop('import_users_preview', None)
+        request.session.pop('import_users_count', None)
 
         messages.success(request, _('Successfully created %d users. %d skipped.') % (created, skipped))
         return HttpResponseRedirect(reverse('user_list'))
