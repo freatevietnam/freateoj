@@ -27,9 +27,9 @@
             </div>
         {% endfor %}
 
-        {% if form.non_field_errors %}
+        {% if form.non_field_errors() %}
             <div class="ui error message">
-                {% for error in form.non_field_errors %}
+                {% for error in form.non_field_errors() %}
                     <p>{{ error }}</p>
                 {% endfor %}
             </div>
