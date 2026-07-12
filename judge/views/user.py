@@ -21,6 +21,7 @@ from django.db.models.fields import DateField
 from django.db.models.functions import Cast, Coalesce
 from django.forms import Form
 from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils import timezone
@@ -762,9 +763,10 @@ class AddUserGUI(LoginRequiredMixin, View):
                 profile.language = form.cleaned_data['language']
             if form.cleaned_data['organizations']:
                 profile.organizations.set(form.cleaned_data['organizations'])
-            profile.save()
+                profile.save()
 
-            return HttpResponseRedirect(reverse('user_list'))
+                messages.success(request, _('User "%s" created successfully.') % user.username)
+                return HttpResponseRedirect(reverse('user_list'))
 
         return render(request, self.template_name, {
             'form': form,
