@@ -1,0 +1,63 @@
+{% extends "user/user-base.html" %}
+
+{% block user_content %}
+    <h2>{{ _('Import Users') }}</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="ui {{ message.tags }} message">
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if not preview %}
+        <form method="post" enctype="multipart/form-data" class="ui form">
+            {% csrf_token %}
+            <div class="field">
+                <label>{{ _('CSV File') }}</label>
+                <input type="file" name="csv_file" accept=".csv" required>
+                <div class="ui pointing label">
+                    {{ _('Upload a CSV file with columns: username, email, password, first_name, last_name, timezone, language, organizations') }}
+                </div>
+            </div>
+            <button type="submit" class="ui primary button">{{ _('Upload and Preview') }}</button>
+        </form>
+    {% else %}
+        <p>{{ _('Preview of %d users to be imported:')|format(count) }}</p>
+        
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th>{{ _('Username') }}</th>
+                    <th>{{ _('Email') }}</th>
+                    <th>{{ _('First Name') }}</th>
+                    <th>{{ _('Last Name') }}</th>
+                    <th>{{ _('Timezone') }}</th>
+                    <th>{{ _('Language') }}</th>
+                    <th>{{ _('Organizations') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.timezone }}</td>
+                    <td>{{ user.language }}</td>
+                    <td>{{ user.organizations }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="commit" value="true">
+            <button type="submit" class="ui primary button">{{ _('Confirm Import') }}</button>
+            <a href="{{ url('import_users') }}" class="ui button">{{ _('Cancel') }}</a>
+        </form>
+    {% endif %}
+{% endblock %}
