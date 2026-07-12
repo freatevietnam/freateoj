@@ -20,6 +20,7 @@ from judge.views.misc_config import MiscConfigEdit
 from judge.views.problem_data import ProblemDataView, ProblemSubmissionDiff, \
     problem_data_file, problem_init_view
 from judge.views.register import RegistrationView, RegistrationCompleteView
+from judge.views.user import AddUserCSV, AddUserGUI
 from judge.views.select2 import AssigneeSelect2View, CommentSelect2View, ContestSelect2View, \
     OrganizationSelect2View, OrganizationProblemSelect2View, OrganizationUserSearchSelect2View, \
     OrganizationUserSelect2View, ProblemSelect2View, PublicProblemSelect2View, TagGroupSelect2View, \
@@ -188,6 +189,8 @@ urlpatterns = [
         path('', user.users, name='user_list'),
         path('<int:page>', lambda request, page:
              HttpResponsePermanentRedirect('%s?page=%s' % (reverse('user_list'), page))),
+        path('add/', AddUserGUI.as_view(), name='add_user'),
+        path('import/', AddUserCSV.as_view(), name='import_users'),
         path('find', user.user_ranking_redirect, name='user_ranking_redirect'),
     ])),
 
