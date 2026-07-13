@@ -42,3 +42,20 @@ INFO 2026-07-08 09:54:53,037 judge_list Minimum tier changed from None to 1
 INFO 2026-07-09 06:48:47,071 judge_handler Judge connected from: ('127.0.0.1', 33350)
 INFO 2026-07-09 06:48:47,100 judge_handler Judge authenticated: ('127.0.0.1', 33350) (judge)
 INFO 2026-07-09 06:48:47,100 judge_list Minimum tier changed from None to 1
+INFO 2026-07-12 14:53:51,203 judge_handler Judge connected from: ('127.0.0.1', 45458)
+INFO 2026-07-12 14:53:51,213 judge_handler Judge authenticated: ('127.0.0.1', 45458) (judge)
+INFO 2026-07-12 14:53:51,213 judge_list Minimum tier changed from None to 1
+INFO 2026-07-12 14:57:58,679 judge_handler judge: Replacing problem list
+INFO 2026-07-12 14:57:58,684 judge_handler judge: Replaced 0 problems
+INFO 2026-07-12 14:58:01,681 judge_handler judge: Replacing problem list
+INFO 2026-07-12 14:58:01,685 judge_handler judge: Replaced 1 problems
+INFO 2026-07-12 14:58:04,683 judge_handler judge: Replacing problem list
+INFO 2026-07-12 14:58:04,686 judge_handler judge: Replaced 1 problems
+INFO 2026-07-12 16:14:24,765 judge_handler judge: Replacing problem list
+INFO 2026-07-12 16:14:24,776 judge_handler judge: Replaced 1 problems
+INFO 2026-07-12 16:14:24,785 judge_list Minimum tier changed from 1 to None
+INFO 2026-07-12 16:14:24,859 judge_handler Judge disconnected from: ('127.0.0.1', 45458) with name judge
+INFO 2026-07-12 16:14:30,808 daemon Exiting due to SIGINT
+INFO 2026-07-13 06:16:53,066 judge_handler Judge connected from: ('127.0.0.1', 33518)
+INFO 2026-07-13 06:16:53,075 judge_handler Judge authenticated: ('127.0.0.1', 33518) (judge)
+INFO 2026-07-13 06:16:53,075 judge_list Minimum tier changed from None to 1
