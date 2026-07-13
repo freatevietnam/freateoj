@@ -1,8 +1,6 @@
 {% extends "common-content.html" %}
 
 {% block description %}
-    <h2>{{ _('Add User') }}</h2>
-
     {% if messages %}
         {% for message in messages %}
             <div class="ui {{ message.tags }} message">
@@ -11,7 +9,7 @@
         {% endfor %}
     {% endif %}
 
-    <form method="post" class="ui form">
+    <form method="post" class="ui form add-user-form">
         {% csrf_token %}
 
         {% for field in form %}

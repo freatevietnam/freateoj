@@ -1,8 +1,6 @@
 {% extends "common-content.html" %}
 
 {% block description %}
-    <h2>{{ _('Import Users') }}</h2>
-
     {% if messages %}
         {% for message in messages %}
             <div class="ui {{ message.tags }} message">
@@ -12,21 +10,30 @@
     {% endif %}
 
     {% if not preview %}
-        <form method="post" enctype="multipart/form-data" class="ui form">
-            {% csrf_token %}
-            <div class="field">
-                <label>{{ _('CSV File') }}</label>
-                <input type="file" name="csv_file" accept=".csv" required>
-                <div class="ui pointing label">
-                    {{ _('Upload a CSV file with columns: username, email, password, first_name, last_name, timezone, language, organizations') }}
-                </div>
+        <div class="import-user-form">
+            <div class="ui message">
+                <p>{{ _('Download a sample CSV file to see the expected format:') }}</p>
+                <a href="{{ url('sample_csv') }}" class="ui small button">
+                    <i class="download icon"></i> {{ _('Download Sample CSV') }}
+                </a>
             </div>
-            <button type="submit" class="ui primary button">{{ _('Upload and Preview') }}</button>
-        </form>
+
+            <form method="post" enctype="multipart/form-data" class="ui form">
+                {% csrf_token %}
+                <div class="field">
+                    <label>{{ _('CSV File') }}</label>
+                    <input type="file" name="csv_file" accept=".csv" required>
+                    <div class="ui pointing label">
+                        {{ _('Upload a CSV file with columns: username, email, password, first_name, last_name, timezone, language, organizations') }}
+                    </div>
+                </div>
+                <button type="submit" class="ui primary button">{{ _('Upload and Preview') }}</button>
+            </form>
+        </div>
     {% else %}
         <p>{{ _('Preview of %d users to be imported:')|format(count) }}</p>
 
-        <table class="ui celled table">
+        <table class="ui celled table import-preview-table">
             <thead>
                 <tr>
                     <th>{{ _('Username') }}</th>

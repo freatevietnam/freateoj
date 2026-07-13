@@ -943,3 +943,22 @@ class AddUserCSV(LoginRequiredMixin, View):
 
         messages.success(request, _('Successfully created %d users. %d skipped.') % (created, skipped))
         return HttpResponseRedirect(reverse('user_list'))
+
+
+class SampleCSVDownload(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="sample_users.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['username', 'email', 'password', 'first_name', 'last_name', 'timezone', 'language', 'organizations'])
+        writer.writerow(['john_doe', 'john@example.com', 'password123', 'John', 'Doe', 'Asia/Ho_Chi_Minh', 'Vietnamese', 'HCMUS'])
+        writer.writerow(['jane_smith', 'jane@example.com', 'securePass!', 'Jane', 'Smith', '', '', ''])
+        writer.writerow(['bob_wilson', 'bob@example.com', 'myPassword99', 'Bob', 'Wilson', 'America/New_York', 'English', 'MIT;Stanford'])
+
+        return response

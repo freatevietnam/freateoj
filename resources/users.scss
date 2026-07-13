@@ -219,6 +219,72 @@ img.user-gravatar {
     }
 }
 
+.add-user-form {
+    max-width: 600px;
+
+    .field {
+        margin-bottom: 1em;
+    }
+
+    label {
+        font-weight: 600;
+        margin-bottom: 0.3em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+        width: 100%;
+        padding: 0.6em 0.8em;
+        border: 1px solid $color_primary25;
+        border-radius: 4px;
+        font-size: 1em;
+    }
+
+    .ui.pointing.label {
+        font-size: 0.85em;
+        color: $color_primary75;
+    }
+
+    .ui.pointing.red.label {
+        color: #db2828;
+    }
+
+    .ui.primary.button {
+        margin-top: 1em;
+    }
+}
+
+.import-user-form {
+    max-width: 700px;
+
+    .ui.message {
+        margin-bottom: 1.5em;
+    }
+
+    .field {
+        margin-bottom: 1em;
+    }
+
+    input[type="file"] {
+        padding: 0.5em;
+    }
+}
+
+.import-preview-table {
+    font-size: 0.9em;
+
+    th {
+        background: $color_primary100;
+        font-weight: 600;
+    }
+
+    td {
+        padding: 0.6em 0.8em;
+    }
+}
+
 #submission-activity {
     #submission-activity-actions {
         text-align: center;
