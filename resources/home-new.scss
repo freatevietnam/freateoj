@@ -944,6 +944,29 @@
     }
 }
 
+// Rating point gradient backgrounds
+.home-leaderboard__points--rating.rating-newbie .home-leaderboard__rating-value {
+    background: linear-gradient(135deg, $color_rating_newbie, darken($color_rating_newbie, 10%));
+}
+.home-leaderboard__points--rating.rating-pupil .home-leaderboard__rating-value {
+    background: linear-gradient(135deg, $color_rating_pupil, darken($color_rating_pupil, 10%));
+}
+.home-leaderboard__points--rating.rating-specialist .home-leaderboard__rating-value {
+    background: linear-gradient(135deg, $color_rating_specialist, darken($color_rating_specialist, 10%));
+}
+.home-leaderboard__points--rating.rating-expert .home-leaderboard__rating-value {
+    background: linear-gradient(135deg, $color_rating_expert, darken($color_rating_expert, 10%));
+}
+.home-leaderboard__points--rating.rating-candidate-master .home-leaderboard__rating-value {
+    background: linear-gradient(135deg, $color_rating_candidate_master, darken($color_rating_candidate_master, 10%));
+}
+.home-leaderboard__points--rating.rating-master .home-leaderboard__rating-value {
+    background: linear-gradient(135deg, $color_rating_master, darken($color_rating_master, 10%));
+}
+.home-leaderboard__points--rating.rating-grandmaster .home-leaderboard__rating-value {
+    background: linear-gradient(135deg, $color_rating_grandmaster, darken($color_rating_grandmaster, 10%));
+}
+
 // Row background with gradient for rating levels
 .home-leaderboard__item--rating-newbie {
     background: linear-gradient(90deg, rgba($color_rating_newbie, 0.15) 0%, rgba($color_rating_newbie, 0.05) 100%);
