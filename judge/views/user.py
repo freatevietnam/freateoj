@@ -197,6 +197,19 @@ class UserAboutPage(UserPage):
         ratings = context['ratings'] = self.object.ratings.order_by('-contest__end_time').select_related('contest') \
             .defer('contest__description')
 
+        # Relationships
+        from judge.models.relationship import Relationship, RelationshipType
+        context['relationships'] = Relationship.get_relationships(self.object)
+        context['pending_requests'] = Relationship.objects.filter(
+            to_user=self.object,
+            status='pending'
+        ).select_related('from_user__user', 'relationship_type')
+        context['relationship_types'] = RelationshipType.objects.all()
+        context['show_send_button'] = (
+            self.request.user.is_authenticated and
+            self.request.profile != self.object
+        )
+
         context['rating_data'] = mark_safe(json.dumps([{
             'label': rating.contest.name,
             'rating': rating.rating,

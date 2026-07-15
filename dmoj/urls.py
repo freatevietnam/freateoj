@@ -15,6 +15,7 @@ from judge.views import TitledTemplateView, api, blog, comment, contests, langua
     organization, preview, problem, problem_download, problem_manage, ranked_submission, register, stats, status, \
     submission, tag, tasks, ticket, two_factor, user, user_summary, widgets
 from judge.views import email_api
+from judge.views import relationship as relationship_views
 from judge.views.magazine import MagazinePage
 from judge.views.misc_config import MiscConfigEdit
 from judge.views.problem_data import ProblemDataView, ProblemSubmissionDiff, \
@@ -215,6 +216,15 @@ urlpatterns = [
              HttpResponsePermanentRedirect(reverse('all_user_submissions', args=[user]))),
 
         path('/', lambda _, user: HttpResponsePermanentRedirect(reverse('user_page', args=[user]))),
+    ])),
+
+    path('relationship/', include([
+        path('types/', relationship_views.get_relationship_types, name='relationship_types'),
+        path('pending/', relationship_views.get_pending_requests, name='relationship_pending'),
+        path('send/<str:username>/', relationship_views.send_relationship_request, name='relationship_send'),
+        path('accept/<int:relationship_id>/', relationship_views.accept_relationship, name='relationship_accept'),
+        path('reject/<int:relationship_id>/', relationship_views.reject_relationship, name='relationship_reject'),
+        path('remove/<int:relationship_id>/', relationship_views.remove_relationship, name='relationship_remove'),
     ])),
 
     path('comments/upvote', comment.upvote_comment, name='comment_upvote'),

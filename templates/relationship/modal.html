@@ -1,0 +1,263 @@
+{# Relationship Modal #}
+<div id="relationship-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>{{ _('Gửi thỉnh cầu tri kỷ') }}</h3>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>{{ _('Chọn loại mối quan hệ:') }}</p>
+            <div id="relationship-types" class="relationship-types">
+                <!-- Types will be loaded via JS -->
+            </div>
+            <div id="relationship-limit" class="relationship-limit" style="display: none;">
+                <p class="limit-text"></p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="send-relationship" class="btn btn-primary">{{ _('Gửi') }}</button>
+            <button id="cancel-relationship" class="btn btn-secondary">{{ _('Hủy') }}</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: #fff;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 1.1em;
+    }
+
+    .modal-close {
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #999;
+    }
+
+    .modal-close:hover {
+        color: #333;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .relationship-types {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .relationship-type-btn {
+        padding: 12px 16px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s;
+    }
+
+    .relationship-type-btn:hover {
+        border-color: #1e90ff;
+        background: #f0f8ff;
+    }
+
+    .relationship-type-btn.selected {
+        border-color: #1e90ff;
+        background: #1e90ff;
+        color: #fff;
+    }
+
+    .relationship-type-name {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .relationship-type-limit {
+        font-size: 0.85em;
+        opacity: 0.7;
+    }
+
+    .relationship-limit {
+        margin-top: 12px;
+        padding: 10px;
+        background: #fff3cd;
+        border-radius: 6px;
+        color: #856404;
+    }
+
+    .modal-footer {
+        display: flex;
+        gap: 10px;
+        padding: 16px 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1e90ff, #99badd);
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        opacity: 0.9;
+    }
+
+    .btn-secondary {
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background: #e5e5e5;
+    }
+
+    body[data-theme="dark"] .modal-content {
+        background: #1a1a1a;
+    }
+
+    body[data-theme="dark"] .modal-header {
+        border-bottom-color: #333;
+    }
+
+    body[data-theme="dark"] .modal-header h3 {
+        color: #fff;
+    }
+
+    body[data-theme="dark"] .modal-close {
+        color: #999;
+    }
+
+    body[data-theme="dark"] .relationship-type-btn {
+        background: #2a2a2a;
+        border-color: #444;
+        color: #fff;
+    }
+
+    body[data-theme="dark"] .relationship-type-btn:hover {
+        border-color: #1e90ff;
+        background: #2a3a4a;
+    }
+
+    body[data-theme="dark"] .relationship-type-btn.selected {
+        background: #1e90ff;
+        border-color: #1e90ff;
+    }
+
+    body[data-theme="dark"] .relationship-limit {
+        background: #3a3000;
+        color: #ffd700;
+    }
+
+    body[data-theme="dark"] .modal-footer {
+        border-top-color: #333;
+    }
+
+    body[data-theme="dark"] .btn-secondary {
+        background: #333;
+        color: #fff;
+    }
+
+    body[data-theme="dark"] .btn-secondary:hover {
+        background: #444;
+    }
+</style>
+
+<script>
+$(document).ready(function() {
+    var selectedType = null;
+
+    // Load relationship types
+    $.get('/relationship/types/', function(data) {
+        var $types = $('#relationship-types');
+        data.types.forEach(function(type) {
+            $types.append(`
+                <div class="relationship-type-btn" data-id="${type.id}" data-max="${type.max_per_user}">
+                    <div class="relationship-type-name">${type.name}</div>
+                    <div class="relationship-type-limit">Tối đa ${type.max_per_user} / tài khoản</div>
+                </div>
+            `);
+        });
+    });
+
+    // Select type
+    $(document).on('click', '.relationship-type-btn', function() {
+        $('.relationship-type-btn').removeClass('selected');
+        $(this).addClass('selected');
+        selectedType = $(this).data('id');
+    });
+
+    // Send request
+    $('#send-relationship').click(function() {
+        if (!selectedType) {
+            alert('Vui lòng chọn loại mối quan hệ');
+            return;
+        }
+
+        var username = $('#relationship-modal').data('username');
+        $.post('/relationship/send/' + username + '/', {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'relationship_type': selectedType
+        }, function(data) {
+            alert(data.message);
+            $('#relationship-modal').hide();
+        }).fail(function(xhr) {
+            var data = xhr.responseJSON;
+            alert(data.error || 'Có lỗi xảy ra');
+        });
+    });
+
+    // Cancel
+    $('#cancel-relationship').click(function() {
+        $('#relationship-modal').hide();
+    });
+
+    // Close modal
+    $('.modal-close').click(function() {
+        $('#relationship-modal').hide();
+    });
+
+    // Open modal
+    $(document).on('click', '.btn-send-relationship', function() {
+        var username = $(this).data('username');
+        $('#relationship-modal').data('username', username).show();
+    });
+});
+</script>
