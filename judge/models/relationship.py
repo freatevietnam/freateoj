@@ -41,6 +41,8 @@ class Relationship(models.Model):
     # For type change requests
     pending_type_change = models.ForeignKey(RelationshipType, on_delete=models.SET_NULL, null=True, blank=True,
                                             related_name='pending_type_changes')
+    type_change_requested_by = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True, blank=True,
+                                                  related_name='type_change_requests')
 
     class Meta:
         verbose_name = _('relationship')
@@ -65,18 +67,21 @@ class Relationship(models.Model):
         self.status = 'rejected'
         self.save()
 
-    def request_type_change(self, new_type):
+    def request_type_change(self, new_type, requested_by):
         self.pending_type_change = new_type
+        self.type_change_requested_by = requested_by
         self.save()
 
     def accept_type_change(self):
         if self.pending_type_change:
             self.relationship_type = self.pending_type_change
             self.pending_type_change = None
+            self.type_change_requested_by = None
             self.save()
 
     def reject_type_change(self):
         self.pending_type_change = None
+        self.type_change_requested_by = None
         self.save()
 
     @classmethod
@@ -144,4 +149,4 @@ class Relationship(models.Model):
         return cls.objects.filter(
             models.Q(from_user=user) | models.Q(to_user=user),
             status='accepted'
-        ).select_related('from_user__user', 'to_user__user', 'relationship_type', 'pending_type_change')
+        ).select_related('from_user__user', 'to_user__user', 'relationship_type', 'pending_type_change', 'type_change_requested_by__user')

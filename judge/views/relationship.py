@@ -233,5 +233,5 @@ def change_relationship_type(request, relationship_id):
         return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
 
     # Set pending type change - requires approval from the other user
-    relationship.request_type_change(new_type)
+    relationship.request_type_change(new_type, request.profile)
     return JsonResponse({'success': True, 'message': _('Type change request sent, waiting for approval')})
