@@ -275,18 +275,23 @@
         top: 100%;
         right: 0;
         margin-top: 4px;
-        background: $color_primary0;
-        border: 1px solid $color_primary25;
-        border-radius: $radius-md;
-        box-shadow: $shadow-lg;
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         z-index: 100;
         display: none;
         min-width: 140px;
-        padding: $space-1 0;
+        padding: 4px 0;
 
         &.show {
             display: block;
         }
+    }
+
+    body[data-theme="dark"] .relationship-dropdown-menu {
+        background: #2a2a2a;
+        border-color: #444;
     }
 
     .relationship-dropdown-item {
