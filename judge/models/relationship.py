@@ -37,6 +37,10 @@ class Relationship(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # For type change requests
+    pending_type_change = models.ForeignKey(RelationshipType, on_delete=models.SET_NULL, null=True, blank=True,
+                                            related_name='pending_type_changes')
+
     class Meta:
         verbose_name = _('relationship')
         verbose_name_plural = _('relationships')
@@ -53,6 +57,20 @@ class Relationship(models.Model):
         self.status = 'rejected'
         self.save()
 
+    def request_type_change(self, new_type):
+        self.pending_type_change = new_type
+        self.save()
+
+    def accept_type_change(self):
+        if self.pending_type_change:
+            self.relationship_type = self.pending_type_change
+            self.pending_type_change = None
+            self.save()
+
+    def reject_type_change(self):
+        self.pending_type_change = None
+        self.save()
+
     @classmethod
     def can_add(cls, user, relationship_type):
         count = cls.objects.filter(
@@ -67,4 +85,4 @@ class Relationship(models.Model):
         return cls.objects.filter(
             models.Q(from_user=user) | models.Q(to_user=user),
             status='accepted'
-        ).select_related('from_user__user', 'to_user__user', 'relationship_type')
+        ).select_related('from_user__user', 'to_user__user', 'relationship_type', 'pending_type_change')
