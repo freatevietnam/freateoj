@@ -44,7 +44,7 @@
         {% for rel in relationships %}
         <div class="relationship-item">
             <div class="relationship-user">
-                {% if rel.to_user.user == user %}
+                {% if rel.to_user == user %}
                     <a href="{{ url('user_page', rel.from_user.user.username) }}">
                         <img src="{{ gravatar(rel.from_user.user, 32) }}" class="relationship-avatar">
                         <span class="relationship-username">{{ rel.from_user.user.username }}</span>
