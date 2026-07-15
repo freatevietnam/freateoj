@@ -932,6 +932,36 @@
     color: $gradient_start;
     min-width: 50px;
     text-align: right;
+    padding: 4px 10px;
+    border-radius: 4px;
+
+    &--rating {
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+}
+
+// Rating colors with backgrounds
+.rating-newbie {
+    background: $color_rating_newbie;
+}
+.rating-pupil {
+    background: $color_rating_pupil;
+}
+.rating-specialist {
+    background: $color_rating_specialist;
+}
+.rating-expert {
+    background: $color_rating_expert;
+}
+.rating-candidate-master {
+    background: $color_rating_candidate_master;
+}
+.rating-master {
+    background: $color_rating_master;
+}
+.rating-grandmaster {
+    background: $color_rating_grandmaster;
 }
 
 // Top 1, 2, 3 effects

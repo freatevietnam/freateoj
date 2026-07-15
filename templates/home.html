@@ -315,7 +315,7 @@
                                 <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
                                 <span>{{ user.display_name }}</span>
                             </a>
-                            <span class="home-leaderboard__points rating-{{ user.display_rank }}">{{ user.rating|floatformat(0) }}</span>
+                            <span class="home-leaderboard__points home-leaderboard__points--rating rating-{{ user.display_rank }}">{{ user.rating|floatformat(0) }}</span>
                         </div>
                         {% endfor %}
                     {% else %}
@@ -343,7 +343,7 @@
                                 <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
                                 <span>{{ user.display_name }}</span>
                             </a>
-                            <span class="home-leaderboard__points">{{ user.points|floatformat(0) }} {{ _('điểm') }}</span>
+                            <span class="home-leaderboard__points">{{ user.points }} {{ _('điểm') }}</span>
                         </div>
                         {% endfor %}
                     {% else %}
