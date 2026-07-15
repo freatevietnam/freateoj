@@ -10,6 +10,8 @@
 
 {% block user_content %}
     <div class="content-description">
+        {# Relationships Section - Top of profile #}
+        {% include "relationship/list.html" %}
         {% with orgs=user.organizations.filter(is_unlisted=False) %}
             {% if orgs %}
                 <p style="margin-top: 0"><b>{{ _('From') }}</b>
@@ -361,9 +363,6 @@
             });
         </script>
     {% endif %}
-
-    {# Relationships Section #}
-    {% include "relationship/list.html" %}
 
     {# Relationship Modal #}
     {% include "relationship/modal.html" %}

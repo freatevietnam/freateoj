@@ -1,20 +1,37 @@
 {# Relationship List for Profile Page #}
 <div class="relationship-section">
-    <h3>{{ _('Tri kỷ') }} <i class="fa fa-heart"></i></h3>
+    <div class="relationship-header">
+        <h3><i class="fa fa-heart"></i> {{ _('Tri kỷ') }}</h3>
+        {% if show_send_button %}
+        <button class="relationship-add-btn btn-send-relationship" data-username="{{ user.username }}">
+            <i class="fa fa-plus"></i>
+        </button>
+        {% endif %}
+    </div>
 
     {# Pending Requests #}
     {% if pending_requests %}
     <div class="relationship-pending">
-        <h4>{{ _('Thỉnh cầu chờ xử lý') }} ({{ pending_requests|length }})</h4>
+        <div class="relationship-pending-title">
+            <i class="fa fa-clock-o"></i> {{ _('Thỉnh cầu chờ xử lý') }}
+            <span class="relationship-pending-count">{{ pending_requests|length }}</span>
+        </div>
         {% for req in pending_requests %}
         <div class="relationship-pending-item">
-            <div class="relationship-pending-info">
-                <a href="{{ url('user_page', req.from_user.user.username) }}">{{ req.from_user.user.username }}</a>
-                <span class="relationship-type-badge">{{ req.relationship_type.name }}</span>
+            <div class="relationship-pending-user">
+                <img src="{{ gravatar(req.from_user.user, 32) }}" class="relationship-avatar">
+                <div class="relationship-pending-user-info">
+                    <a href="{{ url('user_page', req.from_user.user.username) }}">{{ req.from_user.user.username }}</a>
+                    <span class="relationship-type-tag relationship-type-tag--{{ req.relationship_type.key }}">{{ req.relationship_type.name }}</span>
+                </div>
             </div>
             <div class="relationship-pending-actions">
-                <button class="btn btn-sm btn-accept" data-id="{{ req.id }}">{{ _('Chấp nhận') }}</button>
-                <button class="btn btn-sm btn-reject" data-id="{{ req.id }}">{{ _('Từ chối') }}</button>
+                <button class="relationship-action-btn relationship-action-btn--accept btn-accept" data-id="{{ req.id }}">
+                    <i class="fa fa-check"></i>
+                </button>
+                <button class="relationship-action-btn relationship-action-btn--reject btn-reject" data-id="{{ req.id }}">
+                    <i class="fa fa-times"></i>
+                </button>
             </div>
         </div>
         {% endfor %}
@@ -26,67 +43,108 @@
     <div class="relationship-list">
         {% for rel in relationships %}
         <div class="relationship-item">
-            <div class="relationship-info">
-                {% if rel.from_user == user.profile %}
+            <div class="relationship-user">
+                {% if rel.from_user.user == request.user %}
                     <a href="{{ url('user_page', rel.to_user.user.username) }}">
-                        <img src="{{ gravatar(rel.to_user.user, 24) }}" class="relationship-avatar">
-                        {{ rel.to_user.user.username }}
+                        <img src="{{ gravatar(rel.to_user.user, 32) }}" class="relationship-avatar">
+                        <span class="relationship-username">{{ rel.to_user.user.username }}</span>
                     </a>
                 {% else %}
                     <a href="{{ url('user_page', rel.from_user.user.username) }}">
-                        <img src="{{ gravatar(rel.from_user.user, 24) }}" class="relationship-avatar">
-                        {{ rel.from_user.user.username }}
+                        <img src="{{ gravatar(rel.from_user.user, 32) }}" class="relationship-avatar">
+                        <span class="relationship-username">{{ rel.from_user.user.username }}</span>
                     </a>
                 {% endif %}
             </div>
-            <div class="relationship-type-badge relationship-type-badge--{{ rel.relationship_type.key }}">
+            <span class="relationship-type-tag relationship-type-tag--{{ rel.relationship_type.key }}">
                 {{ rel.relationship_type.name }}
-            </div>
-            <button class="btn btn-sm btn-remove" data-id="{{ rel.id }}">{{ _('Xóa') }}</button>
+            </span>
+            <button class="relationship-action-btn relationship-action-btn--remove btn-remove" data-id="{{ rel.id }}">
+                <i class="fa fa-times"></i>
+            </button>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <p class="relationship-empty">{{ _('Chưa có tri kỷ nào') }}</p>
-    {% endif %}
-
-    {# Send Request Button #}
-    {% if show_send_button %}
-    <button class="btn btn-primary btn-send-relationship" data-username="{{ user.username }}">
-        <i class="fa fa-plus"></i> {{ _('Gửi thỉnh cầu tri kỷ') }}
-    </button>
+    <div class="relationship-empty">
+        <i class="fa fa-heart-o"></i>
+        <p>{{ _('Chưa có tri kỷ nào') }}</p>
+    </div>
     {% endif %}
 </div>
 
 <style>
     .relationship-section {
-        background: #fff;
-        border: 1px solid #eee;
-        border-radius: 8px;
+        background: $color_primary5;
+        border: 1px solid $color_primary25;
+        border-radius: $widget_border_radius;
         padding: 20px;
         margin-bottom: 20px;
     }
 
-    .relationship-section h3 {
-        margin: 0 0 16px 0;
-        font-size: 1.1em;
-        color: #333;
+    .relationship-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
     }
 
-    .relationship-section h3 i {
+    .relationship-header h3 {
+        margin: 0;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: $color_primary100;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .relationship-header h3 i {
         color: #e74c3c;
+    }
+
+    .relationship-add-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: $gradient_css;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+
+        &:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
     }
 
     .relationship-pending {
         margin-bottom: 16px;
         padding-bottom: 16px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid $color_primary25;
     }
 
-    .relationship-pending h4 {
-        margin: 0 0 12px 0;
-        font-size: 0.95em;
-        color: #666;
+    .relationship-pending-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85em;
+        color: $color_primary66;
+        margin-bottom: 12px;
+        font-weight: 500;
+    }
+
+    .relationship-pending-count {
+        background: $gradient_start;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.85em;
+        font-weight: 600;
     }
 
     .relationship-pending-item {
@@ -94,27 +152,84 @@
         justify-content: space-between;
         align-items: center;
         padding: 10px;
-        background: #f8f9fa;
-        border-radius: 6px;
+        background: $color_primary10;
+        border-radius: $widget_border_radius;
         margin-bottom: 8px;
     }
 
-    .relationship-pending-info {
+    .relationship-pending-user {
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
+    .relationship-pending-user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .relationship-pending-user-info a {
+        font-weight: 600;
+        color: $color_primary100;
+        text-decoration: none;
+        font-size: 0.9em;
+
+        &:hover {
+            color: $gradient_start;
+        }
+    }
+
     .relationship-pending-actions {
         display: flex;
-        gap: 8px;
+        gap: 6px;
+    }
+
+    .relationship-action-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75em;
+        transition: all 0.2s;
+    }
+
+    .relationship-action-btn--accept {
+        background: #27ae60;
+        color: white;
+
+        &:hover {
+            background: #219a52;
+        }
+    }
+
+    .relationship-action-btn--reject {
+        background: #e74c3c;
+        color: white;
+
+        &:hover {
+            background: #c0392b;
+        }
+    }
+
+    .relationship-action-btn--remove {
+        background: $color_primary10;
+        color: $color_primary66;
+
+        &:hover {
+            background: #e74c3c;
+            color: white;
+        }
     }
 
     .relationship-list {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        margin-bottom: 16px;
     }
 
     .relationship-item {
@@ -122,144 +237,117 @@
         align-items: center;
         justify-content: space-between;
         padding: 10px;
-        background: #f8f9fa;
-        border-radius: 6px;
+        background: $color_primary10;
+        border-radius: $widget_border_radius;
+        transition: background 0.2s;
+
+        &:hover {
+            background: $color_primary25;
+        }
     }
 
-    .relationship-info {
+    .relationship-user {
         display: flex;
         align-items: center;
         gap: 10px;
+
+        a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
     }
 
-    .relationship-info a {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #333;
-        text-decoration: none;
-        font-weight: 500;
-    }
+    .relationship-username {
+        font-weight: 600;
+        color: $color_primary100;
+        font-size: 0.9em;
 
-    .relationship-info a:hover {
-        color: #1e90ff;
+        &:hover {
+            color: $gradient_start;
+        }
     }
 
     .relationship-avatar {
-        width: 24px;
-        height: 24px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
+        border: 2px solid $color_primary25;
     }
 
-    .relationship-type-badge {
+    .relationship-type-tag {
         padding: 4px 10px;
-        background: #1e90ff;
-        color: #fff;
         border-radius: 12px;
-        font-size: 0.75em;
+        font-size: 0.7em;
         font-weight: 600;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
-    .relationship-type-badge--tri_ky {
+    .relationship-type-tag--tri_ky {
         background: linear-gradient(135deg, #e74c3c, #c0392b);
     }
 
-    .relationship-type-badge--chi_em {
+    .relationship-type-tag--chi_em {
         background: linear-gradient(135deg, #9b59b6, #8e44ad);
     }
 
-    .relationship-type-badge--ban_be {
+    .relationship-type-tag--ban_be {
         background: linear-gradient(135deg, #3498db, #2980b9);
     }
 
-    .relationship-type-badge--cap_doi {
+    .relationship-type-tag--cap_doi {
         background: linear-gradient(135deg, #e91e63, #c2185b);
     }
 
-    .relationship-type-badge--lop_du_phong {
+    .relationship-type-tag--lop_du_phong {
         background: linear-gradient(135deg, #27ae60, #229954);
     }
 
     .relationship-empty {
-        color: #999;
-        font-style: italic;
         text-align: center;
-        padding: 20px;
-    }
+        padding: 24px;
+        color: $color_primary66;
 
-    .btn {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 0.85em;
-        transition: all 0.2s;
-    }
+        i {
+            font-size: 2em;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
 
-    .btn-sm {
-        padding: 6px 12px;
-        font-size: 0.8em;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #1e90ff, #99badd);
-        color: #fff;
-    }
-
-    .btn-primary:hover {
-        opacity: 0.9;
-    }
-
-    .btn-accept {
-        background: #27ae60;
-        color: #fff;
-    }
-
-    .btn-accept:hover {
-        background: #219a52;
-    }
-
-    .btn-reject {
-        background: #e74c3c;
-        color: #fff;
-    }
-
-    .btn-reject:hover {
-        background: #c0392b;
-    }
-
-    .btn-remove {
-        background: #f5f5f5;
-        color: #999;
-    }
-
-    .btn-remove:hover {
-        background: #e74c3c;
-        color: #fff;
+        p {
+            margin: 0;
+            font-size: 0.9em;
+        }
     }
 
     body[data-theme="dark"] .relationship-section {
-        background: #1a1a1a;
-        border-color: #333;
+        background: $color_primary5;
+        border-color: $color_primary25;
     }
 
-    body[data-theme="dark"] .relationship-section h3 {
-        color: #fff;
+    body[data-theme="dark"] .relationship-header h3 {
+        color: $color_primary100;
     }
 
     body[data-theme="dark"] .relationship-pending-item,
     body[data-theme="dark"] .relationship-item {
-        background: #2a2a2a;
+        background: $color_primary10;
     }
 
-    body[data-theme="dark"] .relationship-info a {
-        color: #fff;
+    body[data-theme="dark"] .relationship-item:hover {
+        background: $color_primary25;
     }
 
-    body[data-theme="dark"] .btn-secondary {
-        background: #333;
-        color: #fff;
+    body[data-theme="dark"] .relationship-user a {
+        color: $color_primary100;
+    }
+
+    body[data-theme="dark"] .relationship-action-btn--remove {
+        background: $color_primary10;
+        color: $color_primary66;
     }
 </style>
 
@@ -271,7 +359,6 @@ $(document).ready(function() {
         $.post('/relationship/accept/' + id + '/', {
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         }, function(data) {
-            alert(data.message);
             location.reload();
         }).fail(function(xhr) {
             var data = xhr.responseJSON;
@@ -285,7 +372,6 @@ $(document).ready(function() {
         $.post('/relationship/reject/' + id + '/', {
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         }, function(data) {
-            alert(data.message);
             location.reload();
         }).fail(function(xhr) {
             var data = xhr.responseJSON;
@@ -300,7 +386,6 @@ $(document).ready(function() {
         $.post('/relationship/remove/' + id + '/', {
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         }, function(data) {
-            alert(data.message);
             location.reload();
         }).fail(function(xhr) {
             var data = xhr.responseJSON;
