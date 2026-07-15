@@ -10,6 +10,7 @@ class Command(BaseCommand):
         types = [
             ('tri_ky', '🫶 Tri kỷ', 5),
             ('chi_em', '👩‍❤️‍👩 Chị em', 5),
+            ('anh_em', '👫 Anh em', 5),
             ('cap_doi', '❤️ Cặp đôi', 1),
             ('lop_du_phong', '🛞 Lốp dự phòng', 999),
         ]
