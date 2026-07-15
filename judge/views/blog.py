@@ -296,9 +296,9 @@ class PostList(PostListBase):
                 [:settings.FREATEOJ_HOMEPAGE_TOP_USERS_COUNT])
 
     def get_top_problem_solvers(self):
-        return (Profile.objects.order_by('-problem_count')
-                .filter(problem_count__gt=0, is_unlisted=False)
-                .only('user', 'problem_count', 'display_rank', 'display_badge', 'rating',
+        return (Profile.objects.order_by('-points')
+                .filter(points__gt=0, is_unlisted=False)
+                .only('user', 'points', 'problem_count', 'display_rank', 'display_badge', 'rating',
                       'username_display_override')
                 .select_related('user', 'display_badge')
                 [:settings.FREATEOJ_HOMEPAGE_TOP_USERS_COUNT])

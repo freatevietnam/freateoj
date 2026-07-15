@@ -343,7 +343,7 @@
                                 <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
                                 <span>{{ user.display_name }}</span>
                             </a>
-                            <span class="home-leaderboard__points">{{ user.problem_count }} {{ _('bài') }}</span>
+                            <span class="home-leaderboard__points">{{ user.points|floatformat(0) }} {{ _('điểm') }}</span>
                         </div>
                         {% endfor %}
                     {% else %}
