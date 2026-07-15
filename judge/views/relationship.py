@@ -29,7 +29,7 @@ def send_relationship_request(request, username):
         max_limit = relationship_type.max_per_user
         return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
 
-    # Check if already exists
+    # Check if already exists (in either direction)
     existing = Relationship.objects.filter(
         from_user=from_user,
         to_user=to_user,
@@ -44,6 +44,22 @@ def send_relationship_request(request, username):
         else:
             # Rejected, allow new request
             existing.delete()
+
+    # Check if reverse relationship exists
+    reverse_existing = Relationship.objects.filter(
+        from_user=to_user,
+        to_user=from_user,
+        relationship_type=relationship_type
+    ).first()
+
+    if reverse_existing:
+        if reverse_existing.status == 'pending':
+            return JsonResponse({'error': _('Request already pending from this user')}, status=400)
+        elif reverse_existing.status == 'accepted':
+            return JsonResponse({'error': _('Already friends')}, status=400)
+        else:
+            # Rejected, allow new request
+            reverse_existing.delete()
 
     # Create request
     relationship = Relationship.objects.create(
@@ -66,6 +82,17 @@ def accept_relationship(request, relationship_id):
     if not Relationship.can_add(request.user.profile, relationship.relationship_type):
         max_limit = relationship.relationship_type.max_per_user
         return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
+
+    # Check if reverse relationship already accepted
+    reverse_accepted = Relationship.objects.filter(
+        from_user=relationship.to_user,
+        to_user=relationship.from_user,
+        relationship_type=relationship.relationship_type,
+        status='accepted'
+    ).exists()
+
+    if reverse_accepted:
+        return JsonResponse({'error': _('Already friends')}, status=400)
 
     relationship.accept()
     return JsonResponse({'success': True, 'message': _('Request accepted')})
