@@ -43,14 +43,6 @@
                     $preview.find('.home-preview-content').eq(index).show();
                 }
 
-                // Click handler
-                $items.on('click', function () {
-                    var index = $items.index(this);
-                    showPreview(index);
-                    clearInterval(autoTimer);
-                    startAuto();
-                });
-
                 // Hover handler
                 $items.on('mouseenter', function () {
                     var index = $items.index(this);
@@ -150,7 +142,7 @@
             {# List Panel (Right) #}
             <div class="home-preview-list">
                 {% for post in posts[:5] %}
-                <div class="home-preview-list__item{% if loop.first %} active{% endif %}">
+                <a href="{{ url('blog_post', post.id, post.slug) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
                     <div class="home-preview-list__rank">#{{ loop.index }}</div>
                     <div class="home-preview-list__info">
                         <div class="home-preview-list__title">{{ post.title }}</div>
@@ -160,7 +152,7 @@
                         </div>
                     </div>
                     <i class="fa fa-chevron-right"></i>
-                </div>
+                </a>
                 {% endfor %}
             </div>
         </div>
@@ -202,7 +194,7 @@
             {# List Panel (Right) #}
             <div class="home-preview-list">
                 {% for problem in latest_problems[:5] %}
-                <div class="home-preview-list__item{% if loop.first %} active{% endif %}">
+                <a href="{{ url('problem_detail', problem.code) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
                     <div class="home-preview-list__rank">#{{ loop.index }}</div>
                     <div class="home-preview-list__info">
                         <div class="home-preview-list__title">{{ problem.name }}</div>
@@ -213,7 +205,7 @@
                         </div>
                     </div>
                     <i class="fa fa-chevron-right"></i>
-                </div>
+                </a>
                 {% endfor %}
             </div>
         </div>
@@ -259,7 +251,7 @@
             {# List Panel (Right) #}
             <div class="home-preview-list">
                 {% for contest in current_contests[:3] %}
-                <div class="home-preview-list__item{% if loop.first %} active{% endif %}">
+                <a href="{{ url('contest_view', contest.key) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
                     <div class="home-preview-list__rank">#{{ loop.index }}</div>
                     <div class="home-preview-list__info">
                         <div class="home-preview-list__title">{{ contest.name }}</div>
@@ -269,10 +261,10 @@
                         </div>
                     </div>
                     <i class="fa fa-chevron-right"></i>
-                </div>
+                </a>
                 {% endfor %}
                 {% for contest in future_contests[:2] %}
-                <div class="home-preview-list__item">
+                <a href="{{ url('contest_view', contest.key) }}" class="home-preview-list__item">
                     <div class="home-preview-list__rank">#{{ loop.index + current_contests|length }}</div>
                     <div class="home-preview-list__info">
                         <div class="home-preview-list__title">{{ contest.name }}</div>
@@ -282,7 +274,49 @@
                         </div>
                     </div>
                     <i class="fa fa-chevron-right"></i>
-                </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    {# Organizations Section with Preview #}
+    {% if top_organizations %}
+    <section class="home-section home-preview-section">
+        <div class="home-section__header">
+            <h2>{{ _('Tổ chức') }}</h2>
+            <a href="{{ url('organization_list') }}" class="home-section__link">{{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i></a>
+        </div>
+        <div class="home-preview-layout">
+            {# Preview Panel (Left) #}
+            <div class="home-preview-panel">
+                {% for org in top_organizations[:5] %}
+                <a href="{{ url('organization_home', org.slug) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
+                    <div class="home-preview-badge">{{ _('Tổ chức nổi bật') }}</div>
+                    <h3 class="home-preview-title">{{ org.name }}</h3>
+                    <div class="home-preview-meta">
+                        <span><i class="fa fa-users"></i> {{ org.member_count }} {{ _('thành viên') }}</span>
+                        <span><i class="fa fa-trophy"></i> {{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
+                    </div>
+                    <p class="home-preview-excerpt">{{ org.about|truncatechars(200) }}</p>
+                </a>
+                {% endfor %}
+            </div>
+            {# List Panel (Right) #}
+            <div class="home-preview-list">
+                {% for org in top_organizations[:5] %}
+                <a href="{{ url('organization_home', org.slug) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
+                    <div class="home-preview-list__rank">#{{ loop.index }}</div>
+                    <div class="home-preview-list__info">
+                        <div class="home-preview-list__title">{{ org.name }}</div>
+                        <div class="home-preview-list__meta">
+                            <span>{{ org.member_count }} {{ _('thành viên') }}</span>
+                            <span>{{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
+                        </div>
+                    </div>
+                    <i class="fa fa-chevron-right"></i>
+                </a>
                 {% endfor %}
             </div>
         </div>

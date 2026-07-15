@@ -853,10 +853,16 @@
     padding: 14px 16px;
     cursor: pointer;
     transition: all 0.2s;
+    position: relative;
+    z-index: 2;
+    text-decoration: none;
+    color: inherit;
 
     &:hover {
         border-color: $gradient_start;
         background: $color_primary10;
+        text-decoration: none;
+        color: inherit;
     }
 
     &.active {

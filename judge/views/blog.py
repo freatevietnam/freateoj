@@ -19,7 +19,7 @@ from judge.comments import CommentedDetailView
 from judge.dblock import LockModel
 from judge.forms import BlogPostForm
 from judge.models import (BlogPost, BlogPostTag, BlogVote, Comment, Contest, Language,
-                          Problem, Profile, Submission, Ticket)
+                          Organization, Problem, Profile, Submission, Ticket)
 from judge.tasks.webhook import on_new_blogpost
 from judge.utils.cachedict import CacheDict
 from judge.utils.diggpaginator import DiggPaginator
@@ -257,6 +257,7 @@ class PostList(PostListBase):
         context['top_rated_users'] = self.get_top_rated_users()
         context['top_contrib'] = self.get_top_contributors()
         context['top_problem_solvers'] = self.get_top_problem_solvers()
+        context['top_organizations'] = self.get_top_organizations()
         context['now'] = now
 
         if self.request.user.is_authenticated:
@@ -301,6 +302,11 @@ class PostList(PostListBase):
                 .only('user', 'points', 'problem_count', 'display_rank', 'display_badge', 'rating',
                       'username_display_override')
                 .select_related('user', 'display_badge')
+                [:settings.FREATEOJ_HOMEPAGE_TOP_USERS_COUNT])
+
+    def get_top_organizations(self):
+        return (Organization.objects.order_by('-performance_points')
+                .filter(is_open=True)
                 [:settings.FREATEOJ_HOMEPAGE_TOP_USERS_COUNT])
 
 
