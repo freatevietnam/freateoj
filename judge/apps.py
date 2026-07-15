@@ -25,3 +25,37 @@ class JudgeAppConfig(AppConfig):
                 profile.save()
         except DatabaseError:
             pass
+
+        # Auto-sync relationship types from settings
+        self._sync_relationship_types()
+
+    def _sync_relationship_types(self):
+        from django.conf import settings
+        from judge.models.relationship import RelationshipType
+
+        configured = getattr(settings, 'FREATEOJ_RELATIONSHIP_TYPES', {})
+        if not configured:
+            return
+
+        try:
+            existing = {rt.key: rt for rt in RelationshipType.objects.all()}
+
+            for key, config in configured.items():
+                if key in existing:
+                    rt = existing[key]
+                    if rt.name != config['name'] or rt.max_per_user != config['max_per_user']:
+                        rt.name = config['name']
+                        rt.max_per_user = config['max_per_user']
+                        rt.save()
+                else:
+                    RelationshipType.objects.create(
+                        key=key,
+                        name=config['name'],
+                        max_per_user=config['max_per_user']
+                    )
+
+            for key, rt in existing.items():
+                if key not in configured:
+                    rt.delete()
+        except DatabaseError:
+            pass
