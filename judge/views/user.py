@@ -200,15 +200,23 @@ class UserAboutPage(UserPage):
         # Relationships
         from judge.models.relationship import Relationship, RelationshipType
         context['relationships'] = Relationship.get_relationships(self.object)
-        context['pending_requests'] = Relationship.objects.filter(
-            to_user=self.object,
-            status='pending'
-        ).select_related('from_user__user', 'relationship_type')
         context['relationship_types'] = RelationshipType.objects.all()
         context['show_send_button'] = (
             self.request.user.is_authenticated and
             self.request.profile != self.object
         )
+        context['is_owner'] = (
+            self.request.user.is_authenticated and
+            self.request.profile == self.object
+        )
+        # Only show pending requests to the profile owner
+        if context['is_owner']:
+            context['pending_requests'] = Relationship.objects.filter(
+                to_user=self.object,
+                status='pending'
+            ).select_related('from_user__user', 'relationship_type')
+        else:
+            context['pending_requests'] = []
 
         context['rating_data'] = mark_safe(json.dumps([{
             'label': rating.contest.name,

@@ -9,8 +9,8 @@
         {% endif %}
     </div>
 
-    {# Pending Requests #}
-    {% if pending_requests %}
+    {# Pending Requests - Only show to owner #}
+    {% if is_owner and pending_requests %}
     <div class="relationship-pending">
         <div class="relationship-pending-title">
             <i class="fa fa-clock-o"></i> {{ _('Thỉnh cầu chờ xử lý') }}
@@ -59,9 +59,11 @@
             <span class="relationship-type-tag relationship-type-tag--{{ rel.relationship_type.key }}">
                 {{ rel.relationship_type.name }}
             </span>
+            {% if is_owner or rel.from_user.user == request.user or rel.to_user.user == request.user %}
             <button class="relationship-action-btn relationship-action-btn--remove btn-remove" data-id="{{ rel.id }}">
                 <i class="fa fa-times"></i>
             </button>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
