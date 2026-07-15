@@ -7,7 +7,6 @@ class RelationshipType(models.Model):
     RELATIONSHIP_CHOICES = [
         ('tri_ky', _('Tri kỷ')),
         ('chi_em', _('Chị em')),
-        ('ban_be', _('Bạn bè')),
         ('cap_doi', _('Cặp đôi')),
         ('lop_du_phong', _('Lốp dự phòng')),
     ]

@@ -8,11 +8,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         types = [
-            ('tri_ky', 'Tri kỷ', 5),
-            ('chi_em', 'Chị em', 5),
-            ('ban_be', 'Bạn bè', 5),
-            ('cap_doi', 'Cặp đôi', 1),
-            ('lop_du_phong', 'Lốp dự phòng', 999),
+            ('tri_ky', '🫶 Tri kỷ', 5),
+            ('chi_em', '👩‍❤️‍👩 Chị em', 5),
+            ('cap_doi', '❤️ Cặp đôi', 1),
+            ('lop_du_phong', '🛞 Lốp dự phòng', 999),
         ]
 
         for key, name, max_per_user in types:
