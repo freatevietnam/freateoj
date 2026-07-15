@@ -179,8 +179,9 @@ def accept_type_change(request, relationship_id):
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
     relationship = get_object_or_404(Relationship, id=relationship_id, status='accepted')
-    if relationship.to_user != request.profile:
-        return JsonResponse({'error': 'Not authorized'}, status=403)
+    # Only the other user (not the one who requested) can approve
+    if relationship.from_user == request.profile:
+        return JsonResponse({'error': _('You cannot approve your own request')}, status=403)
 
     if not relationship.pending_type_change:
         return JsonResponse({'error': _('No pending type change')}, status=400)
@@ -200,8 +201,9 @@ def reject_type_change(request, relationship_id):
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
     relationship = get_object_or_404(Relationship, id=relationship_id, status='accepted')
-    if relationship.to_user != request.profile:
-        return JsonResponse({'error': 'Not authorized'}, status=403)
+    # Only the other user (not the one who requested) can reject
+    if relationship.from_user == request.profile:
+        return JsonResponse({'error': _('You cannot reject your own request')}, status=403)
 
     relationship.reject_type_change()
     return JsonResponse({'success': True, 'message': _('Type change rejected')})
