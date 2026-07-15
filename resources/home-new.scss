@@ -935,41 +935,43 @@
 }
 
 .home-leaderboard__points--rating {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 12px;
-    border-radius: $widget_border_radius;
-    min-width: 60px;
-
     .home-leaderboard__rating-value {
         color: white;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         font-weight: 700;
+        padding: 4px 12px;
+        border-radius: $widget_border_radius;
     }
 }
 
-// Rating colors with backgrounds
-.home-leaderboard__points--rating.rating-newbie {
-    background: $color_rating_newbie;
+// Row background with gradient for rating levels
+.home-leaderboard__item--rating-newbie {
+    background: linear-gradient(90deg, rgba($color_rating_newbie, 0.15) 0%, rgba($color_rating_newbie, 0.05) 100%);
+    border-left: 3px solid $color_rating_newbie;
 }
-.home-leaderboard__points--rating.rating-pupil {
-    background: $color_rating_pupil;
+.home-leaderboard__item--rating-pupil {
+    background: linear-gradient(90deg, rgba($color_rating_pupil, 0.15) 0%, rgba($color_rating_pupil, 0.05) 100%);
+    border-left: 3px solid $color_rating_pupil;
 }
-.home-leaderboard__points--rating.rating-specialist {
-    background: $color_rating_specialist;
+.home-leaderboard__item--rating-specialist {
+    background: linear-gradient(90deg, rgba($color_rating_specialist, 0.15) 0%, rgba($color_rating_specialist, 0.05) 100%);
+    border-left: 3px solid $color_rating_specialist;
 }
-.home-leaderboard__points--rating.rating-expert {
-    background: $color_rating_expert;
+.home-leaderboard__item--rating-expert {
+    background: linear-gradient(90deg, rgba($color_rating_expert, 0.15) 0%, rgba($color_rating_expert, 0.05) 100%);
+    border-left: 3px solid $color_rating_expert;
 }
-.home-leaderboard__points--rating.rating-candidate-master {
-    background: $color_rating_candidate_master;
+.home-leaderboard__item--rating-candidate-master {
+    background: linear-gradient(90deg, rgba($color_rating_candidate_master, 0.15) 0%, rgba($color_rating_candidate_master, 0.05) 100%);
+    border-left: 3px solid $color_rating_candidate_master;
 }
-.home-leaderboard__points--rating.rating-master {
-    background: $color_rating_master;
+.home-leaderboard__item--rating-master {
+    background: linear-gradient(90deg, rgba($color_rating_master, 0.15) 0%, rgba($color_rating_master, 0.05) 100%);
+    border-left: 3px solid $color_rating_master;
 }
-.home-leaderboard__points--rating.rating-grandmaster {
-    background: $color_rating_grandmaster;
+.home-leaderboard__item--rating-grandmaster {
+    background: linear-gradient(90deg, rgba($color_rating_grandmaster, 0.15) 0%, rgba($color_rating_grandmaster, 0.05) 100%);
+    border-left: 3px solid $color_rating_grandmaster;
 }
 
 // Top 1, 2, 3 effects

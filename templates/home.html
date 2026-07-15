@@ -304,7 +304,7 @@
                 <div class="home-leaderboard">
                     {% if top_rated_users %}
                         {% for user in top_rated_users %}
-                        <div class="home-leaderboard__item{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
+                        <div class="home-leaderboard__item home-leaderboard__item--rating-{{ user.display_rank }}{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
                             <span class="home-leaderboard__rank home-leaderboard__rank--{{ loop.index }}">
                                 {% if loop.index == 1 %}<i class="fa fa-trophy"></i>
                                 {% elif loop.index == 2 %}<i class="fa fa-medal"></i>
@@ -315,7 +315,7 @@
                                 <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
                                 <span>{{ user.display_name }}</span>
                             </a>
-                            <span class="home-leaderboard__points home-leaderboard__points--rating rating-{{ user.display_rank }}">
+                            <span class="home-leaderboard__points home-leaderboard__points--rating">
                                 <span class="home-leaderboard__rating-value">{{ user.rating|floatformat(0) }}</span>
                             </span>
                         </div>
