@@ -134,7 +134,7 @@
                         <span><i class="fa fa-user"></i> {{ post.authors.first().user.username }}</span>
                         <span><i class="fa fa-calendar"></i> {{ post.publish_on|date("M j, Y") }}</span>
                     </div>
-                    <p class="home-preview-excerpt">{{ post.summary|markdown('blog', MATH_ENGINE, lazy_load=True)|reference|truncatechars(300) }}</p>
+                    <p class="home-preview-excerpt">{{ post.summary|truncatechars(300) }}</p>
                     <span class="home-preview-readmore">{{ _('Đọc thêm') }} <i class="fa fa-arrow-right"></i></span>
                 </a>
                 {% endfor %}
@@ -299,7 +299,7 @@
                         <span><i class="fa fa-users"></i> {{ org.member_count }} {{ _('thành viên') }}</span>
                         <span><i class="fa fa-trophy"></i> {{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
                     </div>
-                    <p class="home-preview-excerpt">{{ org.about|markdown('organization-about', MATH_ENGINE, lazy_load=True)|reference|truncatechars(200) }}</p>
+                    <p class="home-preview-excerpt">{{ org.about|truncatechars(200) }}</p>
                 </a>
                 {% endfor %}
             </div>
