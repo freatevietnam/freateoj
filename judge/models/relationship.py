@@ -45,6 +45,13 @@ class Relationship(models.Model):
         verbose_name = _('relationship')
         verbose_name_plural = _('relationships')
         unique_together = ('from_user', 'to_user', 'relationship_type')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['from_user', 'to_user'],
+                condition=models.Q(status='accepted'),
+                name='unique_accepted_relationship_per_pair'
+            )
+        ]
 
     def __str__(self):
         return f'{self.from_user} -> {self.to_user} ({self.relationship_type})'
@@ -70,6 +77,57 @@ class Relationship(models.Model):
     def reject_type_change(self):
         self.pending_type_change = None
         self.save()
+
+    @classmethod
+    def cleanup_duplicates(cls):
+        """Auto-fix: Remove duplicate relationships, keep only the newest."""
+        from django.db.models import Q
+
+        relationships = cls.objects.filter(status='accepted').order_by('-created_at')
+        seen_pairs = set()
+        to_delete = []
+
+        for rel in relationships:
+            pair = tuple(sorted([rel.from_user_id, rel.to_user_id]))
+            if pair in seen_pairs:
+                to_delete.append(rel.id)
+            else:
+                seen_pairs.add(pair)
+
+        if to_delete:
+            cls.objects.filter(id__in=to_delete).delete()
+            return len(to_delete)
+        return 0
+
+    @classmethod
+    def cleanup_old_pending(cls):
+        """Auto-fix: Remove old pending requests when newer ones exist."""
+        from django.db.models import Q
+
+        pending = cls.objects.filter(status='pending')
+        to_delete = []
+
+        for rel in pending:
+            newer_exists = cls.objects.filter(
+                from_user=rel.from_user,
+                to_user=rel.to_user,
+                created_at__gt=rel.created_at
+            ).exists()
+            if newer_exists:
+                to_delete.append(rel.id)
+
+        if to_delete:
+            cls.objects.filter(id__in=to_delete).delete()
+            return len(to_delete)
+        return 0
+
+    @classmethod
+    def has_any_relationship(cls, user1, user2):
+        """Check if any accepted relationship exists between two users."""
+        return cls.objects.filter(
+            Q(from_user=user1, to_user=user2, status='accepted') |
+            Q(from_user=user2, to_user=user1, status='accepted')
+        ).exists()
 
     @classmethod
     def can_add(cls, user, relationship_type):

@@ -192,35 +192,6 @@ EPOCH = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
 class UserAboutPage(UserPage):
     template_name = 'user/user-about.html'
 
-    def cleanup_duplicate_relationships(self, user):
-        """Clean up duplicate relationships - keep only the newest one between any two users."""
-        from judge.models.relationship import Relationship
-        from django.db.models import Q
-
-        # Get all relationships involving this user
-        relationships = Relationship.objects.filter(
-            Q(from_user=user) | Q(to_user=user),
-            status='accepted'
-        ).order_by('-created_at')
-
-        # Track seen user pairs to keep only the newest
-        seen_pairs = set()
-        to_delete = []
-
-        for rel in relationships:
-            # Create a sorted tuple of user IDs to identify the pair
-            pair = tuple(sorted([rel.from_user_id, rel.to_user_id]))
-
-            if pair in seen_pairs:
-                # Duplicate found, mark for deletion
-                to_delete.append(rel.id)
-            else:
-                seen_pairs.add(pair)
-
-        # Delete duplicates
-        if to_delete:
-            Relationship.objects.filter(id__in=to_delete).delete()
-
     def get_context_data(self, **kwargs):
         context = super(UserAboutPage, self).get_context_data(**kwargs)
         ratings = context['ratings'] = self.object.ratings.order_by('-contest__end_time').select_related('contest') \
@@ -234,9 +205,9 @@ class UserAboutPage(UserPage):
             self.request.profile == self.object
         )
 
-        # Clean up duplicates - keep only the newest relationship between any two users
-        if context['is_owner'] or (self.request.user.is_authenticated):
-            self.cleanup_duplicate_relationships(self.object)
+        # Auto-fix: Clean up duplicates and old pending requests
+        Relationship.cleanup_duplicates()
+        Relationship.cleanup_old_pending()
 
         context['relationships'] = Relationship.get_relationships(self.object)
 
@@ -252,15 +223,7 @@ class UserAboutPage(UserPage):
         # Check if already has relationship with this user
         has_relationship = False
         if self.request.user.is_authenticated and self.request.profile != self.object:
-            has_relationship = Relationship.objects.filter(
-                from_user=self.request.profile,
-                to_user=self.object,
-                status='accepted'
-            ).exists() or Relationship.objects.filter(
-                from_user=self.object,
-                to_user=self.request.profile,
-                status='accepted'
-            ).exists()
+            has_relationship = Relationship.has_any_relationship(self.request.profile, self.object)
 
         context['show_send_button'] = (
             self.request.user.is_authenticated and

@@ -24,42 +24,37 @@ def send_relationship_request(request, username):
 
     relationship_type = get_object_or_404(RelationshipType, id=relationship_type_id)
 
+    # Auto-fix: Clean up duplicates and old pending requests
+    Relationship.cleanup_duplicates()
+    Relationship.cleanup_old_pending()
+
+    # Check if any relationship already exists between these two users (any type, any direction)
+    if Relationship.has_any_relationship(from_user, to_user):
+        return JsonResponse({'error': _('Already have a relationship with this user')}, status=400)
+
     # Check if can add more
     if not Relationship.can_add(from_user, relationship_type):
         max_limit = relationship_type.max_per_user
         return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
 
-    # Check if already exists (in either direction)
-    existing = Relationship.objects.filter(
+    # Check if pending request already exists in either direction
+    existing_pending = Relationship.objects.filter(
         from_user=from_user,
         to_user=to_user,
-        relationship_type=relationship_type
+        status='pending'
     ).first()
 
-    if existing:
-        if existing.status == 'pending':
-            return JsonResponse({'error': _('Request already pending')}, status=400)
-        elif existing.status == 'accepted':
-            return JsonResponse({'error': _('Already friends')}, status=400)
-        else:
-            # Rejected, allow new request
-            existing.delete()
+    if existing_pending:
+        return JsonResponse({'error': _('Request already pending')}, status=400)
 
-    # Check if reverse relationship exists
-    reverse_existing = Relationship.objects.filter(
+    reverse_pending = Relationship.objects.filter(
         from_user=to_user,
         to_user=from_user,
-        relationship_type=relationship_type
+        status='pending'
     ).first()
 
-    if reverse_existing:
-        if reverse_existing.status == 'pending':
-            return JsonResponse({'error': _('Request already pending from this user')}, status=400)
-        elif reverse_existing.status == 'accepted':
-            return JsonResponse({'error': _('Already friends')}, status=400)
-        else:
-            # Rejected, allow new request
-            reverse_existing.delete()
+    if reverse_pending:
+        return JsonResponse({'error': _('Request already pending from this user')}, status=400)
 
     # Delete all old pending requests from this user to the same target (any type)
     Relationship.objects.filter(
@@ -85,28 +80,21 @@ def accept_relationship(request, relationship_id):
 
     relationship = get_object_or_404(Relationship, id=relationship_id, to_user=request.profile, status='pending')
 
-    # Check if can add more
+    # Auto-fix: Clean up duplicates before accepting
+    Relationship.cleanup_duplicates()
+
+    # Check if can add more of this type
     if not Relationship.can_add(request.user.profile, relationship.relationship_type):
         max_limit = relationship.relationship_type.max_per_user
         return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
 
-    # Check if reverse relationship already exists (in either direction)
-    reverse_exists = Relationship.objects.filter(
-        from_user=relationship.to_user,
-        to_user=relationship.from_user,
-        relationship_type=relationship.relationship_type,
-        status='accepted'
-    ).exists()
+    # Check if any accepted relationship already exists between these two users (any type, any direction)
+    if Relationship.has_any_relationship(relationship.from_user, relationship.to_user):
+        # Auto-fix: Delete the duplicate request
+        relationship.delete()
+        return JsonResponse({'error': _('Already have a relationship'), 'auto_fixed': True}, status=400)
 
-    if reverse_exists:
-        # Delete the reverse relationship and keep this one
-        Relationship.objects.filter(
-            from_user=relationship.to_user,
-            to_user=relationship.from_user,
-            relationship_type=relationship.relationship_type,
-            status='accepted'
-        ).delete()
-
+    # All checks passed, accept
     relationship.accept()
     return JsonResponse({'success': True, 'message': _('Request accepted')})
 
