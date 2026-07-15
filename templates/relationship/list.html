@@ -67,7 +67,7 @@
                 <span class="relationship-type-tag relationship-type-tag--{{ rel.pending_type_change.key }}">
                     {{ rel.pending_type_change.name }}
                 </span>
-                {% if is_owner or rel.to_user.user == request.user %}
+                {% if rel.to_user.user == request.user %}
                 <div class="relationship-type-change-actions">
                     <button class="relationship-action-btn relationship-action-btn--accept btn-accept-type-change" data-id="{{ rel.id }}">
                         <i class="fa fa-check"></i>
