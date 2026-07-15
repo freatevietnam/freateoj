@@ -1,0 +1,95 @@
+@use "vars" as *;
+
+// Problem List Page - Combined Card
+.problem-header-card {
+    background: $color_primary0;
+    border: 1px solid $color_primary25;
+    border-radius: $widget_border_radius;
+    padding: 32px;
+    margin-bottom: 24px;
+    color: $color_primary100;
+}
+
+.problem-header-card__info {
+    margin-bottom: 24px;
+}
+
+.problem-header-card__title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: $color_primary100;
+    margin: 0 0 12px 0;
+}
+
+.problem-header-card__desc {
+    font-size: 1.1em;
+    color: $color_primary66;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.problem-search-bar {
+    display: flex;
+    gap: 12px;
+}
+
+.problem-search-bar input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid $color_primary25;
+    border-radius: $widget_border_radius;
+    font-size: 1em;
+    background: $color_primary5;
+    color: $color_primary100;
+    transition: all 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: $gradient_start;
+        box-shadow: 0 0 0 3px rgba($gradient_start, 0.1);
+    }
+}
+
+.problem-search-bar button {
+    padding: 14px 28px;
+    background: $gradient_css;
+    color: white;
+    border: none;
+    border-radius: $widget_border_radius;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+}
+
+#random {
+    background: $gradient_css;
+    color: white;
+    border: none;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+@media (max-width: 768px) {
+    .problem-header-card {
+        padding: 24px;
+    }
+
+    .problem-header-card__title {
+        font-size: 2em;
+    }
+
+    .problem-search-bar {
+        flex-direction: column;
+    }
+
+    .problem-search-bar button {
+        width: 100%;
+    }
+}

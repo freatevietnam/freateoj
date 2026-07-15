@@ -644,7 +644,9 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, Infinite
                 else:
                     queryset = queryset.filter(
                         Q(code__icontains=query) | Q(name__icontains=query) | Q(source__icontains=query) |
-                        Q(translations__name__icontains=query, translations__language=self.request.LANGUAGE_CODE))
+                        Q(translations__name__icontains=query, translations__language=self.request.LANGUAGE_CODE) |
+                        Q(types__full_name__icontains=query) |
+                        Q(group__full_name__icontains=query))
         self.prepoint_queryset = queryset
         if self.point_start is not None:
             queryset = queryset.filter(points__gte=self.point_start)
@@ -675,6 +677,7 @@ class ProblemList(QueryStringSortMixin, TitleMixin, SolvedProblemMixin, Infinite
         context['attempted_problems'] = self.get_attempted_problems()
         context['hot_problems'] = self.get_hot_problems()
         context['point_start'], context['point_end'], context['point_values'] = self.get_noui_slider_points()
+
         context.update(self.get_sort_context())
         context.update(self.get_sort_paginate_context())
         return context
