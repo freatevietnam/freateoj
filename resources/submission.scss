@@ -210,10 +210,12 @@ label[for="language"], label[for="status"], label[for="organization"] {
     margin: 0;
     padding: 0;
     white-space: pre;
+    font-family: $code-font;
 }
 
 .source-code {
     padding-left: 15px;
+    font-family: $code-font;
 }
 
 .source-wrap {

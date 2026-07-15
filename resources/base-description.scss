@@ -126,12 +126,12 @@
     pre, code, kbd, samp, span.code {
         color: $color_primary100;
         page-break-inside: avoid;
-        font-family: $monospace-fonts;
+        font-family: $code-font;
         font-size: 0.98em;
     }
 
     code, span.code {
-        font-family: $monospace-fonts !important;
+        font-family: $code-font !important;
         margin: 0 2px;
         padding: 0 5px;
         border: 1px solid $color_primary25;

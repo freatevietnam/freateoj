@@ -94,7 +94,7 @@
     gap: 6px;
     
     .ping-value {
-        font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
+        font-family: $code-font;
         font-weight: 500;
         font-size: 0.95em;
     }
@@ -148,7 +148,7 @@
     }
     
     .load-value {
-        font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", monospace;
+        font-family: $code-font;
         font-size: 0.9em;
         font-weight: 500;
         color: $color_primary66;

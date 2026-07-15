@@ -1,5 +1,9 @@
 @use "vars" as *;
 
+code, pre, .code, .highlight {
+    font-family: $code-font;
+}
+
 code {
     @if $is_light_theme {
         .hll { background-color: #ffffcc }

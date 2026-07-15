@@ -41,6 +41,7 @@
           content="{{ DMOJ_SCHEME }}://{{ DMOJ_CANONICAL|default(site.domain) }}{{ request.get_full_path() }}">
 
     {% block meta %}{% endblock %}
+    <link rel="stylesheet" href="{{ static('fonts/jetbrains-mono/jetbrains-mono.css') }}">
     {% if not INLINE_FONTAWESOME %}
         <link rel="stylesheet" href="{{ FONTAWESOME_CSS }}">
     {% endif %}
