@@ -932,35 +932,43 @@
     color: $gradient_start;
     min-width: 50px;
     text-align: right;
-    padding: 4px 10px;
-    border-radius: 4px;
+}
 
-    &--rating {
+.home-leaderboard__points--rating {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    border-radius: $widget_border_radius;
+    min-width: 60px;
+
+    .home-leaderboard__rating-value {
         color: white;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        font-weight: 700;
     }
 }
 
 // Rating colors with backgrounds
-.rating-newbie {
+.home-leaderboard__points--rating.rating-newbie {
     background: $color_rating_newbie;
 }
-.rating-pupil {
+.home-leaderboard__points--rating.rating-pupil {
     background: $color_rating_pupil;
 }
-.rating-specialist {
+.home-leaderboard__points--rating.rating-specialist {
     background: $color_rating_specialist;
 }
-.rating-expert {
+.home-leaderboard__points--rating.rating-expert {
     background: $color_rating_expert;
 }
-.rating-candidate-master {
+.home-leaderboard__points--rating.rating-candidate-master {
     background: $color_rating_candidate_master;
 }
-.rating-master {
+.home-leaderboard__points--rating.rating-master {
     background: $color_rating_master;
 }
-.rating-grandmaster {
+.home-leaderboard__points--rating.rating-grandmaster {
     background: $color_rating_grandmaster;
 }
 
