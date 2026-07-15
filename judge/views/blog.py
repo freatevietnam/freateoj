@@ -236,12 +236,15 @@ class PostList(PostListBase):
         context['comments'] = Comment.most_recent(self.request.user, 10)
         context['new_problems'] = Problem.get_public_problems() \
                                          .order_by('-date', 'code')[:settings.DMOJ_BLOG_NEW_PROBLEM_COUNT]
+        context['latest_problems'] = Problem.get_public_problems() \
+                                            .order_by('-user_count', '-date', 'code')[:6]
         context['page_titles'] = CacheDict(lambda page: Comment.get_page_title(page))
 
-        context['user_count'] = Profile.objects.count
-        context['problem_count'] = Problem.get_public_problems().count
-        context['submission_count'] = lambda: Submission.objects.aggregate(max_id=Max('id'))['max_id'] or 0
-        context['language_count'] = Language.objects.count
+        context['user_count'] = Profile.objects.count()
+        context['problem_count'] = Problem.get_public_problems().count()
+        context['submission_count'] = Submission.objects.aggregate(max_id=Max('id'))['max_id'] or 0
+        context['language_count'] = Language.objects.count()
+        context['organization_count'] = 0  # Placeholder, can be updated if Organization model exists
 
         now = timezone.now()
 
@@ -253,6 +256,7 @@ class PostList(PostListBase):
 
         context['top_rated_users'] = self.get_top_rated_users()
         context['top_contrib'] = self.get_top_contributors()
+        context['now'] = now
 
         if self.request.user.is_authenticated:
             context['own_open_tickets'] = (
