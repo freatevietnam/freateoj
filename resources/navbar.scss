@@ -82,8 +82,10 @@
 nav {
     position: fixed;
     top: 8px;
-    left: 8px;
-    right: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 100em;
     z-index: 500;
     height: 48px;
     margin: 0;
