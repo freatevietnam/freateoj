@@ -90,16 +90,22 @@ def accept_relationship(request, relationship_id):
         max_limit = relationship.relationship_type.max_per_user
         return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
 
-    # Check if reverse relationship already accepted
-    reverse_accepted = Relationship.objects.filter(
+    # Check if reverse relationship already exists (in either direction)
+    reverse_exists = Relationship.objects.filter(
         from_user=relationship.to_user,
         to_user=relationship.from_user,
         relationship_type=relationship.relationship_type,
         status='accepted'
     ).exists()
 
-    if reverse_accepted:
-        return JsonResponse({'error': _('Already friends')}, status=400)
+    if reverse_exists:
+        # Delete the reverse relationship and keep this one
+        Relationship.objects.filter(
+            from_user=relationship.to_user,
+            to_user=relationship.from_user,
+            relationship_type=relationship.relationship_type,
+            status='accepted'
+        ).delete()
 
     relationship.accept()
     return JsonResponse({'success': True, 'message': _('Request accepted')})
