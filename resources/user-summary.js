@@ -231,7 +231,8 @@ $(document).ready(function() {
                 
                 $('#user-summary-rating').text(data.rating || '-');
                 $('#user-summary-solved').text(data.problems_solved || 0);
-                $('#user-summary-pp').text(data.performance_points || 0);
+                var pp = parseFloat(data.performance_points) || 0;
+                $('#user-summary-pp').text(pp.toFixed(2));
                 
                 if (data.avatar_url) {
                     $('#user-summary-avatar').attr('src', data.avatar_url).show();
