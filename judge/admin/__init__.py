@@ -10,7 +10,7 @@ from judge.admin.interface import BlogPostAdmin, BlogPostTagAdmin, FlatPageAdmin
 from judge.admin.organization import OrganizationAdmin, OrganizationRequestAdmin
 from judge.admin.problem import ProblemAdmin
 from judge.admin.profile import ProfileAdmin, UserAdmin
-from judge.admin.relationship import RelationshipAdmin, RelationshipTypeAdmin
+from judge.admin.relationship import RelationshipAdmin, RelationshipTypeAdmin  # noqa: F401
 from judge.admin.runtime import JudgeAdmin, LanguageAdmin
 from judge.admin.submission import SubmissionAdmin
 from judge.admin.tag import TagAdmin, TagGroupAdmin, TagProblemAdmin
@@ -20,7 +20,6 @@ from judge.models import Badge, BlogPost, BlogPostTag, Comment, CommentLock, Con
     ContestTag, Judge, Language, License, MiscConfig, NavigationBar, Organization, \
     OrganizationRequest, Problem, ProblemGroup, ProblemType, Profile, Submission, Tag, \
     TagGroup, TagProblem, Ticket
-from judge.models.relationship import Relationship, RelationshipType
 
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(BlogPostTag, BlogPostTagAdmin)
@@ -44,8 +43,6 @@ admin.site.register(Problem, ProblemAdmin)
 admin.site.register(ProblemGroup, ProblemGroupAdmin)
 admin.site.register(ProblemType, ProblemTypeAdmin)
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(Relationship, RelationshipAdmin)
-admin.site.register(RelationshipType, RelationshipTypeAdmin)
 admin.site.register(Submission, SubmissionAdmin)
 admin.site.register(Ticket, TicketAdmin)
 admin.site.register(Tag, TagAdmin)
