@@ -275,11 +275,9 @@
         top: 100%;
         right: 0;
         margin-top: 4px;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px) saturate(150%);
-        -webkit-backdrop-filter: blur(12px) saturate(150%);
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #eee;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
         z-index: 100;
         display: none;
@@ -293,8 +291,8 @@
     }
 
     body[data-theme="dark"] .relationship-dropdown-menu {
-        background: rgba(30, 30, 30, 0.85);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: #1a1a1a;
+        border-color: #333;
     }
 
     .relationship-dropdown-item {
@@ -312,13 +310,12 @@
         transition: background 0.15s;
 
         &:hover {
-            background: rgba(0, 0, 0, 0.05);
+            background: #f5f5f5;
         }
 
         i {
             width: 16px;
             text-align: center;
-            opacity: 0.7;
         }
     }
 
@@ -326,7 +323,7 @@
         color: #eee;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: #2a2a2a;
         }
     }
 
@@ -407,7 +404,31 @@
     }
 
     .relationship-type-tag--lop_du_phong {
-        background: linear-gradient(135deg, #27ae60, #229954);
+        background: linear-gradient(90deg, #f39c12, #f1c40f, #e67e22, #f39c12);
+        background-size: 300% 100%;
+        animation: lopDuPhongGlow 2s ease infinite;
+        box-shadow: 0 0 20px rgba(243, 156, 18, 0.6), 0 0 40px rgba(241, 196, 15, 0.4);
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #f39c12, #f1c40f, #e67e22, #f39c12);
+            background-size: 300% 100%;
+            animation: lopDuPhongGlow 2s ease infinite;
+            z-index: -1;
+            filter: blur(8px);
+            opacity: 0.6;
+        }
+    }
+
+    @keyframes lopDuPhongGlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
     .relationship-empty {
