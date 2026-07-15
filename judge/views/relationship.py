@@ -61,6 +61,13 @@ def send_relationship_request(request, username):
             # Rejected, allow new request
             reverse_existing.delete()
 
+    # Delete all old pending requests from this user to the same target (any type)
+    Relationship.objects.filter(
+        from_user=from_user,
+        to_user=to_user,
+        status='pending'
+    ).delete()
+
     # Create request
     relationship = Relationship.objects.create(
         from_user=from_user,
