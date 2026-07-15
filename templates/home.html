@@ -315,7 +315,7 @@
                                 <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
                                 <span>{{ user.display_name }}</span>
                             </a>
-                            <span class="home-leaderboard__points home-leaderboard__points--rating">
+                            <span class="home-leaderboard__points home-leaderboard__points--rating rating-{{ user.display_rank }}">
                                 <span class="home-leaderboard__rating-value">{{ user.rating|floatformat(0) }}</span>
                             </span>
                         </div>
