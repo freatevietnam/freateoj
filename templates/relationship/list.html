@@ -59,6 +59,26 @@
             <span class="relationship-type-tag relationship-type-tag--{{ rel.relationship_type.key }}">
                 {{ rel.relationship_type.name }}
             </span>
+            {% if rel.pending_type_change %}
+            <div class="relationship-type-change-pending">
+                <span class="relationship-type-change-arrow">
+                    <i class="fa fa-arrow-right"></i>
+                </span>
+                <span class="relationship-type-tag relationship-type-tag--{{ rel.pending_type_change.key }}">
+                    {{ rel.pending_type_change.name }}
+                </span>
+                {% if is_owner or rel.to_user.user == request.user %}
+                <div class="relationship-type-change-actions">
+                    <button class="relationship-action-btn relationship-action-btn--accept btn-accept-type-change" data-id="{{ rel.id }}">
+                        <i class="fa fa-check"></i>
+                    </button>
+                    <button class="relationship-action-btn relationship-action-btn--reject btn-reject-type-change" data-id="{{ rel.id }}">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
             {% if is_owner or rel.from_user.user == request.user or rel.to_user.user == request.user %}
             <div class="relationship-dropdown">
                 <button class="relationship-action-btn relationship-action-btn--menu">
@@ -264,6 +284,22 @@
         &:hover {
             background: $color_primary25;
         }
+    }
+
+    .relationship-type-change-pending {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .relationship-type-change-arrow {
+        color: $color_primary66;
+        font-size: 0.8em;
+    }
+
+    .relationship-type-change-actions {
+        display: flex;
+        gap: 4px;
     }
 
     .relationship-dropdown {
@@ -570,6 +606,7 @@ $(document).ready(function() {
             'csrfmiddlewaretoken': '{{ csrf_token }}',
             'new_type': newTypeId
         }, function(data) {
+            alert(data.message);
             location.reload();
         }).fail(function(xhr) {
             var data = xhr.responseJSON;
@@ -585,6 +622,34 @@ $(document).ready(function() {
     // Close modal
     $(document).on('click', '.modal-close', function() {
         $('#change-type-modal').hide();
+    });
+
+    // Accept type change
+    $(document).on('click', '.btn-accept-type-change', function() {
+        var id = $(this).data('id');
+        $.post('/relationship/accept-type-change/' + id + '/', {
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }, function(data) {
+            alert(data.message);
+            location.reload();
+        }).fail(function(xhr) {
+            var data = xhr.responseJSON;
+            alert(data.error || 'Có lỗi xảy ra');
+        });
+    });
+
+    // Reject type change
+    $(document).on('click', '.btn-reject-type-change', function() {
+        var id = $(this).data('id');
+        $.post('/relationship/reject-type-change/' + id + '/', {
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }, function(data) {
+            alert(data.message);
+            location.reload();
+        }).fail(function(xhr) {
+            var data = xhr.responseJSON;
+            alert(data.error || 'Có lỗi xảy ra');
+        });
     });
 });
 </script>
