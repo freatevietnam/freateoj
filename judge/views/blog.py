@@ -256,6 +256,7 @@ class PostList(PostListBase):
 
         context['top_rated_users'] = self.get_top_rated_users()
         context['top_contrib'] = self.get_top_contributors()
+        context['top_problem_solvers'] = self.get_top_problem_solvers()
         context['now'] = now
 
         if self.request.user.is_authenticated:
@@ -290,6 +291,14 @@ class PostList(PostListBase):
         return (Profile.objects.order_by('-contribution_points')
                 .filter(contribution_points__gt=0, is_unlisted=False)
                 .only('user', 'contribution_points', 'display_rank', 'display_badge', 'rating',
+                      'username_display_override')
+                .select_related('user', 'display_badge')
+                [:settings.FREATEOJ_HOMEPAGE_TOP_USERS_COUNT])
+
+    def get_top_problem_solvers(self):
+        return (Profile.objects.order_by('-problem_count')
+                .filter(problem_count__gt=0, is_unlisted=False)
+                .only('user', 'problem_count', 'display_rank', 'display_badge', 'rating',
                       'username_display_override')
                 .select_related('user', 'display_badge')
                 [:settings.FREATEOJ_HOMEPAGE_TOP_USERS_COUNT])
