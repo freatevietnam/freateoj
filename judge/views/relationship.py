@@ -205,3 +205,31 @@ def reject_type_change(request, relationship_id):
 
     relationship.reject_type_change()
     return JsonResponse({'success': True, 'message': _('Type change rejected')})
+
+
+@login_required
+def change_relationship_type(request, relationship_id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    relationship = get_object_or_404(Relationship, id=relationship_id, status='accepted')
+    if relationship.from_user != request.profile and relationship.to_user != request.profile:
+        return JsonResponse({'error': 'Not authorized'}, status=403)
+
+    new_type_id = request.POST.get('new_type')
+    if not new_type_id:
+        return JsonResponse({'error': _('New type is required')}, status=400)
+
+    new_type = get_object_or_404(RelationshipType, id=new_type_id)
+
+    if new_type == relationship.relationship_type:
+        return JsonResponse({'error': _('Same type as current')}, status=400)
+
+    # Check if can add more of the new type
+    if not Relationship.can_add(request.user.profile, new_type):
+        max_limit = new_type.max_per_user
+        return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
+
+    relationship.relationship_type = new_type
+    relationship.save()
+    return JsonResponse({'success': True, 'message': _('Type changed successfully')})

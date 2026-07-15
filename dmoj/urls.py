@@ -225,6 +225,7 @@ urlpatterns = [
         path('accept/<int:relationship_id>/', relationship_views.accept_relationship, name='relationship_accept'),
         path('reject/<int:relationship_id>/', relationship_views.reject_relationship, name='relationship_reject'),
         path('remove/<int:relationship_id>/', relationship_views.remove_relationship, name='relationship_remove'),
+        path('change-type/<int:relationship_id>/', relationship_views.change_relationship_type, name='relationship_change_type'),
     ])),
 
     path('comments/upvote', comment.upvote_comment, name='comment_upvote'),

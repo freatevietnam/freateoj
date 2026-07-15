@@ -2,7 +2,7 @@
 <div class="relationship-section">
     <div class="relationship-header">
         <h3><i class="fa fa-heart"></i> {{ _('Tri kỷ') }}</h3>
-        {% if show_send_button %}
+        {% if show_send_button and not has_relationship %}
         <button class="relationship-add-btn btn-send-relationship" data-username="{{ user.username }}">
             <i class="fa fa-plus"></i>
         </button>
@@ -60,9 +60,19 @@
                 {{ rel.relationship_type.name }}
             </span>
             {% if is_owner or rel.from_user.user == request.user or rel.to_user.user == request.user %}
-            <button class="relationship-action-btn relationship-action-btn--remove btn-remove" data-id="{{ rel.id }}">
-                <i class="fa fa-times"></i>
-            </button>
+            <div class="relationship-dropdown">
+                <button class="relationship-action-btn relationship-action-btn--menu">
+                    <i class="fa fa-ellipsis-v"></i>
+                </button>
+                <div class="relationship-dropdown-menu">
+                    <button class="relationship-dropdown-item btn-change" data-id="{{ rel.id }}" data-current-type="{{ rel.relationship_type.id }}">
+                        <i class="fa fa-exchange"></i> {{ _('Đổi loại') }}
+                    </button>
+                    <button class="relationship-dropdown-item btn-remove" data-id="{{ rel.id }}">
+                        <i class="fa fa-trash"></i> {{ _('Xóa') }}
+                    </button>
+                </div>
+            </div>
             {% endif %}
         </div>
         {% endfor %}
@@ -73,6 +83,24 @@
         <p>{{ _('Chưa có tri kỷ nào') }}</p>
     </div>
     {% endif %}
+</div>
+
+{# Change Type Modal #}
+<div id="change-type-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>{{ _('Đổi loại tri kỷ') }}</h3>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>{{ _('Chọn loại mới:') }}</p>
+            <div id="change-type-options" class="relationship-types"></div>
+        </div>
+        <div class="modal-footer">
+            <button id="confirm-change-type" class="btn btn-primary">{{ _('Xác nhận') }}</button>
+            <button id="cancel-change-type" class="btn btn-secondary">{{ _('Hủy') }}</button>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -225,6 +253,63 @@
         &:hover {
             background: #e74c3c;
             color: white;
+        }
+    }
+
+    .relationship-action-btn--menu {
+        background: $color_primary10;
+        color: $color_primary66;
+        border-radius: $radius-md;
+
+        &:hover {
+            background: $color_primary25;
+        }
+    }
+
+    .relationship-dropdown {
+        position: relative;
+    }
+
+    .relationship-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 4px;
+        background: $color_primary0;
+        border: 1px solid $color_primary25;
+        border-radius: $radius-md;
+        box-shadow: $shadow-lg;
+        z-index: 100;
+        display: none;
+        min-width: 140px;
+        padding: $space-1 0;
+
+        &.show {
+            display: block;
+        }
+    }
+
+    .relationship-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: $space-2 $space-3;
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        font-size: 0.85em;
+        color: $color_primary100;
+        transition: background 0.15s;
+
+        &:hover {
+            background: $color_primary10;
+        }
+
+        i {
+            width: 16px;
+            text-align: center;
         }
     }
 
@@ -381,8 +466,21 @@ $(document).ready(function() {
         });
     });
 
+    // Dropdown menu toggle
+    $(document).on('click', '.relationship-action-btn--menu', function(e) {
+        e.stopPropagation();
+        var $menu = $(this).siblings('.relationship-dropdown-menu');
+        $('.relationship-dropdown-menu').not($menu).removeClass('show');
+        $menu.toggleClass('show');
+    });
+
+    // Close dropdown when clicking outside
+    $(document).on('click', function() {
+        $('.relationship-dropdown-menu').removeClass('show');
+    });
+
     // Remove relationship
-    $('.btn-remove').click(function() {
+    $(document).on('click', '.btn-remove', function() {
         if (!confirm('Bạn có chắc muốn xóa mối quan hệ này?')) return;
         var id = $(this).data('id');
         $.post('/relationship/remove/' + id + '/', {
@@ -393,6 +491,62 @@ $(document).ready(function() {
             var data = xhr.responseJSON;
             alert(data.error || 'Có lỗi xảy ra');
         });
+    });
+
+    // Change type - open modal
+    var selectedRelId = null;
+    $(document).on('click', '.btn-change', function() {
+        selectedRelId = $(this).data('id');
+        var currentType = $(this).data('current-type');
+        $('#change-type-modal').data('rel-id', selectedRelId).show();
+
+        // Load types
+        $.get('/relationship/types/', function(data) {
+            var $options = $('#change-type-options');
+            $options.empty();
+            data.types.forEach(function(type) {
+                var selected = (type.id == currentType) ? ' selected' : '';
+                $options.append('<div class="relationship-type-btn' + selected + '" data-id="' + type.id + '">' +
+                    '<div class="relationship-type-name">' + type.name + '</div>' +
+                    '<div class="relationship-type-limit">Tối đa ' + type.max_per_user + ' / tài khoản</div>' +
+                '</div>');
+            });
+        });
+    });
+
+    // Select type in modal
+    $(document).on('click', '.relationship-type-btn', function() {
+        $('.relationship-type-btn').removeClass('selected');
+        $(this).addClass('selected');
+    });
+
+    // Confirm change type
+    $('#confirm-change-type').click(function() {
+        var relId = $('#change-type-modal').data('rel-id');
+        var newTypeId = $('.relationship-type-btn.selected').data('id');
+        if (!newTypeId) {
+            alert('Vui lòng chọn loại mới');
+            return;
+        }
+        $.post('/relationship/change-type/' + relId + '/', {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'new_type': newTypeId
+        }, function(data) {
+            location.reload();
+        }).fail(function(xhr) {
+            var data = xhr.responseJSON;
+            alert(data.error || 'Có lỗi xảy ra');
+        });
+    });
+
+    // Cancel change type
+    $('#cancel-change-type').click(function() {
+        $('#change-type-modal').hide();
+    });
+
+    // Close modal
+    $(document).on('click', '.modal-close', function() {
+        $('#change-type-modal').hide();
     });
 });
 </script>
