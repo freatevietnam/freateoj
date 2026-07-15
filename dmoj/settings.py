@@ -103,6 +103,15 @@ FREATEOJ_DISPLAY_RANKS = (
     ('teacher', _('Teacher')),
 )
 
+# Relationship types configuration
+FREATEOJ_RELATIONSHIP_TYPES = {
+    'tri_ky': {'name': '🫶 Tri kỷ', 'max_per_user': 5},
+    'chi_em': {'name': '👩‍❤️‍👩 Chị em', 'max_per_user': 5},
+    'anh_em': {'name': '👫 Anh em', 'max_per_user': 5},
+    'cap_doi': {'name': '❤️ Cặp đôi', 'max_per_user': 1},
+    'lop_du_phong': {'name': '🛞 Lốp dự phòng', 'max_per_user': 999},
+}
+
 # Maximum number of organization a single user can be admin, to be able to
 # create new organization, without the `spam_organization` permission
 FREATEOJ_ORGANIZATION_ADMIN_LIMIT = 3
