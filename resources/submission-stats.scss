@@ -1,0 +1,51 @@
+@use "vars" as *;
+
+// Submission Statistics
+.submission-top-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: $color_primary0;
+    border: 1px solid $color_primary25;
+}
+
+.submission-top-stat {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border-right: 1px solid $color_primary25;
+
+    &:last-child {
+        border-right: none;
+    }
+}
+
+.submission-top-stat__value {
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+.submission-top-stat__label {
+    font-size: 0.8em;
+    color: $color_primary66;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.submission-top-stat--total .submission-top-stat__value { color: $color_primary100; }
+.submission-top-stat--ac .submission-top-stat__value { color: #10b981; }
+.submission-top-stat--other .submission-top-stat__value { color: #ef4444; }
+
+body[data-theme="dark"] .submission-top-stat--total .submission-top-stat__value {
+    color: $color_primary0;
+}
+
+body[data-theme="dark"] .submission-top-stat--ac .submission-top-stat__value {
+    color: #10b981;
+}
+
+body[data-theme="dark"] .submission-top-stat--other .submission-top-stat__value {
+    color: #ef4444;
+}
