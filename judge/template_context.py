@@ -88,23 +88,6 @@ def site_name(request):
             'SITE_ADMIN_EMAIL': settings.SITE_ADMIN_EMAIL}
 
 
-def site_theme(request):
-    # Middleware populating `profile` may not have loaded at this point if we're called from an error context.
-    if hasattr(request.user, 'profile'):
-        site_theme = request.profile.site_theme
-    else:
-        site_theme = request.COOKIES.get(settings.SITE_THEME_COOKIE_NAME, 'auto')
-        if site_theme not in settings.DMOJ_THEME_CSS and site_theme != 'auto':
-            site_theme = 'auto'
-    preferred_css = settings.DMOJ_THEME_CSS.get(site_theme)
-    return {
-        'DARK_STYLE_CSS': settings.DMOJ_THEME_CSS['dark'],
-        'LIGHT_STYLE_CSS': settings.DMOJ_THEME_CSS['light'],
-        'PREFERRED_STYLE_CSS': preferred_css,
-        'SITE_THEME_NAME': site_theme,
-    }
-
-
 def math_setting(request):
     caniuse = CanIUse(request.headers.get('user-agent', ''))
 

@@ -314,7 +314,6 @@ RATE_LIMITS = {
     'generate_api_token': {'count': 5, 'window': 300},   # 5 per 5 min
     'remove_api_token': {'count': 5, 'window': 300},     # 5 per 5 min
     'generate_scratch_codes': {'count': 3, 'window': 300}, # 3 per 5 min
-    'set_theme': {'count': 30, 'window': 60},            # 30 per min
     
     # Widget APIs
     'rejudge_submission': {'count': 10, 'window': 60},   # 10 per min
@@ -379,21 +378,10 @@ DMOJ_API_PAGE_SIZE = 1000
 DMOJ_PASSWORD_RESET_LIMIT_WINDOW = 3600
 DMOJ_PASSWORD_RESET_LIMIT_COUNT = 10
 
-# At the bare minimum, dark and light theme CSS file locations must be declared
-DMOJ_THEME_CSS = {
-    'light': 'style.css',
-    'dark': 'dark/style.css',
-}
-# At the bare minimum, dark and light ace themes must be declared
 DMOJ_THEME_DEFAULT_ACE_THEME = {
     'light': 'github',
-    'dark': 'twilight',
 }
 DMOJ_SELECT2_THEME = 'dmoj'
-
-# Cookie used to remember the site theme of anonymous (logged-out) users.
-SITE_THEME_COOKIE_NAME = 'site_theme'
-SITE_THEME_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 year
 
 MARKDOWN_STYLES = {}
 MARKDOWN_DEFAULT_STYLE = {}
@@ -630,7 +618,6 @@ TEMPLATES = [
                 'judge.template_context.general_info',
                 'judge.template_context.site',
                 'judge.template_context.site_name',
-                'judge.template_context.site_theme',
                 'judge.template_context.misc_config',
                 'judge.template_context.math_setting',
                 'social_django.context_processors.backends',
@@ -921,7 +908,6 @@ if DMOJ_PDF_PDFOID_URL:
     assert DMOJ_PDF_PROBLEM_INTERNAL is None or DMOJ_PDF_PROBLEM_CACHE is not None
 
 ACE_DEFAULT_LIGHT_THEME = DMOJ_THEME_DEFAULT_ACE_THEME['light']
-ACE_DEFAULT_DARK_THEME = DMOJ_THEME_DEFAULT_ACE_THEME['dark']
 # Only allow OAuth login
 OAUTH_ONLY = False
 

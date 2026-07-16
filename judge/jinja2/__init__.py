@@ -33,21 +33,6 @@ def counter(start=1):
     return itertools.count(start).__next__
 
 
-@registry.function
-@pass_context
-def select_css_theme(context, light, dark):
-    theme = context.get('SITE_THEME_NAME', 'auto')
-    if theme == 'dark':
-        return Markup(f'<link rel="stylesheet" href="{django_static(dark)}">')
-    elif theme == 'light':
-        return Markup(f'<link rel="stylesheet" href="{django_static(light)}">')
-    else:  # 'auto'
-        return Markup(
-            f'<link rel="stylesheet" href="{django_static(light)}">'
-            f'<link rel="stylesheet" href="{django_static(dark)}" media="(prefers-color-scheme: dark)">'
-        )
-
-
 class DMOJExtension(Extension):
     def __init__(self, env):
         super(DMOJExtension, self).__init__(env)

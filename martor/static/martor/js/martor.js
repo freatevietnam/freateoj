@@ -32,14 +32,7 @@
         };
 
         var isDarkMode = function () {
-            var theme = $('body').data('theme');
-            if (theme === 'auto') {
-                return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            } else if (theme === 'dark') {
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         };
 
         // Each multiple editor fields
@@ -52,22 +45,11 @@
             var editorConfig = JSON.parse(textareaId.data('enable-configs').replace(/'/g, '"'));
 
             var setupTheme = function () {
-                if (isDarkMode()) {
-                    mainMartor.find('.ui').addClass('inverted');
-                    editor.setTheme('ace/theme/twilight');
-                }
-                else {
-                    mainMartor.find('.ui').removeClass('inverted');
-                    editor.setTheme('ace/theme/github');
-                }
+                mainMartor.find('.ui').removeClass('inverted');
+                editor.setTheme('ace/theme/github');
             }
 
             setupTheme();
-            if ($('body').data('theme') === 'auto' && window.matchMedia) {
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-                    setupTheme();
-                });
-            }
 
             editor.getSession().setMode('ace/mode/markdown');
             editor.getSession().setUseWrapMode(true);

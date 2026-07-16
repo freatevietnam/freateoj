@@ -40,7 +40,6 @@ class AceWidget(forms.Textarea):
         if self.theme:
             ace_attrs['data-theme'] = self.theme
         ace_attrs['data-default-light-theme'] = settings.ACE_DEFAULT_LIGHT_THEME
-        ace_attrs['data-default-dark-theme'] = settings.ACE_DEFAULT_DARK_THEME
         if self.wordwrap:
             ace_attrs['data-wordwrap'] = 'true'
 
