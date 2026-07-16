@@ -288,23 +288,88 @@
     {% endif %}
 
     <style>
-        .total {
+        .submission-top-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .submission-top-stat {
+            flex: 1;
             text-align: center;
-            margin-bottom: 0.5em;
+            padding: 12px;
+            border-right: 1px solid #eee;
         }
 
-        #status-graph {
-            padding: 1em 0em;
+        .submission-top-stat:last-child {
+            border-right: none;
         }
 
-        #status-graph canvas {
-            display: block;
-            margin: 0 auto;
+        .submission-top-stat__value {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .submission-top-stat__label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submission-top-stat--total .submission-top-stat__value { color: #333; }
+        .submission-top-stat--ac .submission-top-stat__value { color: #10b981; }
+        .submission-top-stat--other .submission-top-stat__value { color: #ef4444; }
+
+        body[data-theme="dark"] .submission-top-stats {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+
+        body[data-theme="dark"] .submission-top-stat {
+            border-color: #333;
+        }
+
+        body[data-theme="dark"] .submission-top-stat__label {
+            color: #999;
+        }
+
+        body[data-theme="dark"] .submission-top-stat--total .submission-top-stat__value {
+            color: #fff;
+        }
+
+        body[data-theme="dark"] .submission-top-stat--ac .submission-top-stat__value {
+            color: #10b981;
+        }
+
+        body[data-theme="dark"] .submission-top-stat--other .submission-top-stat__value {
+            color: #ef4444;
         }
     </style>
 {% endblock %}
 
 {% block body %}
+    {# Simple Statistics #}
+    <div class="submission-top-stats">
+        <div class="submission-top-stat submission-top-stat--total">
+            <div class="submission-top-stat__value">{{ results_data.total }}</div>
+            <div class="submission-top-stat__label">{{ _('Tổng bài nộp') }}</div>
+        </div>
+        <div class="submission-top-stat submission-top-stat--ac">
+            <div class="submission-top-stat__value">{{ results_data.ac_count }}</div>
+            <div class="submission-top-stat__label">{{ _('AC') }}</div>
+        </div>
+        <div class="submission-top-stat submission-top-stat--other">
+            <div class="submission-top-stat__value">{{ results_data.other_count }}</div>
+            <div class="submission-top-stat__label">{{ _('Còn lại') }}</div>
+        </div>
+    </div>
+
     {% if page_obj.has_other_pages() %}
         <div class="top-pagination-bar">{% include "list-pages.html" %}</div>
     {% endif %}

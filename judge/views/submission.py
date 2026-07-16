@@ -473,8 +473,16 @@ class SubmissionsListBase(DiggPaginatorMixin, TitleMixin, ListView):
         context['all_organizations'] = self.get_searchable_organizations()
         context['selected_organization'] = self.selected_organization
 
-        context['results_json'] = mark_safe(json.dumps(self.get_result_data()))
+        result_data = self.get_result_data()
+        context['results_json'] = mark_safe(json.dumps(result_data))
+        context['results_data'] = result_data
         context['results_colors_json'] = mark_safe(json.dumps(settings.DMOJ_STATS_SUBMISSION_RESULT_COLORS))
+
+        # Calculate AC and other counts for simple stats
+        ac_count = sum(cat['count'] for cat in result_data['categories'] if cat['code'] == 'AC')
+        other_count = result_data['total'] - ac_count
+        result_data['ac_count'] = ac_count
+        result_data['other_count'] = other_count
 
         context['page_suffix'] = suffix = ('?' + self.request.GET.urlencode()) if self.request.GET else ''
         context['first_page_href'] = (self.first_page_href or '.') + suffix
