@@ -37,15 +37,3 @@
 .submission-top-stat--total .submission-top-stat__value { color: $color_primary100; }
 .submission-top-stat--ac .submission-top-stat__value { color: #10b981; }
 .submission-top-stat--other .submission-top-stat__value { color: #ef4444; }
-
-body[data-theme="dark"] .submission-top-stat--total .submission-top-stat__value {
-    color: $color_primary0;
-}
-
-body[data-theme="dark"] .submission-top-stat--ac .submission-top-stat__value {
-    color: #10b981;
-}
-
-body[data-theme="dark"] .submission-top-stat--other .submission-top-stat__value {
-    color: #ef4444;
-}

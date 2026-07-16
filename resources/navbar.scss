@@ -371,13 +371,7 @@ nav {
 }
 
 @media (max-width: 760px) {
-    body[data-theme="dark"] #nav-list {
-        background: rgba(30, 30, 30, 0.85);
-    }
 
-    body[data-theme="dark"] #nav-list li ul {
-        background: rgba(30, 30, 30, 0.85);
-    }
 }
 
 nav .settings-popup {
@@ -457,12 +451,6 @@ nav ul ul li button {
 // ============================================================
 // Dark mode — white text on navbar
 // ============================================================
-body[data-theme="dark"] {
-    #user-links a,
-    #user-links button,
-    #user-links > ul > li > a > span > span {
-        color: #eee;
-    }
 
     nav {
         border-color: rgba(255, 255, 255, 0.1);
@@ -555,136 +543,5 @@ body[data-theme="dark"] {
         background: rgba(255, 255, 255, 0.08);
     }
 
-    .nav-seg-btn {
-        color: rgba(255, 255, 255, 0.5);
 
-        &:hover {
-            color: #eee;
-        }
 
-        &.active {
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-        }
-    }
-}
-
-// ============================================================
-// Auto theme — dark navbar when system prefers dark
-// ============================================================
-@media (prefers-color-scheme: dark) {
-    body[data-theme="auto"] {
-        #user-links a,
-        #user-links button,
-        #user-links > ul > li > a > span > span {
-            color: #eee;
-        }
-
-        nav {
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
-
-            &:hover {
-                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-            }
-
-            ul li {
-                color: #eee;
-
-                a, button {
-                    color: #eee;
-
-                    &:link {
-                        color: #eee;
-                    }
-
-                    &.active {
-                        border-bottom-color: $highlight_blue;
-                    }
-                }
-
-                > ul {
-                    color: #eee;
-                    border-color: rgba(255, 255, 255, 0.1);
-                    background: rgba(30, 30, 30, 0.85);
-
-                    li a, li button {
-                        &:hover {
-                            background: rgba(255, 255, 255, 0.1);
-                        }
-                    }
-                }
-            }
-
-            .nav-divider {
-                border-right-color: rgba(255, 255, 255, 0.15);
-            }
-
-            .nav-underline {
-                background: rgba(255, 255, 255, 0.1);
-                transition: left 0.3s ease, width 0.3s ease, opacity 0.3s ease;
-            }
-        }
-
-        #navicon {
-            color: #eee;
-
-            &.hover {
-                color: $highlight_blue;
-            }
-        }
-
-        #nav-list {
-            border-color: rgba(255, 255, 255, 0.1);
-
-            li a {
-                color: #eee;
-            }
-
-            li ul {
-                background: rgba(30, 30, 30, 0.85);
-            }
-        }
-
-        #user-links > ul > li > ul {
-            background: rgba(30, 30, 30, 0.85);
-        }
-
-        nav .settings-popup {
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #eee;
-            background: rgba(30, 30, 30, 0.85);
-
-            li a, li button, li form button {
-                color: #eee;
-            }
-        }
-
-        .nav-settings-lbl {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .nav-seg {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .nav-seg-btn {
-            color: rgba(255, 255, 255, 0.5);
-
-            &:hover {
-                color: #eee;
-            }
-
-            &.active {
-                background: rgba(255, 255, 255, 0.12);
-                color: #fff;
-            }
-        }
-
-        // User links dropdown
-        #user-links ul ul {
-            background: rgba(30, 30, 30, 0.85);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-    }
-}
