@@ -163,7 +163,10 @@ class ProfileAdmin(NoBatchDeleteMixin, VersionAdmin):
 
 class UserAdmin(OldUserAdmin):
     def view_on_site(self, obj):
-        return obj.profile.get_absolute_url()
+        try:
+            return obj.profile.get_absolute_url()
+        except Exception:
+            return '/'
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'user_permissions':
