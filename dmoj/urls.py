@@ -28,6 +28,7 @@ from judge.views.select2 import AssigneeSelect2View, CommentSelect2View, Contest
     TagSelect2View, TicketUserSelect2View, UserSearchSelect2View, UserSelect2View
 from judge.views.widgets import martor_image_uploader
 from martor.views import markdown_search_user
+from judge.admin.profile import create_profile
 
 admin.autodiscover()
 
@@ -100,6 +101,7 @@ urlpatterns = [
     path('', blog.PostList.as_view(template_name='home.html', title=_('Home')), kwargs={'page': 1}, name='home'),
     path('500/', exception),
     path('admin/', admin.site.urls),
+    path('admin/create_profile/<int:user_id>/', create_profile, name='create_profile'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('accounts/', include(register_patterns)),
     path('', include('social_django.urls')),

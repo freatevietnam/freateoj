@@ -5,6 +5,7 @@
     <script>
         django.jQuery(function ($) {
             $('.profilelink').appendTo('div#bottombar').show();
+            $('.createprofilelink').appendTo('div#bottombar').show();
         });
     </script>
 {% endblock extrahead %}
@@ -15,6 +16,12 @@
            class="button profilelink">
             <i class="fa fa-lg fa-user-plus"></i>
             <span class="text">{% trans "Edit profile" %}</span>
+        </a>
+    {% else %}
+        <a style="display: none" title="{% trans "Create profile" %}" href="{% url 'admin:create_profile' original.pk %}"
+           class="button createprofilelink">
+            <i class="fa fa-lg fa-user-plus"></i>
+            <span class="text">{% trans "Create profile" %}</span>
         </a>
     {% endif %}
 {% endblock %}

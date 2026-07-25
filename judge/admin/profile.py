@@ -1,15 +1,28 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as OldUserAdmin
 from django.contrib.auth.models import Permission
 from django.forms import ModelForm
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.utils.translation import gettext, gettext_lazy as _, ngettext
 from reversion.admin import VersionAdmin
 
-from judge.models import Profile, WebAuthnCredential
+from judge.models import Language, Profile, WebAuthnCredential
 from judge.utils.views import NoBatchDeleteMixin
 from judge.widgets import AdminAceWidget, AdminMartorWidget, AdminSelect2MultipleWidget, AdminSelect2Widget
+
+
+def create_profile(request, user_id):
+    user = get_object_or_404(Profile._meta.get_field('user').related_model, pk=user_id)
+    if hasattr(user, 'profile'):
+        messages.warning(request, _('User already has a profile.'))
+    else:
+        lang = Language.get_default_language()
+        Profile(user=user, language=lang).save()
+        messages.success(request, _('Profile created successfully.'))
+    return HttpResponseRedirect(reverse_lazy('admin:auth_user_change', args=[user_id]))
 
 
 class ProfileForm(ModelForm):
@@ -184,3 +197,21 @@ class UserAdmin(OldUserAdmin):
         super().save_model(request, obj, form, change)
         if not change:
             Profile.objects.create(user=obj)
+
+    def create_profile_action(self, request, queryset):
+        from django.contrib import messages
+        from judge.models import Language
+        lang = Language.get_default_language()
+        count = 0
+        for user in queryset:
+            if not hasattr(user, 'profile'):
+                Profile(user=user, language=lang).save()
+                count += 1
+        self.message_user(request, ngettext(
+            '%d profile created.',
+            '%d profiles created.',
+            count,
+        ) % count)
+
+    create_profile_action.short_description = _('Create profile for selected users')
+    actions = [create_profile_action]
