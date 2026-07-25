@@ -23,7 +23,7 @@ from judge.views.register import RegistrationView
 def user_create_profile(sender, instance, created, **kwargs):
     if created and not hasattr(instance, 'profile'):
         lang = Language.get_default_language()
-        Profile(user=instance, language=lang, site_theme='light').save()
+        Profile(user=instance, language=lang).save()
 
 
 def get_pdf_path(basename: str) -> Optional[str]:

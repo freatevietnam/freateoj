@@ -251,6 +251,11 @@ class Profile(models.Model):
     freateoj_points = models.IntegerField(default=0)
     problem_count = models.IntegerField(default=0)
     ace_theme = models.CharField(max_length=30, verbose_name=_('Ace theme'), choices=ACE_THEMES, default='auto')
+    site_theme = models.CharField(max_length=10, verbose_name=_('site theme'),
+                                  choices=[('auto', _('Follow system default')),
+                                           ('light', _('Light')),
+                                           ('dark', _('Dark'))],
+                                  default='auto')
     last_access = models.DateTimeField(verbose_name=_('last access time'), default=now)
     ip = models.GenericIPAddressField(verbose_name=_('last IP'), blank=True, null=True)
     ip_auth = models.GenericIPAddressField(verbose_name=_('IP-based authentication'),
