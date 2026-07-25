@@ -20,7 +20,7 @@ def create_profile(request, user_id):
         messages.warning(request, _('User already has a profile.'))
     else:
         lang = Language.get_default_language()
-        Profile(user=user, language=lang).save()
+        Profile(user=user, language=lang, site_theme='light').save()
         messages.success(request, _('Profile created successfully.'))
     return HttpResponseRedirect(reverse_lazy('admin:auth_user_change', args=[user_id]))
 
@@ -196,7 +196,7 @@ class UserAdmin(OldUserAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
-            Profile.objects.create(user=obj)
+            Profile.objects.create(user=obj, site_theme='light')
 
     def create_profile_action(self, request, queryset):
         from django.contrib import messages
