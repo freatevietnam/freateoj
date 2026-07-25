@@ -18,7 +18,7 @@
             <span class="text">{% trans "Edit profile" %}</span>
         </a>
     {% else %}
-        <a style="display: none" title="{% trans "Create profile" %}" href="{% url 'admin:create_profile' original.pk %}"
+        <a style="display: none" title="{% trans "Create profile" %}" href="{% url 'create_profile' original.pk %}"
            class="button createprofilelink">
             <i class="fa fa-lg fa-user-plus"></i>
             <span class="text">{% trans "Create profile" %}</span>
