@@ -3,6 +3,7 @@ import os
 from typing import Optional
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
@@ -16,6 +17,13 @@ from judge.models import BlogPost, Comment, Contest, ContestAnnouncement, Contes
     WebAuthnCredential
 from judge.tasks import on_new_comment
 from judge.views.register import RegistrationView
+
+
+@receiver(post_save, sender=User)
+def user_create_profile(sender, instance, created, **kwargs):
+    if created and not hasattr(instance, 'profile'):
+        lang = Language.get_default_language()
+        Profile(user=instance, language=lang).save()
 
 
 def get_pdf_path(basename: str) -> Optional[str]:
