@@ -319,7 +319,7 @@ RATE_LIMITS = {
     'rejudge_submission': {'count': 10, 'window': 60},   # 10 per min
     
     # Submission APIs
-    'abort_submission': {'count': 5, 'window': 60},      # 5 per min
+    'submission_abort': {'count': 5, 'window': 60},      # 5 per min
     
     # Ticket APIs
     'ticket_create': {'count': 5, 'window': 300},        # 5 per 5 min
