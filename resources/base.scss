@@ -425,6 +425,10 @@ math {
 }
 
 @media (max-width: 760px) {
+    body {
+        overflow-x: hidden;
+    }
+
     #content {
         width: auto;
         padding: 0 5px;
