@@ -78,6 +78,8 @@ docs/build/
 # Compiled CSS files (SCSS output, not vendor)
 resources/*.css
 resources/*.css.map
+resources/select2/*.css
+resources/select2/*.css.map
 resources/dark/*.css
 resources/dark/*.css.map
 resources/sass_processed/*.css
