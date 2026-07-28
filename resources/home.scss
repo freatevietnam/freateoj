@@ -574,7 +574,11 @@
   color: $color_primary90;
   margin: 0 0 12px 0;
   line-height: 1.3;
-  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .home-content__featured-meta {
@@ -591,6 +595,11 @@
   color: $color_primary66;
   line-height: 1.6;
   margin: 12px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .home-content__featured-stats {
@@ -668,7 +677,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  overflow-wrap: break-word;
 }
 
 .home-content__list-meta {
