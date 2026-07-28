@@ -409,7 +409,6 @@ urlpatterns = [
     path('stats/data/all/', stats.all_data, name='stats_data_all'),
 
     path('notifications/', include([
-        path('', notification.NotificationList.as_view(), name='notification_list'),
         path('ajax', notification.NotificationAjax.as_view(), name='notification_ajax'),
         path('mark_read', notification.NotificationMarkRead.as_view(), name='notification_mark_read'),
     ])),

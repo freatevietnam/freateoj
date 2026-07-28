@@ -1,23 +1,10 @@
-import json
-
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from judge.models.notification import Notification
 from judge.utils.cache_helper import unread_notification_count_cache_factory
-
-
-@method_decorator(login_required, name='dispatch')
-class NotificationList(View):
-    def get(self, request, *args, **kwargs):
-        notifications = request.profile.notifications.all()[:50]
-        return render(request, 'notification/list.html', {
-            'title': 'Notifications',
-            'notifications': notifications,
-        })
 
 
 @method_decorator(login_required, name='dispatch')

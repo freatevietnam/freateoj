@@ -47,6 +47,7 @@
     {% endif %}
     {% compress css %}
         <link rel="stylesheet" href="{{ static('style.css') }}">
+        <link rel="stylesheet" href="{{ static('notification.css') }}">
         {% if INLINE_FONTAWESOME %}<link rel="stylesheet" href="{{ static('libs/fontawesome/font-awesome.css') }}">{% endif %}
         <link rel="stylesheet" href="{{ static('source_sans_pro.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ static('libs/clipboard/tooltip.css') }}">
@@ -410,14 +411,26 @@
                 </span>
             </a>
             {% if request.user.is_authenticated %}
-                <a href="{{ url('notification_list') }}" style="margin-right: 5px; position: relative;">
-                    <span title="{{ _('Notifications') }}">
+                <div class="notification-wrapper" style="margin-right: 5px;">
+                    <a href="#" id="notification-bell" title="{{ _('Notifications') }}" style="position: relative;">
                         <i class="fa fa-bell" style="color: rgb(200,200,200); font-size: 1.15em"></i>
                         {% if UNREAD_NOTIFICATION_COUNT %}
                             <span id="notification-badge" style="display: inline;">{{ UNREAD_NOTIFICATION_COUNT }}</span>
                         {% endif %}
-                    </span>
-                </a>
+                    </a>
+                    <div id="notification-dropdown" class="notification-dropdown">
+                        <div class="notification-dropdown-header">
+                            <span class="notification-dropdown-title">{{ _('Notifications') }}</span>
+                            <a href="#" class="mark-all-read notification-mark-all">{{ _('Mark all read') }}</a>
+                        </div>
+                        <div class="notification-dropdown-body">
+                            <div class="notification-loading">{{ _('Loading...') }}</div>
+                        </div>
+                        <div class="notification-dropdown-footer">
+                            <span class="notification-dropdown-hint">{{ _('Showing recent notifications') }}</span>
+                        </div>
+                    </div>
+                </div>
                 <ul>
                     <li>
                         <a href="{{ url('user_page') }}">
