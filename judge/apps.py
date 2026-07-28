@@ -1,6 +1,24 @@
+from urllib.parse import urlencode
+
 from django.apps import AppConfig
 from django.db import DatabaseError
 from django.utils.translation import gettext_lazy
+
+
+def _patch_static():
+    from django.conf import settings
+    from django.templatetags.static import static as original_static
+
+    def versioned_static(path):
+        url = original_static(path)
+        version = getattr(settings, 'STATIC_VERSION', None)
+        if version:
+            separator = '&' if '?' in url else '?'
+            url += separator + urlencode({'ver': version})
+        return url
+
+    import django.templatetags.static as static_module
+    static_module.static = versioned_static
 
 
 class JudgeAppConfig(AppConfig):
@@ -13,6 +31,7 @@ class JudgeAppConfig(AppConfig):
         #          DO NOT REMOVE THINKING THE IMPORT IS UNUSED.
         # noinspection PyUnresolvedReferences
         from . import signals, jinja2  # noqa: F401, imported for side effects
+        _patch_static()
 
         from judge.models import Language, Profile
         from django.contrib.auth.models import User

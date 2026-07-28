@@ -1,7 +1,8 @@
 import itertools
 import json
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
+from django.conf import settings
 from django.template.defaultfilters import filesizeformat
 from django.templatetags.static import static as django_static
 from jinja2 import pass_context
@@ -16,6 +17,17 @@ from . import (camo, datetime, filesize, format, gravatar, language, markdown, r
                spaceless, submission, timedelta)
 from . import registry
 
+
+def static(path):
+    url = django_static(path)
+    version = getattr(settings, 'STATIC_VERSION', None)
+    if version:
+        separator = '&' if '?' in url else '?'
+        url += separator + urlencode({'ver': version})
+    return url
+
+
+registry.function('static', static)
 registry.function('str', str)
 registry.filter('str', str)
 registry.filter('json', json.dumps)
