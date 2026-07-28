@@ -3,416 +3,613 @@
 {% block title_ruler %}{% endblock %}
 
 {% block meta %}
-    {% if misc_config.meta_description %}
-        <meta name="description" property="og:description" content="{{ misc_config.meta_description }}">
-    {% endif %}
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "url": "{{ DMOJ_SCHEME }}://{{ site.domain }}/",
-            "potentialAction": {
-                "@type": "SearchAction",
-                "target": "{{ DMOJ_SCHEME }}://{{ site.domain }}/problems/?search={search_term_string}",
-                "query-input": "required name=search_term_string"
-            }
-        }
-    </script>
+  {% if misc_config.meta_description %}
+    <meta name="description" property="og:description" content="{{ misc_config.meta_description }}">
+  {% endif %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "{{ DMOJ_SCHEME }}://{{ site.domain }}/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ DMOJ_SCHEME }}://{{ site.domain }}/problems/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+{% endblock %}
+
+{% block media %}
+  <style>
+    #content { width: 100% !important; max-width: 100% !important; }
+    body { background: transparent !important; }
+  </style>
 {% endblock %}
 
 {% block js_media %}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.time-remaining').each(function () {
-                count_down($(this));
-            });
+  <script>
+    $(document).ready(function () {
+      $('.time-remaining').each(function () {
+        count_down($(this));
+      });
 
-            // Auto-rotate sections with preview
-            $('.home-preview-section').each(function () {
-                var $section = $(this);
-                var $items = $section.find('.home-preview-list__item');
-                var $preview = $section.find('.home-preview-panel');
-                var currentIndex = 0;
-                var autoTimer;
-
-                function showPreview(index) {
-                    currentIndex = index;
-                    $items.removeClass('active');
-                    $items.eq(index).addClass('active');
-                    $preview.find('.home-preview-content').hide();
-                    $preview.find('.home-preview-content').eq(index).show();
-                }
-
-                // Hover handler
-                $items.on('mouseenter', function () {
-                    var index = $items.index(this);
-                    showPreview(index);
-                    clearInterval(autoTimer);
-                });
-
-                $items.on('mouseleave', function () {
-                    startAuto();
-                });
-
-                function startAuto() {
-                    autoTimer = setInterval(function () {
-                        var nextIndex = (currentIndex + 1) % $items.length;
-                        showPreview(nextIndex);
-                    }, 3000);
-                }
-
-                if ($items.length > 0) {
-                    showPreview(0);
-                    startAuto();
-                }
-            });
+      // ===== Scroll Animations =====
+      var animateObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            animateObserver.unobserve(entry.target);
+          }
         });
-    </script>
+      }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+      document.querySelectorAll('[data-animate]').forEach(function (el) {
+        animateObserver.observe(el);
+      });
+
+      document.querySelectorAll('[data-stagger]').forEach(function (el) {
+        animateObserver.observe(el);
+      });
+
+      // ===== Counter Animation =====
+      var counterObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('[data-count]').forEach(function (el) {
+              var target = parseInt(el.getAttribute('data-count'), 10);
+              animateCounter(el, target);
+            });
+            counterObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      var statsEl = document.querySelector('.home-hero-stats');
+      if (statsEl) counterObserver.observe(statsEl);
+
+      function animateCounter(el, target) {
+        var duration = 2000;
+        var start = performance.now();
+
+        function update(currentTime) {
+          var elapsed = currentTime - start;
+          var progress = Math.min(elapsed / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(eased * target).toLocaleString();
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+      }
+
+      // ===== Auto-rotate preview sections =====
+      $('.home-preview-section').each(function () {
+        var $section = $(this);
+        var $items = $section.find('.home-content__list-item');
+        var $previews = $section.find('.home-preview-content');
+        var currentIndex = 0;
+        var autoTimer;
+
+        function showPreview(index) {
+          currentIndex = index;
+          $items.removeClass('active');
+          $items.eq(index).addClass('active');
+          $previews.hide();
+          $previews.eq(index).show();
+        }
+
+        $items.on('mouseenter', function () {
+          var index = $items.index(this);
+          showPreview(index);
+          clearInterval(autoTimer);
+        });
+
+        $items.on('mouseleave', function () {
+          startAuto();
+        });
+
+        function startAuto() {
+          autoTimer = setInterval(function () {
+            var nextIndex = (currentIndex + 1) % $items.length;
+            showPreview(nextIndex);
+          }, 4000);
+        }
+
+        if ($items.length > 0) {
+          showPreview(0);
+          startAuto();
+        }
+      });
+    });
+  </script>
 {% endblock %}
 
 {% block body %}
-    {# Welcome Section #}
-    <section class="home-welcome">
-        <div class="home-welcome__main">
-            <h1 class="home-welcome__title">{{ _('Chào mừng đến với FreateOJ') }}</h1>
-            <p class="home-welcome__subtitle">{{ _('Nền tảng lập trình thi đấu hiện đại để học hỏi và tranh tài') }}</p>
-            <div class="home-stats">
-                <div class="home-stat">
-                    <div class="home-stat__value">{{ user_count }}</div>
-                    <div class="home-stat__label">{{ _('Thành viên') }}</div>
-                </div>
-                <div class="home-stat">
-                    <div class="home-stat__value">{{ problem_count }}</div>
-                    <div class="home-stat__label">{{ _('Bài tập') }}</div>
-                </div>
-                <div class="home-stat">
-                    <div class="home-stat__value">{{ submission_count }}</div>
-                    <div class="home-stat__label">{{ _('Bài nộp') }}</div>
-                </div>
-                <div class="home-stat">
-                    <div class="home-stat__value">{{ organization_count }}</div>
-                    <div class="home-stat__label">{{ _('Tổ chức') }}</div>
-                </div>
-            </div>
-            <div class="home-welcome__actions">
-                <a href="{{ url('problem_list') }}" class="c-btn c-btn--primary">{{ _('Xem bài tập') }}</a>
-                {% if not request.user.is_authenticated and REGISTRATION_OPEN %}
-                    <a href="{{ url('registration_register') }}" class="c-btn c-btn--secondary">{{ _('Đăng ký miễn phí') }}</a>
-                {% endif %}
-            </div>
-        </div>
-        <div class="home-welcome__newbie">
-            <h3>{{ _('Mới tham gia?') }}</h3>
-            <p>{{ _('Tham gia cộng đồng để bắt đầu giải bài, tham gia các kỳ thi và nâng cao kỹ năng lập trình của bạn.') }}</p>
-            <ul class="home-welcome__features">
-                <li><i class="fa fa-check"></i> {{ _('Giải bài bằng nhiều ngôn ngữ') }}</li>
-                <li><i class="fa fa-check"></i> {{ _('Thi đấu trong các kỳ thi trực tuyến') }}</li>
-                <li><i class="fa fa-check"></i> {{ _('Theo dõi tiến độ của bạn') }}</li>
-                <li><i class="fa fa-check"></i> {{ _('Tham gia các tổ chức') }}</li>
-            </ul>
-            {% if not request.user.is_authenticated and REGISTRATION_OPEN %}
-                <a href="{{ url('registration_register') }}" class="c-btn c-btn--primary c-btn--block">{{ _('Bắt đầu ngay') }}</a>
-            {% endif %}
-        </div>
-    </section>
+<div class="home-page">
+  {# ===== HERO SECTION ===== #}
+  <section class="home-hero">
+    <div class="home-hero__bg-shape home-hero__bg-shape--1"></div>
+    <div class="home-hero__bg-shape home-hero__bg-shape--2"></div>
 
-    {# News Section with Preview #}
-    {% if posts %}
-    <section class="home-section home-preview-section">
-        <div class="home-section__header">
-            <h2>{{ _('Tin tức mới nhất') }}</h2>
-            <a href="{{ url('blog_post_list') }}" class="home-section__link">{{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i></a>
-        </div>
-        <div class="home-preview-layout">
-            {# Preview Panel (Left) #}
-            <div class="home-preview-panel">
-                {% for post in posts[:5] %}
-                <a href="{{ url('blog_post', post.id, post.slug) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
-                    <div class="home-preview-badge">{{ _('Nội dung nổi bật') }}</div>
-                    <h3 class="home-preview-title">{{ post.title }}</h3>
-                    <div class="home-preview-meta">
-                        <span><i class="fa fa-user"></i> {{ post.authors.first().user.username }}</span>
-                        <span><i class="fa fa-calendar"></i> {{ post.publish_on|date("M j, Y") }}</span>
-                    </div>
-                    <p class="home-preview-excerpt">{{ post.summary|truncatechars(300) }}</p>
-                    <span class="home-preview-readmore">{{ _('Đọc thêm') }} <i class="fa fa-arrow-right"></i></span>
-                </a>
-                {% endfor %}
-            </div>
-            {# List Panel (Right) #}
-            <div class="home-preview-list">
-                {% for post in posts[:5] %}
-                <a href="{{ url('blog_post', post.id, post.slug) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
-                    <div class="home-preview-list__rank">#{{ loop.index }}</div>
-                    <div class="home-preview-list__info">
-                        <div class="home-preview-list__title">{{ post.title }}</div>
-                        <div class="home-preview-list__meta">
-                            <span>{{ post.authors.first().user.username }}</span>
-                            <span>{{ post.publish_on|date("M j") }}</span>
-                        </div>
-                    </div>
-                    <i class="fa fa-chevron-right"></i>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    {% endif %}
+    <div class="home-hero__content">
+      <div class="home-hero__badge" data-animate="fade-in-down">
+        <i class="fa fa-code"></i> {{ _('Online Judge mã nguồn mở') }}
+      </div>
 
-    {# Featured Problems Section with Preview #}
-    {% if latest_problems %}
-    <section class="home-section home-preview-section">
-        <div class="home-section__header">
-            <h2>{{ _('Bài tập nổi bật') }}</h2>
-            <a href="{{ url('problem_list') }}" class="home-section__link">{{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i></a>
-        </div>
-        <div class="home-preview-layout">
-            {# Preview Panel (Left) #}
-            <div class="home-preview-panel">
-                {% for problem in latest_problems[:5] %}
-                <a href="{{ url('problem_detail', problem.code) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
-                    <div class="home-preview-badge">{{ _('Bài tập phổ biến') }}</div>
-                    <div class="home-preview-problem-code">{{ problem.code }}</div>
-                    <h3 class="home-preview-title">{{ problem.name }}</h3>
-                    <div class="home-preview-problem-stats">
-                        <div class="home-preview-problem-stat">
-                            <span class="home-preview-problem-stat__value">{{ problem.points|floatformat(0) }}</span>
-                            <span class="home-preview-problem-stat__label">{{ _('Điểm') }}</span>
-                        </div>
-                        <div class="home-preview-problem-stat">
-                            <span class="home-preview-problem-stat__value">{{ problem.ac_rate|floatformat(1) }}%</span>
-                            <span class="home-preview-problem-stat__label">{{ _('Tỷ lệ AC') }}</span>
-                        </div>
-                        <div class="home-preview-problem-stat">
-                            <span class="home-preview-problem-stat__value">{{ problem.user_count }}</span>
-                            <span class="home-preview-problem-stat__label">{{ _('Người giải') }}</span>
-                        </div>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-            {# List Panel (Right) #}
-            <div class="home-preview-list">
-                {% for problem in latest_problems[:5] %}
-                <a href="{{ url('problem_detail', problem.code) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
-                    <div class="home-preview-list__rank">#{{ loop.index }}</div>
-                    <div class="home-preview-list__info">
-                        <div class="home-preview-list__title">{{ problem.name }}</div>
-                        <div class="home-preview-list__meta">
-                            <span class="home-preview-list__code">{{ problem.code }}</span>
-                            <span>{{ problem.points|floatformat(0) }} {{ _('điểm') }}</span>
-                            <span>{{ problem.ac_rate|floatformat(1) }}% AC</span>
-                        </div>
-                    </div>
-                    <i class="fa fa-chevron-right"></i>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    {% endif %}
+      <h1 class="home-hero__title" data-animate="fade-in-up">
+        {{ _('Chào mừng đến với FreateOJ') }}
+      </h1>
 
-    {# Featured Contests Section with Preview #}
-    {% if current_contests or future_contests %}
-    <section class="home-section home-preview-section">
-        <div class="home-section__header">
-            <h2>{{ _('Kỳ thi nổi bật') }}</h2>
-            <a href="{{ url('contest_list') }}" class="home-section__link">{{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i></a>
-        </div>
-        <div class="home-preview-layout">
-            {# Preview Panel (Left) #}
-            <div class="home-preview-panel">
-                {% for contest in current_contests[:3] %}
-                <a href="{{ url('contest_view', contest.key) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
-                    <div class="home-preview-badge home-preview-badge--live">{{ _('ĐANG DIỄN RA') }}</div>
-                    <h3 class="home-preview-title">{{ contest.name }}</h3>
-                    <div class="home-preview-meta">
-                        <span><i class="fa fa-clock-o"></i> {{ _('Kết thúc trong %(countdown)s', countdown=as_countdown(contest.time_before_end)) }}</span>
-                    </div>
-                    <div class="home-preview-meta">
-                        <span><i class="fa fa-users"></i> {{ contest.user_count }} {{ _('thí sinh') }}</span>
-                        <span><i class="fa fa-puzzle-piece"></i> {{ contest.problems.count() }} {{ _('bài tập') }}</span>
-                    </div>
-                </a>
-                {% endfor %}
-                {% for contest in future_contests[:2] %}
-                <a href="{{ url('contest_view', contest.key) }}" class="home-preview-content" style="display:none">
-                    <div class="home-preview-badge home-preview-badge--upcoming">{{ _('SẮP DIỄN RA') }}</div>
-                    <h3 class="home-preview-title">{{ contest.name }}</h3>
-                    <div class="home-preview-meta">
-                        <span><i class="fa fa-clock-o"></i> {{ _('Bắt đầu trong %(countdown)s', countdown=as_countdown(contest.time_before_start)) }}</span>
-                    </div>
-                    <div class="home-preview-meta">
-                        <span><i class="fa fa-puzzle-piece"></i> {{ contest.problems.count() }} {{ _('bài tập') }}</span>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-            {# List Panel (Right) #}
-            <div class="home-preview-list">
-                {% for contest in current_contests[:3] %}
-                <a href="{{ url('contest_view', contest.key) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
-                    <div class="home-preview-list__rank">#{{ loop.index }}</div>
-                    <div class="home-preview-list__info">
-                        <div class="home-preview-list__title">{{ contest.name }}</div>
-                        <div class="home-preview-list__meta">
-                            <span class="home-preview-list__badge home-preview-list__badge--live">{{ _('LIVE') }}</span>
-                            <span>{{ contest.user_count }} {{ _('thí sinh') }}</span>
-                        </div>
-                    </div>
-                    <i class="fa fa-chevron-right"></i>
-                </a>
-                {% endfor %}
-                {% for contest in future_contests[:2] %}
-                <a href="{{ url('contest_view', contest.key) }}" class="home-preview-list__item">
-                    <div class="home-preview-list__rank">#{{ loop.index + current_contests|length }}</div>
-                    <div class="home-preview-list__info">
-                        <div class="home-preview-list__title">{{ contest.name }}</div>
-                        <div class="home-preview-list__meta">
-                            <span class="home-preview-list__badge home-preview-list__badge--upcoming">{{ _('SẮP') }}</span>
-                            <span>{{ contest.user_count }} {{ _('thí sinh') }}</span>
-                        </div>
-                    </div>
-                    <i class="fa fa-chevron-right"></i>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    {% endif %}
+      <p class="home-hero__subtitle" data-animate="fade-in-up" style="transition-delay: 0.1s">
+        {{ _('Nền tảng lập trình thi đấu hiện đại, miễn phí và chất lượng cho cộng đồng lập trình Việt Nam') }}
+      </p>
 
-    {# Organizations Section with Preview #}
-    {% if top_organizations %}
-    <section class="home-section home-preview-section">
-        <div class="home-section__header">
-            <h2>{{ _('Tổ chức') }}</h2>
-            <a href="{{ url('organization_list') }}" class="home-section__link">{{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i></a>
-        </div>
-        <div class="home-preview-layout">
-            {# Preview Panel (Left) #}
-            <div class="home-preview-panel">
-                {% for org in top_organizations[:5] %}
-                <a href="{{ url('organization_home', org.slug) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
-                    <div class="home-preview-badge">{{ _('Tổ chức nổi bật') }}</div>
-                    <h3 class="home-preview-title">{{ org.name }}</h3>
-                    <div class="home-preview-meta">
-                        <span><i class="fa fa-users"></i> {{ org.member_count }} {{ _('thành viên') }}</span>
-                        <span><i class="fa fa-trophy"></i> {{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
-                    </div>
-                    <p class="home-preview-excerpt">{{ org.about|truncatechars(200) }}</p>
-                </a>
-                {% endfor %}
-            </div>
-            {# List Panel (Right) #}
-            <div class="home-preview-list">
-                {% for org in top_organizations[:5] %}
-                <a href="{{ url('organization_home', org.slug) }}" class="home-preview-list__item{% if loop.first %} active{% endif %}">
-                    <div class="home-preview-list__rank">#{{ loop.index }}</div>
-                    <div class="home-preview-list__info">
-                        <div class="home-preview-list__title">{{ org.name }}</div>
-                        <div class="home-preview-list__meta">
-                            <span>{{ org.member_count }} {{ _('thành viên') }}</span>
-                            <span>{{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
-                        </div>
-                    </div>
-                    <i class="fa fa-chevron-right"></i>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    {% endif %}
+      <div class="home-hero__actions" data-animate="fade-in-up" style="transition-delay: 0.2s">
+        <a href="{{ url('problem_list') }}" class="home-hero__cta home-hero__cta--primary">
+          {{ _('Khám phá bài tập') }} <i class="fa fa-arrow-right"></i>
+        </a>
+        {% if not request.user.is_authenticated and REGISTRATION_OPEN %}
+          <a href="{{ url('registration_register') }}" class="home-hero__cta home-hero__cta--secondary">
+            {{ _('Đăng ký miễn phí') }} <i class="fa fa-user-plus"></i>
+          </a>
+        {% endif %}
+      </div>
 
-    {# Leaderboard Section #}
-    <section class="home-section">
-        <div class="home-section__header">
-            <h2>{{ _('Bảng xếp hạng thành viên') }}</h2>
-            <a href="{{ url('user_list') }}" class="home-section__link">{{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i></a>
+      <div class="home-hero-stats" data-animate="fade-in-up" style="transition-delay: 0.3s">
+        <div class="home-hero-stat">
+          <div class="home-hero-stat__value" data-count="{{ user_count }}">0</div>
+          <div class="home-hero-stat__label">{{ _('Thành viên') }}</div>
         </div>
-        <div class="home-leaderboard-grid">
-            {# Rating Leaderboard #}
-            <div class="home-leaderboard-column">
-                <div class="home-leaderboard-column__header">
-                    <i class="fa fa-star"></i> {{ _('Điểm đánh giá') }}
-                </div>
-                <div class="home-leaderboard">
-                    {% if top_rated_users %}
-                        {% for user in top_rated_users %}
-                        <div class="home-leaderboard__item home-leaderboard__item--rating-{{ user.display_rank }}{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
-                            <span class="home-leaderboard__rank home-leaderboard__rank--{{ loop.index }}">
-                                {% if loop.index == 1 %}<i class="fa fa-trophy"></i>
-                                {% elif loop.index == 2 %}<i class="fa fa-medal"></i>
-                                {% elif loop.index == 3 %}<i class="fa fa-award"></i>
-                                {% else %}#{{ loop.index }}{% endif %}
-                            </span>
-                            <a href="{{ url('user_page', user.user.username) }}" class="home-leaderboard__user">
-                                <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
-                                <span>{{ user.display_name }}</span>
-                            </a>
-                            <span class="home-leaderboard__points home-leaderboard__points--rating">{{ user.rating|floatformat(0) }}</span>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="home-leaderboard__empty">{{ _('Chưa có dữ liệu') }}</div>
-                    {% endif %}
-                </div>
-            </div>
-
-            {# Problem Solvers Leaderboard #}
-            <div class="home-leaderboard-column">
-                <div class="home-leaderboard-column__header">
-                    <i class="fa fa-check-circle"></i> {{ _('Điểm giải bài') }}
-                </div>
-                <div class="home-leaderboard">
-                    {% if top_problem_solvers %}
-                        {% for user in top_problem_solvers %}
-                        <div class="home-leaderboard__item{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
-                            <span class="home-leaderboard__rank home-leaderboard__rank--{{ loop.index }}">
-                                {% if loop.index == 1 %}<i class="fa fa-trophy"></i>
-                                {% elif loop.index == 2 %}<i class="fa fa-medal"></i>
-                                {% elif loop.index == 3 %}<i class="fa fa-award"></i>
-                                {% else %}#{{ loop.index }}{% endif %}
-                            </span>
-                            <a href="{{ url('user_page', user.user.username) }}" class="home-leaderboard__user">
-                                <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
-                                <span>{{ user.display_name }}</span>
-                            </a>
-                            <span class="home-leaderboard__points">{{ user.points|floatformat(2) }} {{ _('điểm') }}</span>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="home-leaderboard__empty">{{ _('Chưa có dữ liệu') }}</div>
-                    {% endif %}
-                </div>
-            </div>
-
-            {# Contribution Leaderboard #}
-            <div class="home-leaderboard-column">
-                <div class="home-leaderboard-column__header">
-                    <i class="fa fa-heart"></i> {{ _('Điểm đóng góp') }}
-                </div>
-                <div class="home-leaderboard">
-                    {% if top_contrib %}
-                        {% for user in top_contrib %}
-                        <div class="home-leaderboard__item{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
-                            <span class="home-leaderboard__rank home-leaderboard__rank--{{ loop.index }}">
-                                {% if loop.index == 1 %}<i class="fa fa-trophy"></i>
-                                {% elif loop.index == 2 %}<i class="fa fa-medal"></i>
-                                {% elif loop.index == 3 %}<i class="fa fa-award"></i>
-                                {% else %}#{{ loop.index }}{% endif %}
-                            </span>
-                            <a href="{{ url('user_page', user.user.username) }}" class="home-leaderboard__user">
-                                <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
-                                <span>{{ user.display_name }}</span>
-                            </a>
-                            <span class="home-leaderboard__points">{{ user.contribution_points }} {{ _('điểm') }}</span>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="home-leaderboard__empty">{{ _('Chưa có dữ liệu') }}</div>
-                    {% endif %}
-                </div>
-            </div>
+        <div class="home-hero-stat">
+          <div class="home-hero-stat__value" data-count="{{ problem_count }}">0</div>
+          <div class="home-hero-stat__label">{{ _('Bài tập') }}</div>
         </div>
-    </section>
+        <div class="home-hero-stat">
+          <div class="home-hero-stat__value" data-count="{{ submission_count }}">0</div>
+          <div class="home-hero-stat__label">{{ _('Bài nộp') }}</div>
+        </div>
+        <div class="home-hero-stat">
+          <div class="home-hero-stat__value" data-count="{{ organization_count }}">0</div>
+          <div class="home-hero-stat__label">{{ _('Tổ chức') }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ===== ABOUT SECTION ===== #}
+  <section class="home-section home-about">
+    <div class="home-about__grid">
+      <div class="home-about__visual" data-animate="fade-in-left">
+        <div class="home-about__logo-ring">
+          <img src="{{ static('icons/icon.png') }}" alt="FreateOJ">
+        </div>
+      </div>
+      <div class="home-about__content" data-animate="fade-in-right">
+        <span class="home-section__label">{{ _('Giới thiệu') }}</span>
+        <h2>{{ _('FreateOJ là gì?') }}</h2>
+        <p>
+          {{ _('FreateOJ là hệ thống chấm bài trực tuyến (Online Judge) nguồn mở do Freate phát triển, hướng tới việc xây dựng một sân chơi lập trình miễn phí, chất lượng và thực tế cho cộng đồng học sinh, sinh viên cũng như những ai đam mê thuật toán tại Việt Nam.') }}
+        </p>
+        <p>
+          {{ _('Hệ thống hoạt động hoàn toàn phi lợi nhuận với mục tiêu mang lại một môi trường rèn luyện tư duy bài bản, công bằng và dễ tiếp cận nhất.') }}
+        </p>
+        <div class="home-about__mission">
+          <p>{{ _('"Mang kiến thức lập trình đến mọi người, xây dựng cộng đồng thuật toán vững mạnh tại Việt Nam."') }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ===== FEATURES SECTION ===== #}
+  <section class="home-section home-features">
+    <div class="home-section__header" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Tính năng') }}</span>
+      <h2 class="home-section__title">{{ _('Tính năng nổi bật') }}</h2>
+      <p class="home-section__subtitle">{{ _('FreateOJ được tối ưu để đáp ứng linh hoạt nhiều nhu cầu học tập và giảng dạy khác nhau') }}</p>
+    </div>
+
+    <div class="home-features__grid" data-stagger>
+      <div class="home-feature-card">
+        <div class="home-feature-card__icon">
+          <i class="fa fa-database"></i>
+        </div>
+        <h3 class="home-feature-card__title">{{ _('Kho bài tập đa dạng') }}</h3>
+        <p class="home-feature-card__text">
+          {{ _('Hỗ trợ từ các bài toán chấm điểm theo test case cơ bản cho người mới bắt đầu, đến các bài thuật toán phức tạp đòi hỏi tối ưu hiệu năng.') }}
+        </p>
+      </div>
+
+      <div class="home-feature-card">
+        <div class="home-feature-card__icon">
+          <i class="fa fa-pencil"></i>
+        </div>
+        <h3 class="home-feature-card__title">{{ _('Giao diện tối giản') }}</h3>
+        <p class="home-feature-card__text">
+          {{ _('Tập trung vào trải nghiệm cốt lõi, giúp người dùng bớt rườm rà khi nộp bài và theo dõi kết quả.') }}
+        </p>
+      </div>
+
+      <div class="home-feature-card">
+        <div class="home-feature-card__icon">
+          <i class="fa fa-trophy"></i>
+        </div>
+        <h3 class="home-feature-card__title">{{ _('Tổ chức giải đấu') }}</h3>
+        <p class="home-feature-card__text">
+          {{ _('Nền tảng hỗ trợ tốt việc cấu hình và vận hành các kỳ thi thử, các buổi training của câu lạc bộ hoặc làm công cụ bổ trợ bài tập về nhà cho giáo viên.') }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {# ===== DEVELOPMENT DIRECTION SECTION ===== #}
+  <section class="home-section home-direction">
+    <div class="home-section__header" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Định hướng') }}</span>
+      <h2 class="home-section__title">{{ _('Định hướng phát triển') }}</h2>
+      <p class="home-section__subtitle">{{ _('Đội ngũ Freate vận hành hệ thống với tư duy liên tục cải tiến') }}</p>
+    </div>
+
+    <div class="home-direction__grid" data-stagger>
+      <div class="home-direction-card">
+        <div class="home-direction-card__icon home-direction-card__icon--perf">
+          <i class="fa fa-rocket"></i>
+        </div>
+        <h3 class="home-direction-card__title">{{ _('Tối ưu hiệu năng') }}</h3>
+        <p class="home-direction-card__text">
+          {{ _('Đảm bảo hệ thống chấm bài (judging core) hoạt động ổn định, xử lý mượt mà lượng code nộp lớn cùng lúc mà không bị nghẽn (queueing).') }}
+        </p>
+      </div>
+
+      <div class="home-direction-card">
+        <div class="home-direction-card__icon home-direction-card__icon--feedback">
+          <i class="fa fa-refresh"></i>
+        </div>
+        <h3 class="home-direction-card__title">{{ _('Cập nhật theo phản hồi') }}</h3>
+        <p class="home-direction-card__text">
+          {{ _('Tính năng mới và các bản vá lỗi được cập nhật liên tục dựa trên trải nghiệm thực tế từ chính người dùng trong cộng đồng.') }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {# ===== NEWS SECTION ===== #}
+  {% if posts %}
+  <section class="home-section home-content home-preview-section">
+    <div class="home-section__header" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Tin tức') }}</span>
+      <h2 class="home-section__title">{{ _('Tin tức mới nhất') }}</h2>
+      <a href="{{ url('blog_post_list') }}" class="home-section__link">
+        {{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="home-content__layout" data-animate="fade-in-up">
+      <div class="home-preview-panel">
+        {% for post in posts[:5] %}
+        <a href="{{ url('blog_post', post.id, post.slug) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
+          <span class="home-content__badge home-content__badge--default">
+            <i class="fa fa-star"></i> {{ _('Nội dung nổi bật') }}
+          </span>
+          <h3 class="home-content__featured-title">{{ post.title }}</h3>
+          <div class="home-content__featured-meta">
+            <span><i class="fa fa-user"></i> {{ post.authors.first().user.username }}</span>
+            <span><i class="fa fa-calendar"></i> {{ post.publish_on|date("M j, Y") }}</span>
+          </div>
+          <p class="home-content__featured-excerpt">{{ post.summary|truncatechars(300) }}</p>
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="home-content__list">
+        {% for post in posts[:5] %}
+        <a href="{{ url('blog_post', post.id, post.slug) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
+          <span class="home-content__list-rank">#{{ loop.index }}</span>
+          <div class="home-content__list-info">
+            <div class="home-content__list-title">{{ post.title }}</div>
+            <div class="home-content__list-meta">
+              <span>{{ post.authors.first().user.username }}</span>
+              <span>{{ post.publish_on|date("M j") }}</span>
+            </div>
+          </div>
+          <i class="fa fa-chevron-right home-content__list-arrow"></i>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ===== FEATURED PROBLEMS ===== #}
+  {% if latest_problems %}
+  <section class="home-section home-content home-preview-section">
+    <div class="home-section__header" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Bài tập') }}</span>
+      <h2 class="home-section__title">{{ _('Bài tập nổi bật') }}</h2>
+      <a href="{{ url('problem_list') }}" class="home-section__link">
+        {{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="home-content__layout" data-animate="fade-in-up">
+      <div class="home-preview-panel">
+        {% for problem in latest_problems[:5] %}
+        <a href="{{ url('problem_detail', problem.code) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
+          <span class="home-content__badge home-content__badge--default">{{ _('Bài tập phổ biến') }}</span>
+          <div class="home-content__featured-title">{{ problem.code }}</div>
+          <h3 class="home-content__featured-title" style="font-size:1.2em;">{{ problem.name }}</h3>
+          <div class="home-content__featured-stats">
+            <div class="home-content__featured-stat">
+              <span class="home-content__featured-stat-value">{{ problem.points|floatformat(0) }}</span>
+              <span class="home-content__featured-stat-label">{{ _('Điểm') }}</span>
+            </div>
+            <div class="home-content__featured-stat">
+              <span class="home-content__featured-stat-value">{{ problem.ac_rate|floatformat(1) }}%</span>
+              <span class="home-content__featured-stat-label">{{ _('Tỷ lệ AC') }}</span>
+            </div>
+            <div class="home-content__featured-stat">
+              <span class="home-content__featured-stat-value">{{ problem.user_count }}</span>
+              <span class="home-content__featured-stat-label">{{ _('Người giải') }}</span>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="home-content__list">
+        {% for problem in latest_problems[:5] %}
+        <a href="{{ url('problem_detail', problem.code) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
+          <span class="home-content__list-rank">#{{ loop.index }}</span>
+          <div class="home-content__list-info">
+            <div class="home-content__list-title">{{ problem.name }}</div>
+            <div class="home-content__list-meta">
+              <span class="home-content__list-code">{{ problem.code }}</span>
+              <span>{{ problem.points|floatformat(0) }} {{ _('điểm') }}</span>
+              <span>{{ problem.ac_rate|floatformat(1) }}% AC</span>
+            </div>
+          </div>
+          <i class="fa fa-chevron-right home-content__list-arrow"></i>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ===== FEATURED CONTESTS ===== #}
+  {% if current_contests or future_contests %}
+  <section class="home-section home-content home-preview-section">
+    <div class="home-section__header" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Kỳ thi') }}</span>
+      <h2 class="home-section__title">{{ _('Kỳ thi nổi bật') }}</h2>
+      <a href="{{ url('contest_list') }}" class="home-section__link">
+        {{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="home-content__layout" data-animate="fade-in-up">
+      <div class="home-preview-panel">
+        {% for contest in current_contests[:3] %}
+        <a href="{{ url('contest_view', contest.key) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
+          <span class="home-content__badge home-content__badge--live">{{ _('ĐANG DIỄN RA') }}</span>
+          <h3 class="home-content__featured-title">{{ contest.name }}</h3>
+          <div class="home-content__featured-meta">
+            <span><i class="fa fa-clock-o"></i> {{ _('Kết thúc trong %(countdown)s', countdown=as_countdown(contest.time_before_end)) }}</span>
+          </div>
+          <div class="home-content__featured-meta">
+            <span><i class="fa fa-users"></i> {{ contest.user_count }} {{ _('thí sinh') }}</span>
+            <span><i class="fa fa-puzzle-piece"></i> {{ contest.problems.count() }} {{ _('bài tập') }}</span>
+          </div>
+        </a>
+        {% endfor %}
+        {% for contest in future_contests[:2] %}
+        <a href="{{ url('contest_view', contest.key) }}" class="home-preview-content" style="display:none">
+          <span class="home-content__badge home-content__badge--upcoming">{{ _('SẮP DIỄN RA') }}</span>
+          <h3 class="home-content__featured-title">{{ contest.name }}</h3>
+          <div class="home-content__featured-meta">
+            <span><i class="fa fa-clock-o"></i> {{ _('Bắt đầu trong %(countdown)s', countdown=as_countdown(contest.time_before_start)) }}</span>
+          </div>
+          <div class="home-content__featured-meta">
+            <span><i class="fa fa-puzzle-piece"></i> {{ contest.problems.count() }} {{ _('bài tập') }}</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="home-content__list">
+        {% for contest in current_contests[:3] %}
+        <a href="{{ url('contest_view', contest.key) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
+          <span class="home-content__list-rank">#{{ loop.index }}</span>
+          <div class="home-content__list-info">
+            <div class="home-content__list-title">{{ contest.name }}</div>
+            <div class="home-content__list-meta">
+              <span class="home-content__list-badge home-content__list-badge--live">{{ _('LIVE') }}</span>
+              <span>{{ contest.user_count }} {{ _('thí sinh') }}</span>
+            </div>
+          </div>
+          <i class="fa fa-chevron-right home-content__list-arrow"></i>
+        </a>
+        {% endfor %}
+        {% for contest in future_contests[:2] %}
+        <a href="{{ url('contest_view', contest.key) }}" class="home-content__list-item">
+          <span class="home-content__list-rank">#{{ loop.index + current_contests|length }}</span>
+          <div class="home-content__list-info">
+            <div class="home-content__list-title">{{ contest.name }}</div>
+            <div class="home-content__list-meta">
+              <span class="home-content__list-badge home-content__list-badge--upcoming">{{ _('SẮP') }}</span>
+              <span>{{ contest.user_count }} {{ _('thí sinh') }}</span>
+            </div>
+          </div>
+          <i class="fa fa-chevron-right home-content__list-arrow"></i>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ===== ORGANIZATIONS ===== #}
+  {% if top_organizations %}
+  <section class="home-section home-content home-preview-section">
+    <div class="home-section__header" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Tổ chức') }}</span>
+      <h2 class="home-section__title">{{ _('Tổ chức') }}</h2>
+      <a href="{{ url('organization_list') }}" class="home-section__link">
+        {{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="home-content__layout" data-animate="fade-in-up">
+      <div class="home-preview-panel">
+        {% for org in top_organizations[:5] %}
+        <a href="{{ url('organization_home', org.slug) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
+          <span class="home-content__badge home-content__badge--default">{{ _('Tổ chức nổi bật') }}</span>
+          <h3 class="home-content__featured-title">{{ org.name }}</h3>
+          <div class="home-content__featured-meta">
+            <span><i class="fa fa-users"></i> {{ org.member_count }} {{ _('thành viên') }}</span>
+            <span><i class="fa fa-trophy"></i> {{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
+          </div>
+          <p class="home-content__featured-excerpt">{{ org.about|truncatechars(200) }}</p>
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="home-content__list">
+        {% for org in top_organizations[:5] %}
+        <a href="{{ url('organization_home', org.slug) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
+          <span class="home-content__list-rank">#{{ loop.index }}</span>
+          <div class="home-content__list-info">
+            <div class="home-content__list-title">{{ org.name }}</div>
+            <div class="home-content__list-meta">
+              <span>{{ org.member_count }} {{ _('thành viên') }}</span>
+              <span>{{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
+            </div>
+          </div>
+          <i class="fa fa-chevron-right home-content__list-arrow"></i>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ===== LEADERBOARD ===== #}
+  <section class="home-section home-leaderboard">
+    <div class="home-section__header" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Xếp hạng') }}</span>
+      <h2 class="home-section__title">{{ _('Bảng xếp hạng thành viên') }}</h2>
+      <a href="{{ url('user_list') }}" class="home-section__link">
+        {{ _('Xem tất cả') }} <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="home-leaderboard__grid" data-animate="fade-in-up">
+      {# Rating #}
+      <div class="home-leaderboard__col">
+        <div class="home-leaderboard__col-header">
+          <i class="fa fa-star"></i> {{ _('Điểm đánh giá') }}
+        </div>
+        {% if top_rated_users %}
+          {% for user in top_rated_users %}
+          <div class="home-leaderboard__item{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
+            <span class="home-leaderboard__rank">
+              {% if loop.index == 1 %}<i class="fa fa-trophy"></i>
+              {% elif loop.index == 2 %}<i class="fa fa-medal"></i>
+              {% elif loop.index == 3 %}<i class="fa fa-award"></i>
+              {% else %}#{{ loop.index }}{% endif %}
+            </span>
+            <a href="{{ url('user_page', user.user.username) }}" class="home-leaderboard__user-link">
+              <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
+              <span class="home-leaderboard__username home-leaderboard__username--rating-{{ user.display_rank }}">{{ user.display_name }}</span>
+            </a>
+            <span class="home-leaderboard__points home-leaderboard__points--rating">{{ user.rating|floatformat(0) }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="home-leaderboard__empty">{{ _('Chưa có dữ liệu') }}</div>
+        {% endif %}
+      </div>
+
+      {# Problem Solvers #}
+      <div class="home-leaderboard__col">
+        <div class="home-leaderboard__col-header">
+          <i class="fa fa-check-circle"></i> {{ _('Điểm giải bài') }}
+        </div>
+        {% if top_problem_solvers %}
+          {% for user in top_problem_solvers %}
+          <div class="home-leaderboard__item{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
+            <span class="home-leaderboard__rank">
+              {% if loop.index == 1 %}<i class="fa fa-trophy"></i>
+              {% elif loop.index == 2 %}<i class="fa fa-medal"></i>
+              {% elif loop.index == 3 %}<i class="fa fa-award"></i>
+              {% else %}#{{ loop.index }}{% endif %}
+            </span>
+            <a href="{{ url('user_page', user.user.username) }}" class="home-leaderboard__user-link">
+              <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
+              <span class="home-leaderboard__username">{{ user.display_name }}</span>
+            </a>
+            <span class="home-leaderboard__points">{{ user.points|floatformat(2) }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="home-leaderboard__empty">{{ _('Chưa có dữ liệu') }}</div>
+        {% endif %}
+      </div>
+
+      {# Contribution #}
+      <div class="home-leaderboard__col">
+        <div class="home-leaderboard__col-header">
+          <i class="fa fa-heart"></i> {{ _('Điểm đóng góp') }}
+        </div>
+        {% if top_contrib %}
+          {% for user in top_contrib %}
+          <div class="home-leaderboard__item{% if loop.index <= 3 %} home-leaderboard__item--top{{ loop.index }}{% endif %}">
+            <span class="home-leaderboard__rank">
+              {% if loop.index == 1 %}<i class="fa fa-trophy"></i>
+              {% elif loop.index == 2 %}<i class="fa fa-medal"></i>
+              {% elif loop.index == 3 %}<i class="fa fa-award"></i>
+              {% else %}#{{ loop.index }}{% endif %}
+            </span>
+            <a href="{{ url('user_page', user.user.username) }}" class="home-leaderboard__user-link">
+              <img src="{{ gravatar(user.user, 32) }}" class="home-leaderboard__avatar">
+              <span class="home-leaderboard__username">{{ user.display_name }}</span>
+            </a>
+            <span class="home-leaderboard__points">{{ user.contribution_points }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="home-leaderboard__empty">{{ _('Chưa có dữ liệu') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  {# ===== COMMUNITY SECTION ===== #}
+  <section class="home-section home-community">
+    <div class="home-community__card" data-animate="fade-in-up">
+      <span class="home-section__label">{{ _('Cộng đồng') }}</span>
+      <h2 class="home-section__title">{{ _('Kết nối cùng FreateOJ') }}</h2>
+      <p class="home-community__text">
+        {{ _('FreateOJ không chỉ là một công cụ chấm bài khô khan, mà là không gian để những người làm kỹ thuật cùng ngồi lại, chia sẻ source code và hỗ trợ nhau tiến bộ. Nếu bạn yêu thích dự án, hãy đồng hành cùng chúng tôi!') }}
+      </p>
+
+      <div class="home-community__badges">
+        <a href="https://github.com/freatevietnam/freateoj" target="_blank" rel="noopener">
+          <img src="https://img.shields.io/badge/GitHub-freatevietnam/freateoj-181717?style=flat&logo=github" alt="GitHub">
+        </a>
+        <a href="https://discord.com/invite/fC3kG3hQyn" target="_blank" rel="noopener">
+          <img src="https://img.shields.io/discord/1517871991573581975?color=%237289DA&label=Discord&logo=Discord" alt="Discord">
+        </a>
+      </div>
+
+      <div class="home-community__links">
+        <a href="https://github.com/freatevietnam/freateoj" target="_blank" rel="noopener" class="home-community__link home-community__link--github">
+          <i class="fa fa-github"></i> GitHub
+        </a>
+        <a href="https://discord.com/invite/fC3kG3hQyn" target="_blank" rel="noopener" class="home-community__link home-community__link--discord">
+          <i class="fa fa-comment"></i> Discord
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
 {% endblock %}

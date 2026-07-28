@@ -1,9 +1,7 @@
-// User Summary Modal - Hover on desktop, Click on mobile
+// User Summary Modal - Click to open
 $(document).ready(function() {
-    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    var hoverTimeout;
-    var hideTimeout;
     var currentUsername = null;
+    var currentLink = null;
     
     // Create modal HTML - positioned tooltip style
     var modalHTML = `
@@ -212,9 +210,6 @@ $(document).ready(function() {
         
         currentUsername = username;
         
-        // Clear any pending hide
-        clearTimeout(hideTimeout);
-        
         $.ajax({
             url: '/widgets/user-summary/' + username + '/',
             method: 'GET',
@@ -254,83 +249,52 @@ $(document).ready(function() {
             error: function() {
                 $('#user-summary-tooltip').hide();
                 currentUsername = null;
+                currentLink = null;
             }
         });
     }
     
-    // Hide user summary tooltip
-    function hideUserSummary() {
-        hideTimeout = setTimeout(function() {
+    // Click events (both desktop & mobile)
+    $(document).on('click', 'a[href*="/user/"]', function(e) {
+        var $link = $(this);
+        var username = isUserLink($link);
+        
+        if (username) {
+            var $tooltip = $('#user-summary-tooltip');
+            if ($tooltip.is(':visible') && currentUsername === username) {
+                $tooltip.hide();
+                currentUsername = null;
+                currentLink = null;
+                return;
+            }
+            e.preventDefault();
+            currentLink = $link;
+            showUserSummary(username, $link);
+        }
+    });
+    
+    // Close on click outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('#user-summary-tooltip, a[href*="/user/"]').length) {
             $('#user-summary-tooltip').hide();
             currentUsername = null;
-        }, 300);
-    }
-    
-    // Desktop: Hover events
-    if (!isMobile) {
-        $(document).on('mouseenter', 'a[href*="/user/"]', function() {
-            var $link = $(this);
-            var username = isUserLink($link);
-            
-            if (username) {
-                clearTimeout(hideTimeout);
-                hoverTimeout = setTimeout(function() {
-                    showUserSummary(username, $link);
-                }, 200);
-            }
-        });
-        
-        $(document).on('mouseleave', 'a[href*="/user/"]', function() {
-            clearTimeout(hideTimeout);
-            hideUserSummary();
-        });
-        
-        // Keep tooltip visible when hovering over it
-        $(document).on('mouseenter', '#user-summary-tooltip', function() {
-            clearTimeout(hideTimeout);
-        });
-        
-        $(document).on('mouseleave', '#user-summary-tooltip', function() {
-            hideUserSummary();
-        });
-    }
-    
-    // Mobile: Click events
-    if (isMobile) {
-        $(document).on('click', 'a[href*="/user/"]', function(e) {
-            var $link = $(this);
-            var username = isUserLink($link);
-            
-            if (username) {
-                e.preventDefault();
-                showUserSummary(username, $link);
-            }
-        });
-        
-        // Close on tap outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#user-summary-tooltip, a[href*="/user/"]').length) {
-                $('#user-summary-tooltip').hide();
-                currentUsername = null;
-            }
-        });
-    }
+            currentLink = null;
+        }
+    });
     
     // Close on escape key
     $(document).on('keydown', function(e) {
         if (e.key === 'Escape') {
             $('#user-summary-tooltip').hide();
             currentUsername = null;
+            currentLink = null;
         }
     });
     
     // Reposition on scroll/resize
     $(window).on('scroll resize', function() {
-        if ($('#user-summary-tooltip').is(':visible')) {
-            var $currentLink = $('a[href*="/user/"]:hover').first();
-            if ($currentLink.length) {
-                positionTooltip($currentLink);
-            }
+        if ($('#user-summary-tooltip').is(':visible') && currentLink) {
+            positionTooltip(currentLink);
         }
     });
 });

@@ -50,6 +50,11 @@
         <div class="problem-header-card__info">
             <h1 class="problem-header-card__title">{{ _('Bài tập') }}</h1>
             <p class="problem-header-card__desc">{{ _('Khám phá và giải quyết các bài tập lập trình với nhiều chủ đề và độ khó khác nhau.') }}</p>
+            {% if request.user.has_perm('judge.add_problem') %}
+              <a href="{{ url('problem_create') }}" class="problem-create-btn">
+                <i class="fa fa-plus"></i> {{ _('Tạo bài tập') }}
+              </a>
+            {% endif %}
         </div>
         <form class="problem-search-bar" action="" method="get">
             <input id="search" type="text" name="search" value="{{ search_query or '' }}"

@@ -12,6 +12,34 @@
 
 .problem-header-card__info {
     margin-bottom: 24px;
+    position: relative;
+}
+
+.problem-create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px 24px;
+    background: $gradient_css;
+    color: white;
+    border: none;
+    border-radius: $widget_border_radius;
+    font-weight: 600;
+    font-size: 0.95em;
+    text-decoration: none;
+    transition: all 0.2s;
+
+    i {
+        font-size: 0.9em;
+    }
+
+    &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        color: white;
+        text-decoration: none;
+    }
 }
 
 .problem-header-card__title {
