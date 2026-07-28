@@ -371,7 +371,18 @@ nav {
 }
 
 @media (max-width: 760px) {
-
+    #user-links {
+        .anon {
+            font-size: 0;
+            a {
+                font-size: 13px;
+                b { font-size: 13px; }
+            }
+        }
+        & > ul > li > a > span > span {
+            display: none;
+        }
+    }
 }
 
 nav .settings-popup {
