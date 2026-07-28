@@ -315,6 +315,13 @@
                 $("#set_language").submit()
             }
         }
+        async function bustStatic() {
+            if ('caches' in window) {
+                var keys = await caches.keys();
+                await Promise.all(keys.map(function(key) { return caches.delete(key); }));
+            }
+            location.reload(true);
+        }
     </script>
     <noscript>
         <style>
@@ -394,6 +401,11 @@
                                     <span onclick="submmit_language('en')" class="nav-seg-btn{% if LANGUAGE_CODE == 'en' %} active{% endif %}">EN</span>
                                 </span>
                             </div>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="bustStatic()" style="display: block; padding: 6px 12px; white-space: nowrap; font-size: 13px;">
+                                <i class="fa fa-refresh" style="margin-right: 6px;"></i>{{ _('Clear cache & reload') }}
+                            </a>
                         </li>
                     </ul>
                 </li>
