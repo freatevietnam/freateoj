@@ -50,24 +50,7 @@
   transform: translateY(0);
 }
 
-// ===== Full-page gradient background =====
-.home-page {
-  position: relative;
 
-  &::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background:
-      radial-gradient(ellipse, rgba($gradient_start, 0.15) 0%, transparent 50%),
-      radial-gradient(ellipse, rgba($gradient_end, 0.15) 0%, transparent 50%);
-    background-size: 150% 150%, 150% 150%;
-    background-position: 0% 0%, 100% 100%;
-    animation: gradient-drift 20s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-}
 
 // ===== Shared Section =====
 .home-section {
