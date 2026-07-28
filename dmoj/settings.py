@@ -843,7 +843,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'resources'),
 ]
 STATIC_URL = '/static/'
-STATIC_VERSION = '0.2'
+STATIC_VERSION = '0.3'
 STATICFILES_STORAGE = 'dmoj.storage.ManifestStaticFilesStorageSafe'
 
 # Define a cache
