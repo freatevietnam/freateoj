@@ -256,6 +256,8 @@ nav {
         right: 6px;
         height: 42px;
         border-radius: 12px;
+        transform: none;
+        width: auto;
     }
 
     #nav-container {
@@ -352,7 +354,7 @@ nav {
     }
 }
 
-@media not all and (max-width: 760px) {
+@media (min-width: 761px) {
     #nav-list {
         li {
             &.home-menu-item {
