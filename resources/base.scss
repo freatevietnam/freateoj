@@ -111,22 +111,6 @@ footer {
     bottom: 0;
 }
 
-* {
-    cursor: url('/static/freateoj/cursor.png'), auto;
-}
-
-a, button, [role="button"], input[type="submit"], input[type="button"], select {
-    cursor: url('/static/freateoj/cursor.png'), pointer;
-}
-
-.unselectable {
-    cursor: url('/static/freateoj/cursor.png'), default;
-}
-
-input, textarea {
-    cursor: url('/static/freateoj/cursor.png'), text;
-}
-
 body {
     position: relative;
     min-height: 100%;
