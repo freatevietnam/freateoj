@@ -290,7 +290,7 @@
           <span class="home-content__badge home-content__badge--default">
             <i class="fa fa-star"></i> {{ _('Nội dung nổi bật') }}
           </span>
-          <h3 class="home-content__featured-title">{{ post.title }}</h3>
+          <h3 class="home-content__featured-title">{{ post.title|truncate(50, True) }}</h3>
           <div class="home-content__featured-meta">
             <span><i class="fa fa-user"></i> {{ post.authors.first().user.username }}</span>
             <span><i class="fa fa-calendar"></i> {{ post.publish_on|date("M j, Y") }}</span>
@@ -305,7 +305,7 @@
         <a href="{{ url('blog_post', post.id, post.slug) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
           <span class="home-content__list-rank">#{{ loop.index }}</span>
           <div class="home-content__list-info">
-            <div class="home-content__list-title">{{ post.title }}</div>
+            <div class="home-content__list-title">{{ post.title|truncate(40, True) }}</div>
             <div class="home-content__list-meta">
               <span>{{ post.authors.first().user.username }}</span>
               <span>{{ post.publish_on|date("M j") }}</span>
@@ -336,7 +336,7 @@
         <a href="{{ url('problem_detail', problem.code) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
           <span class="home-content__badge home-content__badge--default">{{ _('Bài tập phổ biến') }}</span>
           <div class="home-content__featured-title">{{ problem.code }}</div>
-          <h3 class="home-content__featured-title" style="font-size:1.2em;">{{ problem.name }}</h3>
+          <h3 class="home-content__featured-title" style="font-size:1.2em;">{{ problem.name|truncate(50, True) }}</h3>
           <div class="home-content__featured-stats">
             <div class="home-content__featured-stat">
               <span class="home-content__featured-stat-value">{{ problem.points|floatformat(0) }}</span>
@@ -360,7 +360,7 @@
         <a href="{{ url('problem_detail', problem.code) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
           <span class="home-content__list-rank">#{{ loop.index }}</span>
           <div class="home-content__list-info">
-            <div class="home-content__list-title">{{ problem.name }}</div>
+            <div class="home-content__list-title">{{ problem.name|truncate(40, True) }}</div>
             <div class="home-content__list-meta">
               <span class="home-content__list-code">{{ problem.code }}</span>
               <span>{{ problem.points|floatformat(0) }} {{ _('điểm') }}</span>
@@ -391,7 +391,7 @@
         {% for contest in current_contests[:3] %}
         <a href="{{ url('contest_view', contest.key) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
           <span class="home-content__badge home-content__badge--live">{{ _('ĐANG DIỄN RA') }}</span>
-          <h3 class="home-content__featured-title">{{ contest.name }}</h3>
+          <h3 class="home-content__featured-title">{{ contest.name|truncate(50, True) }}</h3>
           <div class="home-content__featured-meta">
             <span><i class="fa fa-clock-o"></i> {{ _('Kết thúc trong %(countdown)s', countdown=as_countdown(contest.time_before_end)) }}</span>
           </div>
@@ -404,7 +404,7 @@
         {% for contest in future_contests[:2] %}
         <a href="{{ url('contest_view', contest.key) }}" class="home-preview-content" style="display:none">
           <span class="home-content__badge home-content__badge--upcoming">{{ _('SẮP DIỄN RA') }}</span>
-          <h3 class="home-content__featured-title">{{ contest.name }}</h3>
+          <h3 class="home-content__featured-title">{{ contest.name|truncate(50, True) }}</h3>
           <div class="home-content__featured-meta">
             <span><i class="fa fa-clock-o"></i> {{ _('Bắt đầu trong %(countdown)s', countdown=as_countdown(contest.time_before_start)) }}</span>
           </div>
@@ -420,7 +420,7 @@
         <a href="{{ url('contest_view', contest.key) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
           <span class="home-content__list-rank">#{{ loop.index }}</span>
           <div class="home-content__list-info">
-            <div class="home-content__list-title">{{ contest.name }}</div>
+            <div class="home-content__list-title">{{ contest.name|truncate(40, True) }}</div>
             <div class="home-content__list-meta">
               <span class="home-content__list-badge home-content__list-badge--live">{{ _('LIVE') }}</span>
               <span>{{ contest.user_count }} {{ _('thí sinh') }}</span>
@@ -433,7 +433,7 @@
         <a href="{{ url('contest_view', contest.key) }}" class="home-content__list-item">
           <span class="home-content__list-rank">#{{ loop.index + current_contests|length }}</span>
           <div class="home-content__list-info">
-            <div class="home-content__list-title">{{ contest.name }}</div>
+            <div class="home-content__list-title">{{ contest.name|truncate(40, True) }}</div>
             <div class="home-content__list-meta">
               <span class="home-content__list-badge home-content__list-badge--upcoming">{{ _('SẮP') }}</span>
               <span>{{ contest.user_count }} {{ _('thí sinh') }}</span>
@@ -463,7 +463,7 @@
         {% for org in top_organizations[:5] %}
         <a href="{{ url('organization_home', org.slug) }}" class="home-preview-content" style="{% if not loop.first %}display:none{% endif %}">
           <span class="home-content__badge home-content__badge--default">{{ _('Tổ chức nổi bật') }}</span>
-          <h3 class="home-content__featured-title">{{ org.name }}</h3>
+          <h3 class="home-content__featured-title">{{ org.name|truncate(50, True) }}</h3>
           <div class="home-content__featured-meta">
             <span><i class="fa fa-users"></i> {{ org.member_count }} {{ _('thành viên') }}</span>
             <span><i class="fa fa-trophy"></i> {{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
@@ -478,7 +478,7 @@
         <a href="{{ url('organization_home', org.slug) }}" class="home-content__list-item{% if loop.first %} active{% endif %}">
           <span class="home-content__list-rank">#{{ loop.index }}</span>
           <div class="home-content__list-info">
-            <div class="home-content__list-title">{{ org.name }}</div>
+            <div class="home-content__list-title">{{ org.name|truncate(40, True) }}</div>
             <div class="home-content__list-meta">
               <span>{{ org.member_count }} {{ _('thành viên') }}</span>
               <span>{{ org.performance_points|floatformat(0) }} {{ _('điểm') }}</span>
