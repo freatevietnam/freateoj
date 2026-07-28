@@ -574,6 +574,7 @@
   color: $color_primary90;
   margin: 0 0 12px 0;
   line-height: 1.3;
+  overflow-wrap: break-word;
 }
 
 .home-content__featured-meta {
@@ -667,6 +668,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  overflow-wrap: break-word;
 }
 
 .home-content__list-meta {
@@ -707,6 +709,12 @@
   border-radius: 16px;
   padding: 28px;
   min-height: 280px;
+  overflow-wrap: break-word;
+
+  @media (max-width: 768px) {
+    min-height: auto;
+    padding: 20px;
+  }
 }
 
 .home-preview-content {
