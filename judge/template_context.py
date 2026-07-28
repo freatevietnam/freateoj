@@ -1,4 +1,5 @@
 from functools import partial
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.context_processors import PermWrapper
@@ -15,6 +16,14 @@ class FixedSimpleLazyObject(SimpleLazyObject):
         __iter__ = new_method_proxy(iter)
 
 
+def _static_with_ver(path):
+    version = getattr(settings, 'STATIC_VERSION', None)
+    if version:
+        separator = '&' if '?' in path else '?'
+        return path + separator + urlencode({'ver': version})
+    return path
+
+
 def get_resource(request):
     use_https = settings.DMOJ_SSL
     if use_https == 1:
@@ -26,8 +35,8 @@ def get_resource(request):
     return {
         'INLINE_JQUERY': settings.INLINE_JQUERY,
         'INLINE_FONTAWESOME': settings.INLINE_FONTAWESOME,
-        'JQUERY_JS': settings.JQUERY_JS,
-        'FONTAWESOME_CSS': settings.FONTAWESOME_CSS,
+        'JQUERY_JS': _static_with_ver(settings.JQUERY_JS),
+        'FONTAWESOME_CSS': _static_with_ver(settings.FONTAWESOME_CSS),
         'DMOJ_SCHEME': scheme,
         'DMOJ_CANONICAL': settings.DMOJ_CANONICAL,
         'DMOJ_SELECT2_THEME': settings.DMOJ_SELECT2_THEME,
