@@ -386,7 +386,6 @@ noscript #noscript {
     min-height: 100%;
     position: relative;
     margin: 0 auto;
-    max-width: 100em;
     background: #fff;
 }
 
@@ -412,15 +411,6 @@ math {
 .MathJax {
     &:focus {
         outline: none;
-    }
-}
-
-@media(max-width: 1498px) {
-    #page-container {
-        border-left: none;
-        border-right: none;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
     }
 }
 
