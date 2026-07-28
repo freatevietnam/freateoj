@@ -253,12 +253,16 @@
 
             var $file_test = $('#id_problem-data-zipfile');
 
-            $("<input/>", {
-                type: "submit",
-                value: {{ _('Save')|htmltojs }},
-                class: "button zip-submit-full",
-                id: "zip-save-btn",
-            }).insertAfter($file_test.closest('table'));
+            $file_test.closest('tr').after(
+                '<tr class="fill-test-row">' +
+                '  <th><label>' + {{ _('Fill test cases')|htmltojs }} + '</label></th>' +
+                '  <td>' +
+                '    <a href="#" id="fill-test-case-btn" class="button">' +
+                '      <i class="fa fa-magic"></i> ' + {{ _('Fill test')|htmltojs }} +
+                '    </a>' +
+                '  </td>' +
+                '</tr>'
+            );
 
             $('<br>').appendTo($file_test.parent());
             $('<a>', {
@@ -533,7 +537,7 @@
                 return false;
             };
 
-            $('#fill-test-case-btn').click(function (e) {
+            $(document).on('click', '#fill-test-case-btn', function (e) {
                 e.preventDefault();
                 if (!window.valid_files.length) {
                     alert({{ _('No test files found. Please upload a ZIP file first.')|htmltojs }});
@@ -798,194 +802,7 @@
 {% block media %}
     {{data_form.media.css}}
     <link rel="stylesheet" href="{{ static('freateoj/jquery-ui/jquery-ui.min.css') }}">
-    <style>
-        #case-table .select2 {
-            text-align: initial;
-        }
 
-        .order-column {
-            width: 1em;
-        }
-
-        .bad-file input, .bad-file .select2-selection {
-            border-color: red;
-        }
-
-        span.order {
-            padding-right: 0.5em;
-        }
-
-        body.dragging, body.dragging * {
-            cursor: move !important;
-        }
-
-        .dragged {
-            position: absolute;
-            opacity: 0.5;
-            z-index: 2000;
-        }
-
-        tr.placeholder {
-            display: block;
-            background: red;
-            position: relative;
-            margin: 0;
-            padding: 0;
-            border: none;
-        }
-
-        tr.placeholder:before {
-            content: "";
-            position: absolute;
-            width: 0;
-            height: 0;
-            border: 5px solid transparent;
-            border-left-color: red;
-            margin-top: -5px;
-            left: -5px;
-            border-right: none;
-        }
-
-        i.fa-ellipsis-v {
-            cursor: move;
-        }
-
-        .edit-generator-args {
-            position: relative;
-        }
-
-        .generator-args-editor textarea {
-            display: block;
-            width: 100%;
-            margin-bottom: 0.5em;
-            height: 8em;
-        }
-
-        .generator-args-editor #submit-button {
-            display: block;
-            float: right;
-        }
-
-        #case-table tbody td {
-            white-space: nowrap;
-        }
-
-        .type-column {
-            width: 8em;
-        }
-
-        ul.errorlist {
-            border: 3px red solid;
-            border-radius: 5px;
-            padding-top: 1em;
-            padding-bottom: 1em;
-            background: #e99;
-        }
-
-        .zip-submit-full {
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-        }
-
-        #build-test-data-modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #build-test-data-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        #build-test-data-dialog {
-            position: relative;
-            background: var(--body-bg, #fff);
-            color: var(--body-fg, #333);
-            border-radius: 6px;
-            padding: 1.5em;
-            width: 500px;
-            max-width: 90vw;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
-            z-index: 1;
-        }
-
-        #build-test-data-dialog h3 {
-            margin: 0 0 0.75em;
-        }
-
-        .build-actions {
-            display: flex;
-            gap: 0.5em;
-            margin-bottom: 1em;
-        }
-
-        #build-test-data-count {
-            margin: 0 0 0.4em;
-            font-size: 0.9em;
-            color: var(--body-fg, #555);
-        }
-
-        #build-test-data-file-list {
-            overflow-y: auto;
-            max-height: 240px;
-            margin: 0 0 1em;
-            padding: 0.4em 0.4em 0.4em 1.8em;
-            font-size: 0.82em;
-            font-family: monospace;
-            background: var(--input-bg, #f5f5f5);
-            border: 1px solid var(--border-color, #ccc);
-            border-radius: 4px;
-            list-style: disc;
-        }
-
-        #build-test-data-file-list li.build-more-label {
-            color: var(--body-fg, #888);
-            list-style: none;
-        }
-
-        #build-drop-zone {
-            border: 2px dashed var(--border-color, #ccc);
-            border-radius: 4px;
-            padding: 1.2em;
-            text-align: center;
-            color: var(--body-fg, #888);
-            margin-bottom: 0.75em;
-            cursor: default;
-            transition: background 0.15s, border-color 0.15s, color 0.15s;
-        }
-
-        #build-drop-zone.drag-over {
-            background: rgba(0, 120, 255, 0.08);
-            border-color: #0078ff;
-            color: #0078ff;
-        }
-
-        #build-drop-zone i {
-            font-size: 1.4em;
-            display: block;
-            margin-bottom: 0.25em;
-        }
-
-        .build-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5em;
-            margin-top: auto;
-        }
-    </style>
 {% endblock %}
 
 {% block header %}
@@ -1104,7 +921,6 @@
         </table>
         <input type="submit" value="{{ _('Save') }}" class="button" id="submit-button">
         <a id="add-case-row" href="#" style="display: None;"><i class="fa fa-plus"></i> {{ _('Add new case') }}</a>
-        <a href="#" id="fill-test-case-btn" class="button" style="margin-left: 0.5em;"><i class="fa fa-magic"></i> {{ _('Fill test') }}</a>
     </form>
     <div style="display: none" class="generator-args-editor"><textarea></textarea><a class="button">{{ _('Save') }}</a></div>
 
