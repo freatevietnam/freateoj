@@ -48,3 +48,4 @@ Disallow: /user/$
 Disallow: /users/find/$
 Disallow: /user/*/submissions
 Disallow: /widgets
+Disallow: /?show_all_blogs=
