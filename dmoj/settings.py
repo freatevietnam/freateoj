@@ -912,6 +912,29 @@ ACE_DEFAULT_LIGHT_THEME = DMOJ_THEME_DEFAULT_ACE_THEME['light']
 # Only allow OAuth login
 OAUTH_ONLY = False
 
+# Easter Egg Configuration
+# HTML strings displayed on submission result pages. Override in local_settings.py.
+# Set to empty string to disable a specific easter egg.
+EASTER_EGG_AC = '''
+<video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+    <source src="https://assets.oj.freate.io.vn/aceasteregg.mp4" type="video/mp4">
+</video>
+'''
+
+EASTER_EGG_NEARLY_AC = '''
+<img src="https://assets.oj.freate.io.vn/99percenteasteregg.webp" alt="99%" style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+'''
+
+EASTER_EGG_NOT_AC = '''
+<video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+    <source src="https://assets.oj.freate.io.vn/notaceasteregg.mp4" type="video/mp4">
+</video>
+'''
+
+EASTER_EGG_CE_IR = '''
+<iframe width="560" height="315" src="https://www.youtube.com/embed/j9V78UbdzWI?si=wHSMj0tCyNPTa6P_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+'''
+
 try:
     with open(os.path.join(os.path.dirname(__file__), 'local_settings.py')) as f:
         exec(f.read(), globals())

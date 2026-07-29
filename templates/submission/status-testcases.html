@@ -25,27 +25,21 @@
 {% set is_pretest = submission.is_pretested %}
 
 {% if submission.status != 'IE' %}
-    {% if submission.is_graded and submission.result == 'AC' and submission.case_points == submission.case_total %}
+    {% if EASTER_EGG_AC and submission.is_graded and submission.result == 'AC' and submission.case_points == submission.case_total %}
     <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
-        <video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-            <source src="{{ static('freateoj/aceasteregg.mp4') }}" type="video/mp4">
-        </video>
+        {{ EASTER_EGG_AC }}
     </div>
-    {% elif submission.result in ('CE', 'IR') %}
+    {% elif EASTER_EGG_CE_IR and submission.result in ('CE', 'IR') %}
     <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
-        <video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-            <source src="{{ static('freateoj/irceeasteregg.mp4') }}" type="video/mp4">
-        </video>
+        {{ EASTER_EGG_CE_IR }}
     </div>
-    {% elif submission.is_graded and submission.case_total > 0 and submission.case_points < submission.case_total and (submission.case_points / submission.case_total) >= 0.99 %}
+    {% elif EASTER_EGG_NEARLY_AC and submission.is_graded and submission.case_total > 0 and submission.case_points < submission.case_total and (submission.case_points / submission.case_total) >= 0.99 %}
     <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
-        <img src="{{ static('freateoj/99percenteasteregg.webp') }}" alt="99% easter egg" style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+        {{ EASTER_EGG_NEARLY_AC }}
     </div>
-    {% elif submission.is_graded and submission.result != 'AC' %}
+    {% elif EASTER_EGG_NOT_AC and submission.is_graded and submission.result != 'AC' %}
     <div class="ace-asteregg" style="text-align:center; margin-bottom:16px;">
-        <video autoplay muted loop playsinline controls style="max-width:400px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-            <source src="{{ static('freateoj/notaceasteregg.mp4') }}" type="video/mp4">
-        </video>
+        {{ EASTER_EGG_NOT_AC }}
     </div>
     {% endif %}
     {% if submission.status == 'QU' %}

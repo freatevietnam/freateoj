@@ -29,6 +29,12 @@ def static(path):
 
 registry.function('static', static)
 registry.function('str', str)
+
+# Expose easter egg HTML snippets as safe strings for templates
+registry.globals['EASTER_EGG_AC'] = Markup(getattr(settings, 'EASTER_EGG_AC', ''))
+registry.globals['EASTER_EGG_NEARLY_AC'] = Markup(getattr(settings, 'EASTER_EGG_NEARLY_AC', ''))
+registry.globals['EASTER_EGG_NOT_AC'] = Markup(getattr(settings, 'EASTER_EGG_NOT_AC', ''))
+registry.globals['EASTER_EGG_CE_IR'] = Markup(getattr(settings, 'EASTER_EGG_CE_IR', ''))
 registry.filter('str', str)
 registry.filter('json', json.dumps)
 registry.filter('highlight', highlight_code)
