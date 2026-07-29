@@ -103,6 +103,7 @@
                     e.preventDefault();
                     var src = $(this).attr('src');
                     currentScale = 1;
+                    var translateX = 0, translateY = 0;
 
                     var $overlay = $('<div class="img-lightbox-overlay"></div>');
                     var $wrapper = $('<div class="img-lightbox-wrapper"></div>');
@@ -117,7 +118,7 @@
                     $('body').append($overlay).css('overflow', 'hidden');
 
                     function updateZoom() {
-                        $imgEl.css('transform', 'scale(' + currentScale + ')');
+                        $imgEl.css('transform', 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + currentScale + ')');
                         $imgEl.css('cursor', currentScale > 1 ? 'grab' : 'zoom-in');
                     }
 
@@ -146,7 +147,8 @@
                     $reset.on('click', function(e) {
                         e.stopPropagation();
                         currentScale = 1;
-                        $imgEl.css({ transform: 'scale(1)', top: '', left: '' });
+                        translateX = 0;
+                        translateY = 0;
                         updateZoom();
                     });
 
@@ -162,23 +164,25 @@
                     });
 
                     // Drag to pan when zoomed
-                    var isDragging = false, startX, startY, imgTop = 0, imgLeft = 0;
+                    var isDragging = false, startX, startY;
                     $imgEl.on('mousedown', function(e) {
                         if (currentScale <= 1) return;
                         e.preventDefault();
                         isDragging = true;
-                        startX = e.clientX - imgLeft;
-                        startY = e.clientY - imgTop;
-                        $(this).css('cursor', 'grabbing');
+                        startX = e.clientX - translateX;
+                        startY = e.clientY - translateY;
+                        $(this).css('transition', 'none').css('cursor', 'grabbing');
                     });
                     $(document).on('mousemove.imglb', function(e) {
                         if (!isDragging) return;
-                        imgLeft = e.clientX - startX;
-                        imgTop = e.clientY - startY;
-                        $imgEl.css({ left: imgLeft + 'px', top: imgTop + 'px' });
+                        translateX = e.clientX - startX;
+                        translateY = e.clientY - startY;
+                        $imgEl.css('transform', 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + currentScale + ')');
                     });
                     $(document).on('mouseup.imglb', function() {
+                        if (!isDragging) return;
                         isDragging = false;
+                        $imgEl.css('transition', 'transform 0.2s ease');
                         $imgEl.css('cursor', currentScale > 1 ? 'grab' : 'zoom-in');
                     });
 
