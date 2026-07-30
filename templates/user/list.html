@@ -7,6 +7,11 @@
     {% include "user/user-list-tabs.html" %}
 {% endblock %}
 
+{% block before_users_table %}
+    {% include "user/_top_performers.html" %}
+{% endblock %}
+
 {% block users_table %}
-    {% include "user/users-table.html" %}
+    {% include "user/_leaderboard_table.html" %}
+    {% include "user/_leaderboard_cards.html" %}
 {% endblock %}

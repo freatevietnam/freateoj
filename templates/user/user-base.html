@@ -1,66 +1,58 @@
 {% extends "base.html" %}
 
-{% block media %}
-    {% block user_media %}{% endblock %}
-{% endblock %}
+{% block media %}{% block user_media %}{% endblock %}{% endblock %}
 
-{% block js_media %}
-    {% block user_js_media %}{% endblock %}
-{% endblock %}
+{% block js_media %}{% block user_js_media %}{% endblock %}{% endblock %}
 
 {% block body %}
-    <div class="user-info-page">
-        <div class="user-sidebar">
-            <img src="{{ gravatar(user, 135) }}" class="user-gravatar">
-            <br>
-            {% if user.user == request.user or request.user.is_superuser %}
-                <div>
-                    <b class="semibold">{{ _('Email:') }}</b>
-                    <span style="word-wrap: break-word;">{{ user.user.email }}</span>
+<div class="user-profile-page brutalist-two-col" style="padding: 24px;">
+    <aside class="user-sidebar brutalist-border" style="background: #141414; padding: 16px; position: sticky; top: 24px; align-self: start;">
+        <img src="{{ gravatar(user, 135) }}" class="user-gravatar" style="display: block; width: 135px; height: 135px; border: 2px solid #333; margin-bottom: 12px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: #F5F5F5; margin-bottom: 8px;">{{ user.user.username }}</div>
+        <hr class="brutalist-divider" style="margin: 8px 0;">
+
+        {% if user.user == request.user or request.user.is_superuser %}
+            <div><span class="data-label">{{ _('Email:') }}</span> <span class="data-value" style="word-wrap: break-word;">{{ user.user.email }}</span></div>
+        {% endif %}
+        <div><span class="data-label">{{ _('Rating:') }}</span> <span class="data-value">{% if user.rating %}● {% endif %}{{ rating_number(user) if user.rating else _('Unrated') }}</span></div>
+        {% if not user.is_unlisted %}
+            <div><span class="data-label">{{ _('Rank:') }}</span> <span class="data-value">#{{ rank }} / {{ total_users }}</span></div>
+        {% endif %}
+        <div><span class="data-label">{{ _('Points:') }}</span> <span class="data-value">{{ user.performance_points|floatformat(2) }} pp</span></div>
+        <div><span class="data-label">{{ _('Solved:') }}</span> <span class="data-value">{{ user.problem_count }}</span></div>
+        <div><span class="data-label">{{ _('Contribution:') }}</span> <span class="data-value">{{ user.contribution_points }}</span></div>
+
+        <hr class="brutalist-divider" style="margin: 8px 0;">
+
+        {% with orgs=user.organizations.filter(is_unlisted=False) %}
+            {% if orgs %}
+                <div><span class="data-label">{{ _('Org:') }}</span>
+                    {% for org in orgs %}<span class="data-value"><a href="{{ org.get_absolute_url() }}" style="color: #FF6B00;">{{ org.name }}</a>{% if not loop.last %}, {% endif %}</span>{% endfor %}
                 </div>
             {% endif %}
-            <div><b>
-                    {{ _('Problems solved:') }} {{ user.problem_count }}
-            </b></div>
+        {% endwith %}
+        <div><span class="data-label">{{ _('Joined:') }}</span> <span class="data-value">{{ user.user.date_joined|date("Y-m-d") }}</span></div>
 
-            {% if not user.is_unlisted %}
-                <div><b class="semibold">{{ _('Rank by points:') }}</b> #{{ rank }}</div>
-            {% endif %}
-            <div>
-                <b class="semibold">{{ _('Total points:') }}</b>
-                <span title="{{ user.performance_points|floatformat(2) }}">
-                    {{ user.performance_points|floatformat(2) }}
-                </span>
-            </div>
-            <div>
-                <b class="semibold">{{ _('Contribution points:') }}</b>
-                <span title="{{ user.contribution_points }}">
-                    {{ user.contribution_points }}
-                </span>
-            </div>
+        <hr class="brutalist-divider" style="margin: 8px 0;">
 
-            <br>
-            <div>
-                <a href="{{ url('all_user_submissions', user.user.username) }}">{{ _('View submissions') }}</a>
-            </div>
-
-            {% if ratings %}
-                <br>
-                <div><b>
-                    {%- trans trimmed counter=ratings|length %}
-                        {{ counter }} contest written
-                    {% pluralize %}
-                        {{ counter }} contests written
-                    {% endtrans -%}
-                </b></div>
-                {% if not user.is_unlisted %}
-                    <div><b class="semibold">{{ _('Rank by rating:') }}</b> #{{ rating_rank }}</div>
-                {% endif %}
-                <div><b class="semibold">{{ _('Rating:') }}</b> {{ rating_number(rating) }}</div>
-                <div><b class="semibold">{{ _('Min. rating:') }}</b> {{ rating_number(min_rating) }}</div>
-                <div><b class="semibold">{{ _('Max rating:') }}</b> {{ rating_number(max_rating) }}</div>
-            {% endif %}
+        <div style="display: flex; gap: 8px;">
+            <a href="{{ url('all_user_submissions', user.user.username) }}" class="brutalist-btn" style="flex:1; text-align:center; padding:10px 0; border:1px solid #333; color:#F5F5F5; font-family:'JetBrains Mono',monospace; font-size:0.75rem; text-decoration:none;">{{ _('Submissions') }}</a>
+            <a href="/users/compare/?u1={{ user.user.username }}" class="brutalist-btn" style="flex:1; text-align:center; padding:10px 0; border:1px solid #FF6B00; color:#FF6B00; font-family:'JetBrains Mono',monospace; font-size:0.75rem; text-decoration:none;">{{ _('Compare') }}</a>
         </div>
-        <div class="user-content">{% block user_content %}{% endblock %}</div>
-    </div>
+
+        {% if ratings %}
+            <hr class="brutalist-divider" style="margin: 8px 0;">
+            <div><span class="data-label">{{ _('Contests:') }}</span> <span class="data-value">{% trans counter=ratings|length %}{{ counter }} contest{% pluralize %}{{ counter }} contests{% endtrans %}</span></div>
+            {% if not user.is_unlisted %}
+                <div><span class="data-label">{{ _('Rating rank:') }}</span> <span class="data-value">#{{ rating_rank }}</span></div>
+            {% endif %}
+            <div><span class="data-label">{{ _('Min:') }}</span> <span class="data-value">{{ rating_number(min_rating) }}</span></div>
+            <div><span class="data-label">{{ _('Max:') }}</span> <span class="data-value">{{ rating_number(max_rating) }}</span></div>
+        {% endif %}
+    </aside>
+
+    <main class="user-content brutalist-grid" style="gap:24px;">
+        {% block user_content %}{% endblock %}
+    </main>
+</div>
 {% endblock %}
