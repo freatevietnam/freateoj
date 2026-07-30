@@ -209,6 +209,9 @@ urlpatterns = [
         path('/unban', user.UserUnban.as_view(), name='user_unban'),
         path('/blog/', paged_list_view(user.UserBlogPage, 'user_blog')),
         path('/comment/', paged_list_view(user.UserCommentPage, 'user_comment')),
+        path('/heatmap-data/', user.HeatmapDataView.as_view(), name='user_heatmap_data'),
+        path('/skill-tree-data/', user.SkillTreeDataView.as_view(), name='user_skill_tree_data'),
+        path('/activity-feed/', user.ActivityFeedView.as_view(), name='user_activity_feed'),
         path('/solved/', include([
             path('', user.UserProblemsPage.as_view(), name='user_problems'),
             path('ajax', user.UserPerformancePointsAjax.as_view(), name='user_pp_ajax'),

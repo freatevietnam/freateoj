@@ -260,7 +260,92 @@ class UserAboutPage(UserPage):
         context['submission_data'] = mark_safe(json.dumps({
             date_counts['date_only'].isoformat(): date_counts['cnt'] for date_counts in submissions
         }))
+
+        context['recent_activity'] = [
+            {
+                'timestamp': s.date.strftime('%Y-%m-%d %H:%M:%S'),
+                'html': '<a href="%s" style="color:#FF6B00;text-decoration:none;">%s</a> — %.1f pts' % (
+                    reverse('submission', args=(s.id,)),
+                    s.problem.name if s.problem else '?',
+                    s.points or 0,
+                ),
+            }
+            for s in self.object.submission_set.select_related('problem').order_by('-date')[:10]
+        ]
+        context['has_more_activity'] = self.object.submission_set.count() > 10
+
+        from judge.models import Profile as ProfileModel
+        if hasattr(self.object, 'country') and self.object.country:
+            context['profile_country_rank'] = ProfileModel.objects.filter(
+                is_unlisted=False, country=self.object.country,
+                performance_points__gt=self.object.performance_points,
+            ).count() + 1
+            context['country_total'] = ProfileModel.objects.filter(
+                is_unlisted=False, country=self.object.country,
+            ).count()
+
         return context
+
+
+class HeatmapDataView(UserMixin, View):
+    def get(self, request, *args, **kwargs):
+        profile = self.get_object()
+        user_timezone = settings.DEFAULT_USER_TIME_ZONE
+        if request.profile:
+            user_timezone = user_timezone or request.profile.timezone
+        offset = pytz.timezone(user_timezone).utcoffset(datetime.datetime.utcnow()).seconds
+        submissions = (
+            profile.submission_set
+            .annotate(date_only=Cast(F('date') + datetime.timedelta(seconds=offset), DateField()))
+            .values('date_only').annotate(cnt=Count('id'))
+        )
+        return JsonResponse({s['date_only'].isoformat(): s['cnt'] for s in submissions})
+
+
+class SkillTreeDataView(UserMixin, View):
+    def get(self, request, *args, **kwargs):
+        profile = self.get_object()
+        groups = (
+            Submission.objects.filter(user=profile, points__gt=0, problem__is_public=True)
+            .values('problem__group_id', 'problem__group__full_name')
+            .annotate(solved=Count('id', distinct=True))
+            .annotate(max_points=Max('points'))
+        )
+        nodes = []
+        links = []
+        for g in groups:
+            nodes.append({
+                'id': 'g%d' % g['problem__group_id'],
+                'label': g['problem__group__full_name'],
+                'solved': g['solved'],
+                'points': float(g['max_points'] or 0),
+            })
+        for i in range(len(nodes) - 1):
+            links.append({'source': nodes[i]['id'], 'target': nodes[i + 1]['id']})
+        return JsonResponse({'nodes': nodes, 'links': links})
+
+
+class ActivityFeedView(UserMixin, View):
+    def get(self, request, *args, **kwargs):
+        profile = self.get_object()
+        offset = int(request.GET.get('offset', 0))
+        limit = int(request.GET.get('limit', 20))
+        submissions = profile.submission_set.select_related('problem').order_by('-date')[offset:offset + limit]
+        items = []
+        for s in submissions:
+            items.append({
+                'timestamp': s.date.strftime('%Y-%m-%d %H:%M:%S UTC'),
+                'html': '<a href="%s" style="color:#FF6B00;text-decoration:none;">%s</a> — %s pts' % (
+                    reverse('submission', args=(s.id,)),
+                    s.problem.name if s.problem else '?',
+                    '%.1f' % s.points if s.points else '0',
+                ),
+            })
+        return JsonResponse({
+            'items': items,
+            'has_more': len(items) == limit,
+            'offset': offset + len(items),
+        })
 
 
 class UserBan(UserMixin, TitleMixin, SingleObjectFormView):
