@@ -16,7 +16,7 @@
         <form enctype="multipart/form-data" method="post"
               action="{{ url('newsletter_subscribe_confirm', newsletter.slug) }}">
             {% csrf_token %}
-            <p><input id="id_submit" name="submit" value="Subscribe" type="submit"></p>
+            <p><input id="id_submit" name="submit" value="Subscribe" type="submit" class="ind-btn-primary"></p>
         </form>
     {% endif %}
 {% endblock %}

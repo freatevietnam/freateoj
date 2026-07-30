@@ -149,14 +149,14 @@
             {% if contest.key in finished_contests or request.profile in contest.authors.all() or request.profile in contest.curators.all() or request.profile in contest.testers.all() %}
                 <form action="{{ url('contest_join', contest.key) }}" method="post">
                     {% csrf_token %}
-                    <input type="submit" class="unselectable button full participate-button spectate-warning"
-                           value="{{ _('Spectate') }}">
+                    <input type="submit"
+                           value="{{ _('Spectate') }}" class="ind-btn-primary">
                 </form>
             {% else %}
                 <form action="{{ url('contest_join', contest.key) }}" method="post">
                     {% csrf_token %}
-                    <input type="submit" class="unselectable button full participate-button join-warning"
-                        value="{{ _('Join') }}">
+                    <input type="submit"
+                        value="{{ _('Join') }}" class="ind-btn-primary">
                 </form>
             {% endif %}
         </td>
@@ -177,8 +177,8 @@
             {% else %}
                 <form action="{{ url('contest_register', contest.key) }}" method="post">
                     {% csrf_token %}
-                    <input type="submit" class="unselectable ind-btn-orange ind-btn-wide participate-button register-warning"
-                            value="{{ _('Register') }}">
+                    <input type="submit"
+                            value="{{ _('Register') }}" class="ind-btn-primary">
                 </form>
             {% endif %}
         {% endif %}
@@ -352,8 +352,8 @@
                             {% if not contest.disallow_virtual %}
                                 <td class="ind-td"><form action="{{ url('contest_join', contest.key) }}" method="post">
                                     {% csrf_token %}
-                                    <input type="submit" class="unselectable button full participate-button"
-                                           value="{{ _('Virtual join') }}">
+                                    <input type="submit"
+                                           value="{{ _('Virtual join') }}" class="ind-btn-primary">
                                 </form></td>
                             {% else %}
                                 <td class="ind-td"></td>

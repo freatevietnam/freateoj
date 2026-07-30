@@ -7,6 +7,6 @@
     <form enctype="multipart/form-data" method="post" action=".">
         {% csrf_token %}
         {{ form.as_p() }}
-        <p><input id="id_submit" name="submit" type="submit" value="Activate"></p>
+        <p><input id="id_submit" name="submit" type="submit" value="Activate" class="ind-btn-primary"></p>
     </form>
 {% endblock %}

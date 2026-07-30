@@ -35,7 +35,7 @@
         {% csrf_token %}
         <table border="0" class="django-as-table">{{ form.as_table() }}</table>
         <div class="submit-bar">
-            <button class="submit-bar" type="submit">
+            <button type="submit" class="ind-btn-primary">
                 {% if request.resolver_match.url_name == 'organization_create' %}
                     {{ _('Create') }}
                 {% else %}
@@ -71,8 +71,8 @@
                 <td class="ind-td">
                     <form method="post" action="{{ url('organization_quota_delete', organization.slug, q.id) }}" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="ind-btn-ghost"
-                                onclick="return confirm('{{ _('Delete this quota grant?') }}')">
+                        <button type="submit"
+                                onclick="return confirm('{{ _('Delete this quota grant?') }}')" class="ind-btn-primary">
                             <i class="fa fa-trash"></i>
                         </button>
                     </form>
@@ -91,7 +91,7 @@
         {% csrf_token %}
         <table class="django-as-table">{{ quota_form.as_table() }}</table>
         <div class="submit-bar">
-            <button class="submit-bar" type="submit">{{ _('Add') }}</button>
+            <button type="submit" class="ind-btn-primary">{{ _('Add') }}</button>
         </div>
     </form>
     {% endif %}

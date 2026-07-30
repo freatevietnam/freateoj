@@ -11,7 +11,7 @@
         <form enctype="multipart/form-data" method="post" action=".">
             {% csrf_token %}
             {{ form.as_p() }}
-            <p><input id="id_submit" name="submit" value="Unsubscribe" type="submit"></p>
+            <p><input id="id_submit" name="submit" value="Unsubscribe" type="submit" class="ind-btn-primary"></p>
         </form>
     {% endif %}
 {% endblock %}
