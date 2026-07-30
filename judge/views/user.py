@@ -722,8 +722,8 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, DiggPaginatorMixin
         from judge.models import Profile as ProfileModel, Organization
         top_rated = ProfileModel.objects.filter(is_unlisted=False).order_by('-rating').select_related('user')[:1].first()
         top_points = ProfileModel.objects.filter(is_unlisted=False).order_by('-performance_points').select_related('user')[:1].first()
-        rising_star_qs = ProfileModel.objects.filter(is_unlisted=False, rating__isnull=False).order_by('-rating')[:10]
-        rising_star = ProfileModel.objects.filter(is_unlisted=False).order_by('-rating')[:3].last() if ProfileModel.objects.filter(is_unlisted=False).count() > 2 else None
+        rising_star_qs = list(ProfileModel.objects.filter(is_unlisted=False, rating__isnull=False).order_by('-rating')[:3])
+        rising_star = rising_star_qs[-1] if len(rising_star_qs) >= 3 else None
         top_org = Organization.objects.filter(is_unlisted=False).annotate(_member_count=Count('member')).order_by('-_member_count').first()
 
         context['top_performers'] = [
