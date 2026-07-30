@@ -53,3 +53,14 @@ body.users-page, body.user-profile-page {
   border-top: $ind-border-width solid $ind-border;
   margin: 0;
 }
+
+// ─── Comparison Page ────────────────────────────────────────────────
+.compare-pane {
+  header {
+    font-family: $ind-font-mono;
+    font-size: 0.75rem;
+    color: $ind-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
