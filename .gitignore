@@ -53,6 +53,7 @@ custom_script_*
 db.json
 vo21.json
 fc_*
+informations.txt
 
 # Fixtures (specific)
 judge/fixtures/fixed*

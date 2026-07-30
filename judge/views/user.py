@@ -287,9 +287,9 @@ class UserAboutPage(UserPage):
         return context
 
 
-class HeatmapDataView(UserMixin, View):
+class HeatmapDataView(View):
     def get(self, request, *args, **kwargs):
-        profile = self.get_object()
+        profile = get_object_or_404(Profile, user__username=kwargs['user'])
         user_timezone = settings.DEFAULT_USER_TIME_ZONE
         if request.profile:
             user_timezone = user_timezone or request.profile.timezone
@@ -302,9 +302,9 @@ class HeatmapDataView(UserMixin, View):
         return JsonResponse({s['date_only'].isoformat(): s['cnt'] for s in submissions})
 
 
-class SkillTreeDataView(UserMixin, View):
+class SkillTreeDataView(View):
     def get(self, request, *args, **kwargs):
-        profile = self.get_object()
+        profile = get_object_or_404(Profile, user__username=kwargs['user'])
         groups = (
             Submission.objects.filter(user=profile, points__gt=0, problem__is_public=True)
             .values('problem__group_id', 'problem__group__full_name')
@@ -325,9 +325,9 @@ class SkillTreeDataView(UserMixin, View):
         return JsonResponse({'nodes': nodes, 'links': links})
 
 
-class ActivityFeedView(UserMixin, View):
+class ActivityFeedView(View):
     def get(self, request, *args, **kwargs):
-        profile = self.get_object()
+        profile = get_object_or_404(Profile, user__username=kwargs['user'])
         offset = int(request.GET.get('offset', 0))
         limit = int(request.GET.get('limit', 20))
         submissions = profile.submission_set.select_related('problem').order_by('-date')[offset:offset + limit]
