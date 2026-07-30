@@ -142,6 +142,9 @@ class UserPage(TitleMixin, UserMixin, DetailView):
             is_unlisted=False, performance_points__gt=self.object.performance_points,
         ).exclude(id=self.object.id).count() + 1
 
+        from judge.models import Profile as ProfileModel
+        context['total_users'] = ProfileModel.objects.filter(is_unlisted=False).count()
+
         if rating:
             context['rating_rank'] = Profile.objects.filter(
                 is_unlisted=False, rating__gt=self.object.rating,
