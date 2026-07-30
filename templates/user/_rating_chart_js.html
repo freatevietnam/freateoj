@@ -1,0 +1,185 @@
+<script type="text/javascript">
+    var rating_history = {{ rating_data }};
+
+    $.each(rating_history, function (index, item) {
+        item.x = new Date(item.timestamp);
+        item.y = item.rating;
+    });
+
+    $(function () {
+        var $canvas = $('#rating-chart-canvas');
+        var ctx = $canvas.get(0).getContext('2d');
+
+        var getItem = function (index) {
+            return rating_history[index];
+        };
+        var ratings = rating_history.map(function (x) {
+            return x.rating;
+        });
+
+        var originalDraw = Chart.controllers.scatter.prototype.draw;
+        Chart.helpers.extend(Chart.controllers.scatter.prototype, {
+            draw: function () {
+                var chart = this.chart;
+                var yHighlight = chart.config.options.yHighlight;
+
+                if (yHighlight != null) {
+                    var ctx = chart.chart.ctx;
+                    var xaxis = chart.scales['x-axis-1'];
+                    var yaxis = chart.scales['y-axis-1'];
+
+                    ctx.save();
+                    yHighlight.forEach(function (range) {
+                        var yRangeBeginPixel = yaxis.getPixelForValue(range.begin);
+                        var yRangeEndPixel = yaxis.getPixelForValue(range.end);
+
+                        if (range.begin >= yaxis.end || range.end <= yaxis.begin) {
+                            return;
+                        }
+
+                        yRangeEndPixel = Math.max(yaxis.top + 1, yRangeEndPixel);
+                        yRangeBeginPixel = Math.min(yaxis.bottom - 1, yRangeBeginPixel);
+
+                        if (yRangeBeginPixel < yRangeEndPixel) {
+                            return;
+                        }
+
+                        ctx.fillStyle = range.color;
+                        ctx.fillRect(
+                            xaxis.left + 1,
+                            yRangeEndPixel,
+                            xaxis.right - xaxis.left,
+                            yRangeBeginPixel - yRangeEndPixel,
+                        );
+                    });
+                    ctx.restore();
+                }
+                originalDraw.apply(this, arguments);
+            }
+        });
+
+        window.rating_chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'rating',
+                    backgroundColor: 'rgb(0, 0, 0, 0)',
+                    borderColor: '#FF6B00',
+                    pointBackgroundColor: '#F5F5F5',
+                    pointHoverBackgroundColor: '#FF6B00',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    showLine: true,
+                    data: rating_history,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                elements: {
+                    line: {
+                        tension: 0,
+                    },
+                },
+                legend: {
+                    display: false,
+                },
+                layout: {
+                    padding: {
+                        right: 10,
+                    },
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        distribution: 'linear',
+                        gridLines: {
+                            color: '#333',
+                            zeroLineColor: '#333',
+                        },
+                        ticks: {
+                            fontColor: '#888',
+                            fontFamily: 'JetBrains Mono, monospace',
+                            fontSize: 10,
+                        },
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            precision: 0,
+                            fontColor: '#888',
+                            fontFamily: 'JetBrains Mono, monospace',
+                            fontSize: 10,
+                            suggestedMin: Math.max(0, Math.min.apply(null, ratings) - 50),
+                            suggestedMax: Math.max.apply(null, ratings) + 50,
+                        },
+                        gridLines: {
+                            color: '#333',
+                            zeroLineColor: '#333',
+                        },
+                    }],
+                },
+                tooltips: {
+                    enabled: false,
+                    custom: function (tooltipModel) {
+                        var $tooltip = $('#rating-tooltip');
+
+                        if (tooltipModel.opacity == 0) {
+                            $tooltip.hide();
+                            return;
+                        }
+
+                        var element = tooltipModel.dataPoints[0];
+                        var item = getItem(element.index);
+
+                        $tooltip.find('.contest').text(item.label);
+                        $tooltip.find('.date').text(item.date);
+                        $tooltip.find('.rating').text(item.rating).attr('class', 'rating ' + item.class);
+                        $tooltip.find('.rank').text(item.ranking);
+
+                        $tooltip.removeClass('above below');
+                        $tooltip.addClass(element.y < $tooltip.height() ? 'below' : 'above');
+
+                        var position = $canvas.offset();
+                        var container = $('#page-container').offset();
+                        $tooltip.css({
+                            left: position.left - container.left + element.x + $tooltip.width() / 2,
+                            top: position.top - container.top + element.y - $tooltip.height() - 13,
+                            fontFamily: tooltipModel._bodyFontFamily,
+                            fontSize: tooltipModel._bodyFontSize,
+                            fontStyle: tooltipModel._bodyFontStyle,
+                        }).show();
+                    },
+                },
+                yHighlight: [
+                    { begin: 0, end: 1200, color: 'rgba(128, 128, 128, 0.43)' },
+                    { begin: 1200, end: 1400, color: 'rgba(0, 128, 0, 0.4)' },
+                    { begin: 1400, end: 1600, color: 'rgba(3, 168, 158, 0.4)' },
+                    { begin: 1600, end: 1900, color: 'rgba(0, 0, 255, 0.37)' },
+                    { begin: 1900, end: 2200, color: 'rgba(170, 0, 170, 0.4)' },
+                    { begin: 2200, end: 2300, color: 'rgba(255, 140, 0, 0.4)' },
+                    { begin: 2300, end: 2400, color: 'rgba(255, 140, 0, 0.4)' },
+                    { begin: 2400, end: 2600, color: 'rgba(255, 0, 0, 0.4)' },
+                    { begin: 2600, end: 2900, color: 'rgba(255, 0, 0, 0.4)' },
+                    { begin: 2900, end: 3600, color: 'rgba(165, 28, 28, 0.4)' },
+                ],
+            }
+        });
+
+        $canvas.click(function (evt) {
+            var elements = window.rating_chart.getElementsAtEvent(evt);
+            if (elements.length > 0) {
+                var item = getItem(elements[0]._index);
+                window.location.href = item.link;
+            }
+        });
+
+        $canvas.mousemove(function (evt) {
+            var elements = window.rating_chart.getElementsAtEvent(evt);
+            if (elements.length > 0) {
+                $canvas.css('cursor', 'pointer');
+            } else {
+                $canvas.css('cursor', '');
+            }
+        });
+    });
+</script>
