@@ -267,6 +267,7 @@
 {% block title_ruler %}{% endblock %}
 
 {% block title_row %}
+    {% set left_align_tabs = True %}
     {% include "submission/submission-list-tabs.html" %}
 {% endblock %}
 
@@ -290,21 +291,17 @@
 {% endblock %}
 
 {% block body %}
-    {# Simple Statistics #}
-    <div class="submission-top-stats">
-        <div class="submission-top-stat submission-top-stat--total">
-            <div class="submission-top-stat__value">{{ results_data.total }}</div>
-            <div class="submission-top-stat__label">{{ _('Tổng bài nộp') }}</div>
+    <header class="users-header brutalist-border">
+        <div class="ind-flex-between">
+            <h1 class="page-title">{{ title }}</h1>
         </div>
-        <div class="submission-top-stat submission-top-stat--ac">
-            <div class="submission-top-stat__value">{{ results_data.ac_count }}</div>
-            <div class="submission-top-stat__label">{{ _('AC') }}</div>
+        <hr class="brutalist-divider ind-divider-top">
+        <div class="page-stats">
+            {{ _('Total: %(count)s', count=results_data.total) }} &bull;
+            {{ _('AC: %(count)s', count=results_data.ac_count) }} &bull;
+            {{ _('Invalid: %(count)s', count=results_data.other_count) }}
         </div>
-        <div class="submission-top-stat submission-top-stat--other">
-            <div class="submission-top-stat__value">{{ results_data.other_count }}</div>
-            <div class="submission-top-stat__label">{{ _('Không hợp lệ') }}</div>
-        </div>
-    </div>
+    </header>
 
     {% if page_obj.has_other_pages() %}
         <div class="top-pagination-bar">{% include "list-pages.html" %}</div>
@@ -357,7 +354,7 @@
                                 </div>
                             {% endif %}
                             <div class="form-submit-group">
-                                <a id="go" onclick="form.submit()" class="button">{{ _('Go') }}</a>
+                                <a id="go" onclick="form.submit()" class="ind-btn-primary">{{ _('Go') }}</a>
                             </div>
                         </form>
                     </div>

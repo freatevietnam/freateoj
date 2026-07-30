@@ -1,27 +1,27 @@
-<section class="brutalist-panel brutalist-border" style="background:#141414;">
-    <header style="padding:8px 12px;border-bottom:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">{{ _('Problem Statistics') }}</header>
-    <div class="panel-content" style="padding:12px;overflow-x:auto;">
+<section class="brutalist-panel brutalist-border ind-panel">
+    <header class="ind-panel-header">{{ _('Problem Statistics') }}</header>
+    <div class="panel-content ind-panel-content ind-panel-content-table">
         {% if best_submissions %}
-        <table style="width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+        <table class="ind-table ind-table-sm">
             <thead>
-                <tr style="border-bottom:1px solid #333;">
-                    <th style="padding:6px 8px;text-align:left;color:#888;font-weight:400;">{{ _('Category') }}</th>
-                    <th style="padding:6px 8px;text-align:right;color:#888;font-weight:400;">{{ _('Solved') }}</th>
-                    <th style="padding:6px 8px;text-align:right;color:#888;font-weight:400;">{{ _('Points') }}</th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th">{{ _('Category') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Solved') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Points') }}</th>
                 </tr>
             </thead>
             <tbody>
             {% for group in best_submissions %}
-                <tr style="border-bottom:1px solid #222;">
-                    <td style="padding:4px 8px;color:#F5F5F5;">{{ group.name }}</td>
-                    <td style="padding:4px 8px;text-align:right;color:#888;">{{ group.problems|length }}</td>
-                    <td style="padding:4px 8px;text-align:right;color:#FF6B00;">{{ group.points|floatformat(1) }}</td>
+                <tr class="ind-tr-border">
+                    <td class="ind-td-mono-sm" style="color:#1A1A1A;">{{ group.name }}</td>
+                    <td class="ind-td-mono-sm ind-td-right" style="color:#888888;">{{ group.problems|length }}</td>
+                    <td class="ind-td-mono-sm ind-td-right" style="color:#FF6B00;">{{ group.points|floatformat(1) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
         {% else %}
-        <div style="text-align:center;padding:16px 0;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#666;">{{ _('No problems solved yet.') }}</div>
+        <div class="ind-placeholder ind-placeholder-md">{{ _('No problems solved yet.') }}</div>
         {% endif %}
     </div>
 </section>

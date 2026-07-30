@@ -46,14 +46,12 @@
 
 {% block body %}
     {% block before_posts %}{% endblock %}
-    <div id="mobile" class="tabs">
-        <ul>
-            <li id="blog-tab" class="tab active"><a href="#">
-                <i class="tab-icon fa fa-info-circle"></i> {{ _('Blog') }}
-            </a></li>
-            <li id="event-tab" class="tab"><a href="#"><i class="tab-icon fa fa-rss"></i> {{ _('Events') }}</a></li>
-        </ul>
-    </div>
+    <ul class="user-list-tabs" id="mobile-tabs">
+        <li id="blog-tab" class="tab active"><a href="#">
+            <i class="tab-icon fa fa-info-circle"></i> {{ _('Blog') }}
+        </a></li>
+        <li id="event-tab" class="tab"><a href="#"><i class="tab-icon fa fa-rss"></i> {{ _('Events') }}</a></li>
+    </ul>
     <div id="blog-container">
         <div class="blog-content sidebox">
             {% include "blog/blog-list-tabs.html" %}

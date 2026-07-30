@@ -427,12 +427,12 @@
                         <div style="padding-bottom:0.4em" class="block-header grayed">
                             {{- _('Security keys:') -}}
                         </div>
-                        <table class="table">
+                        <div class="ind-table-wrap"><table class="ind-table ind-table-md">
                             {% if profile.is_webauthn_enabled %}
                                 {% for credential in profile.webauthn_credentials.all() %}
-                                    <tr>
-                                        <td>{{ credential.name }}</td>
-                                        <td>
+                                    <tr class="ind-tr-hover">
+                                        <td class="ind-td">{{ credential.name }}</td>
+                                        <td class="ind-td">
                                             <button class="webauthn-delete inline-button"
                                                     data-delete-url="{{ url('webauthn_delete', credential.id) }}">
                                                 {{ _('Delete') }}
@@ -441,11 +441,11 @@
                                     </tr>
                                 {% endfor %}
                             {% endif %}
-                            <tr>
-                                <td><input id="new-webauthn-name" type="text" placeholder="{{ _('Enter a name for this key') }}"></td>
-                                <td><button id="new-webauthn" class="inline-button">{{ _('Add') }}</button></td>
+                            <tr class="ind-tr-hover">
+                                <td class="ind-td"><input id="new-webauthn-name" type="text" placeholder="{{ _('Enter a name for this key') }}"></td>
+                                <td class="ind-td"><button id="new-webauthn" class="inline-button">{{ _('Add') }}</button></td>
                             </tr>
-                        </table>
+                        </table></div>
                     {% endif %}
                     </span>
                 </div>

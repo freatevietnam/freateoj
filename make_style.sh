@@ -16,6 +16,9 @@ build_style() {
       sass_processed/blog-modern.css \
       sass_processed/blog-post.css \
       sass_processed/theme-toggle.css \
+      sass_processed/ui_form.css \
+      sass_processed/task_status.css \
+      sass_processed/source_sans_pro.css \
       --verbose --use autoprefixer -d "$2"
   rm resources/vars.scss
 }

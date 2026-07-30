@@ -8,16 +8,6 @@
 {% endblock %}
 
 {% block content_media %}
-    <style>
-        .panes {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .pane {
-            padding: 20px;
-        }
-    </style>
 {% endblock %}
 
 {% block content_js_media %}
@@ -34,31 +24,32 @@
 {% endblock %}
 {% block body %}
     {% if has_results %}
-        <table class="table striped">
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md">
             <thead>
-            <tr>
-                <th class="header">{{ _('Problem') }}</th>
+            <tr class="ind-tr-border">
+                <th class="ind-th">{{ _('Problem') }}</th>
                 {% for lang in languages %}
-                    <th class="header">{{ lang }}</th>
+                    <th class="ind-th ind-th-right">{{ lang }}</th>
                 {% endfor %}
             </tr>
             </thead>
             <tbody>
                 {% for problem, results in moss_results %}
-                    <tr id="problem-{{ problem.code }}">
-                        <td>
-                            <a href="{{ url('problem_detail', problem.code) }}">{{ problem.name }}</a>
+                    <tr id="problem-{{ problem.code }}" class="ind-tr-hover">
+                        <td class="ind-td">
+                            <a class="ind-sort-link" href="{{ url('problem_detail', problem.code) }}">{{ problem.name }}</a>
                         </td>
                         {% for result in results %}
-                            <td>
+                            <td class="ind-td ind-td-center">
                                 {% if result.submission_count %}
-                                    <a href="{{ result.url }}">{% trans trimmed count=result.submission_count %}
+                                    <a class="ind-sort-link" href="{{ result.url }}">{% trans trimmed count=result.submission_count %}
                                         {{ count }} submission
                                     {% pluralize %}
                                         {{ count }} submissions
                                     {% endtrans %}</a>
                                 {% else %}
-                                    {{ _('No submissions') }}
+                                    <span class="ind-td-muted">{{ _('No submissions') }}</span>
                                 {% endif %}
                             </td>
                         {% endfor %}
@@ -66,20 +57,21 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     {% endif %}
-    <div class="panes">
-        <div class="pane">
+    <div class="ind-flex-center ind-gap-8" style="flex-wrap:wrap;">
+        <div style="padding:20px;">
             <form method="post" action="{{ url('contest_moss', contest.key) }}">
                 {% csrf_token %}
-                <input type="submit" class="unselectable button full contest-moss" style="padding: 10px;"
+                <input type="submit" class="unselectable button full contest-moss" style="padding:10px;"
                        value="{% if has_results %} {{ _('Re-MOSS contest') }} {% else %} {{ _('MOSS contest') }} {% endif %}">
             </form>
         </div>
         {% if has_results %}
-            <div class="pane">
+            <div style="padding:20px;">
                 <form method="post" action="{{ url('contest_moss_delete', contest.key) }}">
                     {% csrf_token %}
-                    <input type="submit" class="unselectable button full contest-moss-delete" style="padding: 10px;"
+                    <input type="submit" class="unselectable button full contest-moss-delete" style="padding:10px;"
                            value="{{ _('Delete MOSS results') }}">
                 </form>
             </div>

@@ -1,15 +1,15 @@
 {% if users_cards %}
-<div class="brutalist-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; padding: 16px 24px;">
+<div class="brutalist-grid cards-grid">
     {% for rank, profile in users_cards %}
-    <div class="brutalist-border" style="background:#141414;padding:12px;display:flex;align-items:center;gap:12px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:#333;min-width:36px;text-align:right;">{{ rank }}</div>
-        <img src="{{ gravatar(profile, 40) }}" style="width:40px;height:40px;border:1px solid #333;">
-        <div style="flex:1;min-width:0;">
-            <a href="{{ url('user_page', profile.user.username) }}" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:#F5F5F5;text-decoration:none;">{{ profile.user.username }}</a>
-            <div style="display:flex;gap:12px;margin-top:4px;">
-                <span class="data-label">{{ _('Pts') }}</span><span class="data-value" style="font-size:0.8rem;">{{ profile.performance_points|floatformat(1) }}</span>
-                <span class="data-label">{{ _('Sol') }}</span><span class="data-value" style="font-size:0.8rem;">{{ profile.problem_count }}</span>
-                {% if profile.rating %}<span class="data-label">●</span><span class="data-value" style="font-size:0.8rem;">{{ profile.rating }}</span>{% endif %}
+    <div class="ind-card ind-card-flex brutalist-border">
+        <div class="ind-rank">{{ rank }}</div>
+        <img src="{{ gravatar(profile, 40) }}" class="ind-avatar-lg">
+        <div class="ind-flex-1">
+            <a href="{{ url('user_page', profile.user.username) }}" class="ind-username ind-username-sm">{{ profile.user.username }}</a>
+            <div class="ind-flex ind-gap-12 ind-mt-4">
+                <span class="data-label">{{ _('Pts') }}</span><span class="data-value ind-value-sm">{{ profile.performance_points|floatformat(1) }}</span>
+                <span class="data-label">{{ _('Sol') }}</span><span class="data-value ind-value-sm">{{ profile.problem_count }}</span>
+                {% if profile.rating %}<span class="data-label">●</span><span class="data-value ind-value-sm">{{ profile.rating }}</span>{% endif %}
             </div>
         </div>
     </div>

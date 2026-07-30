@@ -134,16 +134,18 @@
                     <div class="control-group">
                         <label><input id="by-range-check" type="checkbox" name="use_range" value="on">
                             {{ _('Filter by ID:') }}</label>
-                        <table id="by-range-filter" class="table">
-                            <tr>
-                                <th><label for="by-range-start">{{ _('Starting ID:') }}</label></th>
-                                <td><input id="by-range-start" name="start" type="number" disabled></td>
+                        <div class="ind-table-wrap">
+                        <table id="by-range-filter" class="ind-table ind-table-md">
+                            <tr class="ind-tr-border">
+                                <th class="ind-th"><label for="by-range-start">{{ _('Starting ID:') }}</label></th>
+                                <td class="ind-td"><input id="by-range-start" name="start" type="number" disabled></td>
                             </tr>
-                            <tr>
-                                <th><label for="by-range-end">{{ _('Ending ID:') }}</label></th>
-                                <td><input id="by-range-end" name="end" type="number" disabled></td>
+                            <tr class="ind-tr-hover">
+                                <th class="ind-th"><label for="by-range-end">{{ _('Ending ID:') }}</label></th>
+                                <td class="ind-td"><input id="by-range-end" name="end" type="number" disabled></td>
                             </tr>
                         </table>
+                        </div>
                         <p>{{ _('This range includes both endpoints.') }}</p>
                     </div>
                     <div class="control-group">

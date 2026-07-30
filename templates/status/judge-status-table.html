@@ -1,19 +1,19 @@
 <thead>
-<tr>
-    <th>{{ _('Judge') }}</th>
+<tr class="ind-tr-border">
+    <th class="ind-th">{{ _('Judge') }}</th>
     {% if see_all_judges %}
-        <th>{{ _('Status') }}</th>
+        <th class="ind-th">{{ _('Status') }}</th>
     {% endif %}
-    <th>{{ _('Uptime') }}</th>
-    <th>{{ _('Ping') }}</th>
-    <th>{{ _('Load') }}</th>
-    <th>{{ _('Runtimes') }}</th>
+    <th class="ind-th">{{ _('Uptime') }}</th>
+    <th class="ind-th ind-th-right">{{ _('Ping') }}</th>
+    <th class="ind-th ind-th-right">{{ _('Load') }}</th>
+    <th class="ind-th">{{ _('Runtimes') }}</th>
 </tr>
 </thead>
 <tbody>
 {% for judge in judges %}
-    <tr data-judge-id="{{ judge.id }}" class="judge-row">
-        <td>
+    <tr data-judge-id="{{ judge.id }}" class="judge-row ind-tr-hover">
+        <td class="ind-td">
             {% if perms.judge.change_judge %}
                 <a href="{{ url('admin:judge_judge_change', judge.id) }}" class="judge-name">{{ judge.name }}</a>
             {% else %}
@@ -21,20 +21,20 @@
             {% endif %}
         </td>
         {% if see_all_judges %}
-            <td>
+            <td class="ind-td">
                 <span class="judge-status-badge {{ 'online' if judge.online else 'offline' }}">
                     {{ _('Online') if judge.online else _('Offline') }}
                 </span>
             </td>
         {% endif %}
-        <td>
+        <td class="ind-td">
             {% if judge.online %}
                 {{ judge.uptime|timedelta('localized') }}
             {% else %}
                 <span class="text-muted">{{ _('N/A') }}</span>
             {% endif %}
         </td>
-        <td class="ping">
+        <td class="ind-td ind-td-right ping">
             {% if judge.online and judge.ping_ms %}
                 {% set ping_class = 'excellent' if judge.ping_ms < 1 else ('good' if judge.ping_ms < 5 else ('warning' if judge.ping_ms < 10 else 'bad')) %}
                 <span class="ping-indicator {{ ping_class }}">
@@ -44,7 +44,7 @@
                 <span class="text-muted">{{ _('N/A') }}</span>
             {% endif %}
         </td>
-        <td>
+        <td class="ind-td ind-td-right">
             {% if judge.online %}
                 {% set load_class = 'low' if judge.load < 0.5 else ('medium' if judge.load < 0.8 else 'high') %}
                 <div class="load-indicator">
@@ -57,7 +57,7 @@
                 <span class="text-muted">{{ _('N/A') }}</span>
             {% endif %}
         </td>
-        <td>
+        <td class="ind-td">
             {% if judge.online %}
                 <div class="runtime-tags">
                     {% for key, info in runtime_version_data[judge.name] -%}
@@ -73,8 +73,8 @@
             {% endif %}
         </td>
     </tr>
-    <tr class="judge-details" id="judge-details-{{ judge.id }}">
-        <td colspan="6">
+    <tr class="judge-details ind-tr-hover" id="judge-details-{{ judge.id }}">
+        <td colspan="6" class="ind-td">
             <div class="judge-detail-content">
                 <div class="detail-section">
                     <h4>{{ _('Uptime') }}</h4>
@@ -116,8 +116,8 @@
         </td>
     </tr>
 {% else %}
-    <tr>
-        <td colspan="6"><em>{{ _('There are no judges available at this time.') }}</em>
+    <tr class="ind-tr-hover">
+        <td colspan="6" class="ind-td"><em>{{ _('There are no judges available at this time.') }}</em>
         </td>
     </tr>
 {% endfor %}

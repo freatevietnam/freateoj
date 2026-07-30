@@ -29,41 +29,42 @@
 
         <div class="h-scrollable-table">
             {% spaceless %}
-            <table class="users-table table striped">
+            <div class="ind-table-wrap">
+            <table class="ind-table ind-table-md">
                 <thead>
-                    <tr>
-                        <th class="header">{{ _('Short URL') }}</th>
-                        <th class="header">{{ _('Original URL') }}</th>
-                        <th class="header" style="width: 8%;">{{ _('Accesses') }}</th>
-                        <th class="header" style="width: 8%;">{{ _('Status') }}</th>
-                        <th class="header" style="width: 12%;">{{ _('Created') }}</th>
-                        <th class="header" style="width: 10%;">{{ _('Actions') }}</th>
+                    <tr class="ind-tr-border">
+                        <th class="ind-th">{{ _('Short URL') }}</th>
+                        <th class="ind-th">{{ _('Original URL') }}</th>
+                        <th class="ind-th" style="width: 8%;">{{ _('Accesses') }}</th>
+                        <th class="ind-th" style="width: 8%;">{{ _('Status') }}</th>
+                        <th class="ind-th" style="width: 12%;">{{ _('Created') }}</th>
+                        <th class="ind-th" style="width: 10%;">{{ _('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for shortener in shorteners %}
-                        <tr{% if not shortener.is_active %} style="opacity: 0.6;"{% endif %}>
-                            <td>
+                        <tr class="ind-tr-hover"{% if not shortener.is_active %} style="opacity: 0.6;"{% endif %}>
+                            <td class="ind-td">
                                 <code>{{ shortener.short_code }}</code>
                                 <span style="cursor: pointer; margin-left: 4px;" onclick="copyToClipboard('{{ shortener.get_full_short_url() }}', this)" title="{{ _('Copy full URL') }}">
                                     <i class="fa fa-clipboard"></i>
                                 </span>
                             </td>
-                            <td>
+                            <td class="ind-td">
                                 <a href="{{ shortener.original_url }}" target="_blank" rel="noopener noreferrer" title="{{ shortener.original_url }}">
                                     {{ shortener.original_url[:50] }}{% if shortener.original_url|length > 50 %}...{% endif %}
                                 </a>
                             </td>
-                            <td>{{ shortener.access_count }}</td>
-                            <td>
+                            <td class="ind-td">{{ shortener.access_count }}</td>
+                            <td class="ind-td">
                                 {% if shortener.is_active %}
                                     <span style="color: #155724;">{{ _('Active') }}</span>
                                 {% else %}
                                     <span style="color: #721c24;">{{ _('Inactive') }}</span>
                                 {% endif %}
                             </td>
-                            <td>{{ shortener.created_time|date("Y-m-d H:i") }}</td>
-                            <td>
+                            <td class="ind-td">{{ shortener.created_time|date("Y-m-d H:i") }}</td>
+                            <td class="ind-td">
                                 <a href="{{ url('urlshortener_detail', shortener.short_code) }}" title="{{ _('View') }}" style="margin-right: 8px;">
                                     <i class="fa fa-eye"></i>
                                 </a>
@@ -78,6 +79,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
             {% endspaceless %}
         </div>
 

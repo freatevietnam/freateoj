@@ -108,9 +108,9 @@
 {% endblock %}
 
 {% macro form_as_row(form) -%}
-    <tr>
-        <td>{{ form.polygon_language.errors }}{{ form.polygon_language }}</td>
-        <td>{{ form.site_language.errors }}{{ form.site_language }}</td>
+    <tr class="ind-tr-hover">
+        <td class="ind-td">{{ form.polygon_language.errors }}{{ form.polygon_language }}</td>
+        <td class="ind-td">{{ form.site_language.errors }}{{ form.site_language }}</td>
     </tr>
 {%- endmacro %}
 
@@ -124,11 +124,12 @@
         {% csrf_token %}
         {{ formset.management_form }}
         <table class="django-as-table">{{ form.as_table() }}</table>
-        <table class="table" id="statements-table">
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md" id="statements-table">
             <thead>
-                <tr>
-                    <th>{{ _('Statement language') }}</th>
-                    <th>{{ _('Corresponding site language') }}</th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th">{{ _('Statement language') }}</th>
+                    <th class="ind-th">{{ _('Corresponding site language') }}</th>
                 </tr>
             </thead>
             <tbody id="form_set">
@@ -140,7 +141,8 @@
                 {{ form_as_row(formset.empty_form) }}
             </tbody>
         </table>
-        <table>
+        </div>
+        <table class="ind-table ind-table-md">
             <tr><td style="float: left;">
             <td style="float: right;"><input type="submit" value="{{ _('Import') }}" class="button"></td></tr>
         </table>

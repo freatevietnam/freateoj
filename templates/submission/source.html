@@ -82,9 +82,9 @@
     <br>
     <hr>
     <div class="source-wrap">
-        <table>
+        <table class="ind-table ind-table-md">
             <tr>
-                <td class="source-ln">
+                <td class="ind-td source-ln">
                     <div>
                         {% for line in raw_source.split('\n') %}
                             <a href="#line-{{ loop.index }}" name="line-{{ loop.index }}">
@@ -93,7 +93,7 @@
                         {% endfor %}
                     </div>
                 </td>
-                <td class="source-code">{{ highlighted_source }}</td>
+                <td class="ind-td source-code">{{ highlighted_source }}</td>
             </tr>
         </table>
     </div>

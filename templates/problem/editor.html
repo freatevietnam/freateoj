@@ -70,15 +70,15 @@
 
 {% macro form_as_row(form) -%}
     {% if form.non_field_errors() %}
-    <tr>
-        <td colspan="6">{{ form.non_field_errors() }}</td>
+    <tr class="ind-tr-hover">
+        <td class="ind-td" colspan="6">{{ form.non_field_errors() }}</td>
     </tr>
     {% endif %}
-    <tr>
-        <td>{{ form.id }} {{ form.language.errors }}{{ form.language }}</td>
-        <td>{{ form.time_limit.errors }}{{ form.time_limit }}</td>
-        <td>{{ form.memory_limit.errors }}{{ form.memory_limit }}</td>
-        <td>
+    <tr class="ind-tr-hover">
+        <td class="ind-td">{{ form.id }} {{ form.language.errors }}{{ form.language }}</td>
+        <td class="ind-td">{{ form.time_limit.errors }}{{ form.time_limit }}</td>
+        <td class="ind-td">{{ form.memory_limit.errors }}{{ form.memory_limit }}</td>
+        <td class="ind-td">
         {% if lang_limit_formset.can_delete and form.instance.pk %}
             {{ form.DELETE }}
         {% endif %}
@@ -113,13 +113,14 @@
             <h3 id="lang_limit_title">{{ _('Language-specific resource limit') }} <i class="fa fa-caret-up"></i></h3>
             <span class="helptext">{{ _('Only use this feature if you really need to!') }}</span>
         </center>
-        <table class="table" id="lang_limit_table">
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md" id="lang_limit_table">
             <thead>
-                <tr>
-                    <th style="width: 20em;"> {{ _('Language') }} </th>
-                    <th> {{ _('Time limit (seconds)') }} </th>
-                    <th> {{ _('Memory limit (KiB)') }} </th>
-                    <th> {{ _('Delete') }} </th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th" style="width: 20em;"> {{ _('Language') }} </th>
+                    <th class="ind-th"> {{ _('Time limit (seconds)') }} </th>
+                    <th class="ind-th"> {{ _('Memory limit (KiB)') }} </th>
+                    <th class="ind-th"> {{ _('Delete') }} </th>
                 </tr>
             </thead>
             <tbody id="form_set">
@@ -128,12 +129,13 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
         <hr>
 
         <center><h3> {{ _('Editorial') }} </h3></center>
         <table class="django-as-table">{{ solution_formset.as_table() }}</table>
 
-        <table>
+        <table class="ind-table ind-table-md">
             <tr><td style="float: left;">
             <td style="float: right;"><input type="submit" value="{{ _('Update') }}" class="button"></td></tr>
         </table>

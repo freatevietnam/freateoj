@@ -2,23 +2,23 @@
 {% block title %}{{ _('Compare Users') }}{% endblock %}
 
 {% block body %}
-<div class="users-page" style="padding:24px;">
-    <header class="brutalist-border" style="padding:16px 24px;background:#141414;margin-bottom:24px;">
-        <h1 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:0.05em;color:#F5F5F5;margin:0;">{{ _('Compare Users') }}</h1>
+<div class="ind-compare-page users-page">
+    <header class="ind-compare-header brutalist-border">
+        <h1 class="page-title">{{ _('Compare Users') }}</h1>
     </header>
 
     {% if error %}
-    <div class="brutalist-border" style="padding:16px;background:#141414;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#FF3366;margin-bottom:24px;">{{ error }}</div>
+    <div class="ind-card-error brutalist-border">{{ error }}</div>
     {% endif %}
 
     {% if user_a and user_b %}
-    <div class="brutalist-grid" style="grid-template-columns:1fr 1fr;gap:24px;">
+    <div class="ind-compare-grid">
         {# User A #}
-        <div class="brutalist-border" style="background:#141414;padding:16px;">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                <img src="{{ gravatar(user_a, 64) }}" style="width:64px;height:64px;border:2px solid #333;">
+        <div class="ind-card-compare brutalist-border">
+            <div class="ind-flex-row-wide ind-mb-12">
+                <img src="{{ gravatar(user_a, 64) }}" class="ind-avatar-xl">
                 <div>
-                    <a href="{{ url('user_page', user_a.user.username) }}" style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:#FF6B00;text-decoration:none;">{{ user_a.user.username }}</a>
+                    <a href="{{ url('user_page', user_a.user.username) }}" class="ind-username-lg">{{ user_a.user.username }}</a>
                     <div class="data-label">{{ _('Rating:') }} <span class="data-value">{% if user_a.rating %}{{ user_a.rating }}{% else %}{{ _('Unrated') }}{% endif %}</span></div>
                     <div class="data-label">{{ _('Points:') }} <span class="data-value">{{ user_a.performance_points|floatformat(1) }}</span></div>
                     <div class="data-label">{{ _('Solved:') }} <span class="data-value">{{ user_a.problem_count }}</span></div>
@@ -27,11 +27,11 @@
         </div>
 
         {# User B #}
-        <div class="brutalist-border" style="background:#141414;padding:16px;">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                <img src="{{ gravatar(user_b, 64) }}" style="width:64px;height:64px;border:2px solid #333;">
+        <div class="ind-card-compare brutalist-border">
+            <div class="ind-flex-row-wide ind-mb-12">
+                <img src="{{ gravatar(user_b, 64) }}" class="ind-avatar-xl">
                 <div>
-                    <a href="{{ url('user_page', user_b.user.username) }}" style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:#FF6B00;text-decoration:none;">{{ user_b.user.username }}</a>
+                    <a href="{{ url('user_page', user_b.user.username) }}" class="ind-username-lg">{{ user_b.user.username }}</a>
                     <div class="data-label">{{ _('Rating:') }} <span class="data-value">{% if user_b.rating %}{{ user_b.rating }}{% else %}{{ _('Unrated') }}{% endif %}</span></div>
                     <div class="data-label">{{ _('Points:') }} <span class="data-value">{{ user_b.performance_points|floatformat(1) }}</span></div>
                     <div class="data-label">{{ _('Solved:') }} <span class="data-value">{{ user_b.problem_count }}</span></div>
@@ -40,40 +40,40 @@
         </div>
 
         {# Head-to-Head #}
-        <div class="brutalist-border" style="grid-column:1/-1;background:#141414;padding:16px;">
-            <div class="data-label" style="margin-bottom:8px;">{{ _('Head-to-Head') }}</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center;">
-                <div class="brutalist-border" style="padding:12px;background:#1E1E1E;">
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:#00FF88;">{{ head_to_head.a_wins }}</div>
+        <div class="ind-card-full brutalist-border">
+            <div class="data-label ind-mb-8">{{ _('Head-to-Head') }}</div>
+            <div class="ind-h2h-grid">
+                <div class="ind-card-compare-h2h brutalist-border">
+                    <div class="ind-rank ind-rank-green">{{ head_to_head.a_wins }}</div>
                     <div class="data-label">{{ user_a.user.username }} {{ _('wins') }}</div>
                 </div>
-                <div class="brutalist-border" style="padding:12px;background:#1E1E1E;">
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:#888;">{{ head_to_head.ties }}</div>
+                <div class="ind-card-compare-h2h brutalist-border">
+                    <div class="ind-rank">{{ head_to_head.ties }}</div>
                     <div class="data-label">{{ _('Ties') }}</div>
                 </div>
-                <div class="brutalist-border" style="padding:12px;background:#1E1E1E;">
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:#FF3366;">{{ head_to_head.b_wins }}</div>
+                <div class="ind-card-compare-h2h brutalist-border">
+                    <div class="ind-rank ind-rank-red">{{ head_to_head.b_wins }}</div>
                     <div class="data-label">{{ user_b.user.username }} {{ _('wins') }}</div>
                 </div>
             </div>
-            <div class="data-label" style="margin-top:8px;text-align:center;">{{ _('Common solved: %d problems') % common_count }}</div>
+            <div class="data-label ind-label-center">{{ _('Common solved: %d problems') % common_count }}</div>
         </div>
 
         {# Topic Differential #}
-        <div class="brutalist-border" style="grid-column:1/-1;background:#141414;padding:16px;">
-            <div class="data-label" style="margin-bottom:8px;">{{ _('Topic Differential') }}</div>
+        <div class="ind-card-full brutalist-border">
+            <div class="data-label ind-mb-8">{{ _('Topic Differential') }}</div>
             {% for item in topic_diff %}
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                <span class="data-label" style="width:100px;">{{ item.group_name }}</span>
-                <div style="flex:1;height:6px;background:#1E1E1E;position:relative;">
+            <div class="ind-flex-row ind-mb-4">
+                <span class="data-label ind-label-wide">{{ item.group_name }}</span>
+                <div class="ind-bar-track-sm">
                     {% if item.diff > 0 %}
-                    <div style="position:absolute;right:50%;width:{{ item.pct }}%;height:100%;background:#00FF88;top:0;"></div>
+                    <div class="ind-topic-bar-pos" style="width:{{ item.pct }}%;"></div>
                     {% elif item.diff < 0 %}
-                    <div style="position:absolute;left:50%;width:{{ item.pct|abs }}%;height:100%;background:#FF3366;top:0;"></div>
+                    <div class="ind-topic-bar-neg" style="width:{{ item.pct|abs }}%;"></div>
                     {% endif %}
-                    <div style="position:absolute;left:50%;top:-2px;width:1px;height:10px;background:#333;"></div>
+                    <div class="ind-topic-bar-center"></div>
                 </div>
-                <span class="data-value" style="width:60px;font-size:0.7rem;text-align:right;">
+                <span class="data-value ind-value-right ind-value-xs">
                     {% if item.diff > 0 %}+{% endif %}{{ item.diff }}
                 </span>
             </div>
@@ -83,17 +83,17 @@
     {% endif %}
 
     {# Search Form #}
-    <div class="brutalist-border" style="background:#141414;padding:16px;margin-top:24px;">
-        <form method="get" action="{{ url('user_compare') }}" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;">
+    <div class="ind-card-compare ind-card-bottom brutalist-border">
+        <form method="get" action="{{ url('user_compare') }}" class="ind-compare-form">
             <div>
-                <div class="data-label" style="margin-bottom:4px;">{{ _('User 1') }}</div>
-                <input type="text" name="u1" value="{{ user_a.user.username if user_a else '' }}" style="width:200px;height:36px;background:#0A0A0A;border:1px solid #333;color:#F5F5F5;font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:0 12px;">
+                <div class="data-label ind-mb-4">{{ _('User 1') }}</div>
+                <input type="text" name="u1" value="{{ user_a.user.username if user_a else '' }}" class="ind-input ind-input-md">
             </div>
             <div>
-                <div class="data-label" style="margin-bottom:4px;">{{ _('User 2') }}</div>
-                <input type="text" name="u2" value="{{ user_b.user.username if user_b else '' }}" style="width:200px;height:36px;background:#0A0A0A;border:1px solid #333;color:#F5F5F5;font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:0 12px;">
+                <div class="data-label ind-mb-4">{{ _('User 2') }}</div>
+                <input type="text" name="u2" value="{{ user_b.user.username if user_b else '' }}" class="ind-input ind-input-md">
             </div>
-            <button type="submit" style="height:36px;padding:0 16px;background:transparent;border:1px solid #FF6B00;color:#FF6B00;font-family:'JetBrains Mono',monospace;font-size:0.75rem;cursor:pointer;">{{ _('Compare') }}</button>
+            <button type="submit" class="ind-btn-accent">{{ _('Compare') }}</button>
         </form>
     </div>
 </div>

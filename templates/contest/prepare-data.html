@@ -2,46 +2,6 @@
 
 {% block media %}
     {{ form.media.css }}
-    <style>
-        .centered-form {
-            padding-top: 15px;
-            max-width: 460px;
-        }
-
-        .form-area {
-            display: block;
-        }
-
-        .form-field {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: 5px;
-        }
-
-        #submit-bar {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            flex-direction: row-reverse;
-        }
-
-        .aux-download-action {
-            width: fit-content;
-            margin: auto;
-        }
-
-        @media (max-width: 460px) {
-            .main-download-action {
-                margin-top: 5px;
-                width: 100%;
-            }
-
-            .aux-download-action {
-                width: unset;
-            }
-        }
-    </style>
 {% endblock %}
 
 {% block js_media %}

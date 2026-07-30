@@ -1,38 +1,31 @@
-{% extends "common-content.html" %}
+{% extends "base.html" %}
 
-{% block description %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="ui {{ message.tags }} message">
-                <p>{{ message }}</p>
-            </div>
-        {% endfor %}
-    {% endif %}
+{% block js_media %}
+    {{ form.media.js }}
+{% endblock %}
 
-    <form method="post" class="ui form add-user-form">
-        {% csrf_token %}
+{% block media %}
+    {{ form.media.css }}
+    <link rel="stylesheet" type="text/css" href="{{ static('ui_form.css') }}">
+{% endblock %}
 
-        {% for field in form %}
-            <div class="field{% if field.errors %} error{% endif %}">
-                <label>{{ field.label }}</label>
-                {{ field }}
-                {% if field.help_text %}
-                    <div class="ui pointing label">{{ field.help_text }}</div>
-                {% endif %}
-                {% for error in field.errors %}
-                    <div class="ui pointing red label">{{ error }}</div>
-                {% endfor %}
-            </div>
-        {% endfor %}
-
-        {% if form.non_field_errors() %}
-            <div class="ui error message">
-                {% for error in form.non_field_errors() %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            </div>
+{% block body %}
+<div>
+    <form action="" method="post" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
+        {% if form.errors or form.non_field_errors() %}
+            <p class="errornote"> {{ _('Please correct the error below.') }}</p>
         {% endif %}
-
-        <button type="submit" class="ui primary button">{{ _('Add User') }}</button>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="errornote">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        {% csrf_token %}
+        <table class="django-as-table">{{ form.as_table() }}</table>
+        <table class="ind-table ind-table-md">
+            <tr><td style="float: left;">
+            <td style="float: right;"><input type="submit" value="{{ _('Add User') }}" class="button"></td></tr>
+        </table>
     </form>
+</div>
 {% endblock %}

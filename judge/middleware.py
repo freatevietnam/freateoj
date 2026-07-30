@@ -9,7 +9,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import Resolver404, resolve, reverse
 from django.utils.encoding import force_bytes
@@ -249,4 +249,18 @@ class OrganizationSubdomainMiddleware(object):
         if hasattr(request, 'organization') and 'logo_override_image' not in response.context_data:
             # inject the logo override image into the template context
             response.context_data['logo_override_image'] = request.organization.logo_override_image
+        return response
+
+
+class ForceViMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        from django.utils import translation
+        translation.activate('vi')
+        request.LANGUAGE_CODE = 'vi'
+        response = self.get_response(request)
+        if hasattr(response, 'set_cookie'):
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, 'vi')
         return response

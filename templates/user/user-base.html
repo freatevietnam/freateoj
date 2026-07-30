@@ -5,14 +5,14 @@
 {% block js_media %}{% block user_js_media %}{% endblock %}{% endblock %}
 
 {% block body %}
-<div class="user-profile-page brutalist-two-col" style="padding: 24px;">
-    <aside class="user-sidebar brutalist-border" style="background: #141414; padding: 16px; position: sticky; top: 24px; align-self: start;">
-        <img src="{{ gravatar(user, 135) }}" class="user-gravatar" style="display: block; width: 135px; height: 135px; border: 2px solid #333; margin-bottom: 12px;">
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: #F5F5F5; margin-bottom: 8px;">{{ user.user.username }}</div>
-        <hr class="brutalist-divider" style="margin: 8px 0;">
+<div class="user-profile-page ind-profile-page brutalist-two-col">
+    <aside class="user-sidebar brutalist-border">
+        <img src="{{ gravatar(user, 135) }}" class="ind-avatar-profile">
+        <div class="user-sidebar-username">{{ user.user.username }}</div>
+        <hr class="brutalist-divider user-sidebar-divider">
 
         {% if user.user == request.user or request.user.is_superuser %}
-            <div><span class="data-label">{{ _('Email:') }}</span> <span class="data-value" style="word-wrap: break-word;">{{ user.user.email }}</span></div>
+            <div><span class="data-label">{{ _('Email:') }}</span> <span class="data-value ind-email-wrap">{{ user.user.email }}</span></div>
         {% endif %}
         <div><span class="data-label">{{ _('Rating:') }}</span> <span class="data-value">{% if user.rating %}● {% endif %}{{ rating_number(user) if user.rating else _('Unrated') }}</span></div>
         {% if not user.is_unlisted %}
@@ -22,26 +22,26 @@
         <div><span class="data-label">{{ _('Solved:') }}</span> <span class="data-value">{{ user.problem_count }}</span></div>
         <div><span class="data-label">{{ _('Contribution:') }}</span> <span class="data-value">{{ user.contribution_points }}</span></div>
 
-        <hr class="brutalist-divider" style="margin: 8px 0;">
+        <hr class="brutalist-divider user-sidebar-divider">
 
         {% with orgs=user.organizations.filter(is_unlisted=False) %}
             {% if orgs %}
                 <div><span class="data-label">{{ _('Org:') }}</span>
-                    {% for org in orgs %}<span class="data-value"><a href="{{ org.get_absolute_url() }}" style="color: #FF6B00;">{{ org.name }}</a>{% if not loop.last %}, {% endif %}</span>{% endfor %}
+                    {% for org in orgs %}<span class="data-value"><a href="{{ org.get_absolute_url() }}" class="ind-org-link">{{ org.name }}</a>{% if not loop.last %}, {% endif %}</span>{% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
         <div><span class="data-label">{{ _('Joined:') }}</span> <span class="data-value">{{ user.user.date_joined|date("Y-m-d") }}</span></div>
 
-        <hr class="brutalist-divider" style="margin: 8px 0;">
+        <hr class="brutalist-divider user-sidebar-divider">
 
-        <div style="display: flex; gap: 8px;">
-            <a href="{{ url('all_user_submissions', user.user.username) }}" class="brutalist-btn" style="flex:1; text-align:center; padding:10px 0; border:1px solid #333; color:#F5F5F5; font-family:'JetBrains Mono',monospace; font-size:0.75rem; text-decoration:none;">{{ _('Submissions') }}</a>
-            <a href="/users/compare/?u1={{ user.user.username }}" class="brutalist-btn" style="flex:1; text-align:center; padding:10px 0; border:1px solid #FF6B00; color:#FF6B00; font-family:'JetBrains Mono',monospace; font-size:0.75rem; text-decoration:none;">{{ _('Compare') }}</a>
+        <div class="ind-flex ind-gap-8">
+            <a href="{{ url('all_user_submissions', user.user.username) }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text brutalist-btn">{{ _('Submissions') }}</a>
+            <a href="/users/compare/?u1={{ user.user.username }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Compare') }}</a>
         </div>
 
         {% if ratings %}
-            <hr class="brutalist-divider" style="margin: 8px 0;">
+            <hr class="brutalist-divider user-sidebar-divider">
             <div><span class="data-label">{{ _('Contests:') }}</span> <span class="data-value">{% trans counter=ratings|length %}{{ counter }} contest{% pluralize %}{{ counter }} contests{% endtrans %}</span></div>
             {% if not user.is_unlisted %}
                 <div><span class="data-label">{{ _('Rating rank:') }}</span> <span class="data-value">#{{ rating_rank }}</span></div>
@@ -51,7 +51,7 @@
         {% endif %}
     </aside>
 
-    <main class="user-content brutalist-grid" style="gap:24px;">
+    <main class="user-content brutalist-grid ind-gap-24">
         {% block user_content %}{% endblock %}
     </main>
 </div>

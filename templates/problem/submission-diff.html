@@ -103,33 +103,34 @@
 {% endblock %}
 
 {% block body %}
-    <table id="case-table" class="table">
+    <div class="ind-table-wrap">
+    <table id="case-table" class="ind-table ind-table-md">
         <thead>
-        <tr>
-            <th class="sub-check">{{ _('1st') }}</th>
-            <th class="sub-check">{{ _('2nd') }}</th>
-            <th class="sub-id">{{ _('ID') }}</th>
-            <th class="sub-username">{{ _('Username') }}</th>
-            <th class="sub-result">{{ _('Result') }}</th>
-            <th class="sub-language">{{ _('Language') }}</th>
-            <th class="sub-date">{{ _('Date') }}</th>
+        <tr class="ind-tr-border">
+            <th class="sub-check ind-th ind-th-center">{{ _('1st') }}</th>
+            <th class="sub-check ind-th ind-th-center">{{ _('2nd') }}</th>
+            <th class="sub-id ind-th ind-th-right">{{ _('ID') }}</th>
+            <th class="sub-username ind-th">{{ _('Username') }}</th>
+            <th class="sub-result ind-th ind-th-center">{{ _('Result') }}</th>
+            <th class="sub-language ind-th">{{ _('Language') }}</th>
+            <th class="sub-date ind-th">{{ _('Date') }}</th>
             {% for case in range(num_cases) %}
-                <th class="sub-case">{{ loop.index }}</th>
+                <th class="sub-case ind-th ind-th-center">{{ loop.index }}</th>
             {% endfor %}
         </tr>
         </thead>
         <tbody>
         {% for sub in submissions %}
-            <tr sub-id={{ sub.id }}>
-                <td><input class="sub-check" type="checkbox"></td>
-                <td><input class="sub-check" type="checkbox"></td>
-                <td><a href="{{ url('submission_source', sub.id) }}">{{ sub.id }}</a></td>
-                <td>{{ link_user(sub.user) }}</td>
-                <td><span class="case-{{ sub.result }}">{{ sub.result }}</span></td>
-                <td>{{ sub.language.name }}</td>
-                <td><span class="time">{{ relative_time(sub.date) }}</span></td>
+            <tr sub-id={{ sub.id }} class="ind-tr-hover">
+                <td class="ind-td ind-td-center"><input class="sub-check" type="checkbox"></td>
+                <td class="ind-td ind-td-center"><input class="sub-check" type="checkbox"></td>
+                <td class="ind-td ind-td-right"><a href="{{ url('submission_source', sub.id) }}">{{ sub.id }}</a></td>
+                <td class="ind-td">{{ link_user(sub.user) }}</td>
+                <td class="ind-td ind-td-center"><span class="case-{{ sub.result }}">{{ sub.result }}</span></td>
+                <td class="ind-td">{{ sub.language.name }}</td>
+                <td class="ind-td"><span class="time">{{ relative_time(sub.date) }}</span></td>
                 {% for case in sub.test_cases.all() %}
-                    <td data-partial-output="{{ case.output }}">
+                    <td class="ind-td ind-td-center" data-partial-output="{{ case.output }}">
                         {% if case.status == 'SC' %}
                             <span class="case-SC">---</span>
                         {% else %}
@@ -147,6 +148,7 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
     <div style="display: none" class="partial-output-window"><pre><code></code></pre></div>
 {% endblock %}
 

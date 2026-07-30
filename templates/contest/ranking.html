@@ -461,15 +461,15 @@
     <div style="margin-bottom: 1.25em">
         {% if tab == 'ranking' %}
             <div id="org-dropdown-check-list">
-                <button id="filter-by-organization-button" class="inline-button">
+                <button id="filter-by-organization-button" class="ind-btn-ghost">
                     <i class="tab-icon fa fa-filter"></i>
                     <b>{{ _('Filter') }}</b>
                 </button>
 
                 <div id="org-check-list-wrapper">
                     <div>
-                        <button id="apply-organization-filter" class="inline-button filter-checklist-button">{{ _('Apply') }}</button>
-                        <button id="clear-organization-filter" class="inline-button filter-checklist-button">{{ _('Clear') }}</button>
+                        <button id="apply-organization-filter" class="ind-btn-ghost filter-checklist-button">{{ _('Apply') }}</button>
+                        <button id="clear-organization-filter" class="ind-btn-ghost filter-checklist-button">{{ _('Clear') }}</button>
                     </div>
                     <select id="org-check-list" name="orgs[]" multiple="multiple"></select>
                 </div>
@@ -483,11 +483,11 @@
             <input id="show-virtual-participations-checkbox" type="checkbox" style="vertical-align: bottom">
             <label for="show-virtual-participations-checkbox" style="vertical-align: bottom">{{ _('Show virtual participations') }}</label>
             {% if not is_ICPC_format %}
-            <a href="#" onclick="download_table_as_csv()" style="float: right;">{{ _('Download as CSV') }}</a>
+            <a href="#" onclick="download_table_as_csv()" class="ind-btn-ghost" style="float:right;">{{ _('Download as CSV') }}</a>
             {% endif %}
             {% if contest.can_replay %}
             <a href="{{ url('contest_replay_data', contest.key, contest.replay_version) }}" 
-               class="button" style="float: right; margin-right: 1em;">{{ _('Replay') }}</a>
+               class="ind-btn-ghost" style="float:right; margin-right:1em;">{{ _('Replay') }}</a>
             {% endif %}
         {% endif %}
     </div>
@@ -498,6 +498,7 @@
 {% endblock %}
 
 {% block body %}
+    <div class="ind-table-wrap">
     {% if is_frozen %}
     <div class="alert-warning">
         <p style="padding: 10px; text-align: center">
@@ -519,29 +520,30 @@
     {% endif %}
     {{ super() }}
     {% if is_ICPC_format %}
-    <table id="cell_legend" class="table" style="width: 10em; margin-left: 0">
+    <table id="cell_legend" class="ind-table ind-table-md" style="width:10em; margin-left:0">
         <thead>
             <tr>
-                <th scope="col">{{_('Cell colours')}}</th>
+                <th class="ind-th" scope="col">{{_('Cell colours')}}</th>
             </tr>
         </thead>
         <tbody>
             <tr class="first-solve">
-                <td>{{_('Solved first')}}</td>
+                <td class="ind-td">{{_('Solved first')}}</td>
             </tr>
             <tr class="full-score">
-                <td>{{_('Solved')}}</td>
+                <td class="ind-td">{{_('Solved')}}</td>
             </tr>
             <tr class="failed-score">
-                <td>{{_('Tried, incorrect')}}</td>
+                <td class="ind-td">{{_('Tried, incorrect')}}</td>
             </tr>
             <tr class="pending">
-                <td>{{_('Tried, pending')}}</td>
+                <td class="ind-td">{{_('Tried, pending')}}</td>
             </tr>
             <tr>
-                <td>{{_('Untried')}}</td>
+                <td class="ind-td">{{_('Untried')}}</td>
             </tr>
         </tbody>
     </table>
     {% endif %}
+    </div>
 {% endblock %}

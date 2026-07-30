@@ -143,9 +143,9 @@
 
 {% macro contest_join(contest, request, finished_contests) %}
     {% if request.in_contest and contest.key == request.participation.contest.key %}
-        <td><span>Already joined</span></td>
+        <td class="ind-td"><span>Already joined</span></td>
     {% else %}
-        <td>
+        <td class="ind-td">
             {% if contest.key in finished_contests or request.profile in contest.authors.all() or request.profile in contest.curators.all() or request.profile in contest.testers.all() %}
                 <form action="{{ url('contest_join', contest.key) }}" method="post">
                     {% csrf_token %}
@@ -164,7 +164,7 @@
 {% endmacro %}
 
 {% macro contest_register(contest, request) %}
-    <td>
+    <td class="ind-td">
         {% if request.profile not in contest.authors.all() and request.profile not in contest.curators.all() and request.profile not in contest.testers.all() %}
             {% if request.profile and contest.id in request.profile.registered_contest_ids %}
                 <span style="color: #87ab69"><b>Already registered</b></span>
@@ -177,7 +177,7 @@
             {% else %}
                 <form action="{{ url('contest_register', contest.key) }}" method="post">
                     {% csrf_token %}
-                    <input type="submit" class="unselectable button full participate-button register-warning" style="background: linear-gradient(to bottom, #87ab69 0, #4b6043 100%) repeat-x"
+                    <input type="submit" class="unselectable ind-btn-orange ind-btn-wide participate-button register-warning"
                             value="{{ _('Register') }}">
                 </form>
             {% endif %}
@@ -192,22 +192,23 @@
 {% endmacro %}
 
 {% block body %}
+    <div class="ind-table-wrap">
     <div class="content-description">
         {% if active_participations %}
             <h4>{{ _('Active contests') }}</h4>
-            <table class="contest-list table striped">
+            <table class="contest-list ind-table ind-table-md">
                 <thead>
-                <tr>
-                    <th style="width:80%">{{ _('Contest') }}</th>
-                    <th>{{ _('Users') }}</th>
-                    <th style="width:20%"></th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th" style="width:80%">{{ _('Contest') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Users') }}</th>
+                    <th class="ind-th" style="width:20%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for participation in active_participations %}
                     {% with contest=participation.contest %}
-                        <tr>
-                            <td>
+                        <tr class="ind-tr-hover">
+                            <td class="ind-td">
                                 <div class="contest-block">
                                     {{ contest_head(contest) }}
                                     {% if contest.start_time %}
@@ -221,7 +222,7 @@
                                     {% endif %}
                                 </div>
                             </td>
-                            <td>
+                            <td class="ind-td ind-td-right">
                                 {{ user_count(contest, request.user) }}
                             </td>
                             {{ contest_join(contest, request, finished_contests) }}
@@ -235,18 +236,18 @@
 
         {% if current_contests %}
             <h4>{{ _('Ongoing contests') }}</h4>
-            <table class="contest-list table striped">
+            <table class="contest-list ind-table ind-table-md">
                 <thead>
-                <tr>
-                    <th style="width:80%">{{ _('Contest') }}</th>
-                    <th>{{ _('Users') }}</th>
-                    <th style="width:15%"></th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th" style="width:80%">{{ _('Contest') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Users') }}</th>
+                    <th class="ind-th" style="width:15%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for contest in current_contests %}
-                    <tr>
-                        <td>
+                    <tr class="ind-tr-hover">
+                        <td class="ind-td">
                             <div class="contest-block">
                                 {{ contest_head(contest) }}
                                 {% if contest.start_time %}
@@ -258,7 +259,7 @@
                                 {% endif %}
                             </div>
                         </td>
-                        <td>
+                        <td class="ind-td ind-td-right">
                             {{ user_count(contest, request.user) }}
                         </td>
                         {% if not contest.require_registration or contest.can_register %}
@@ -275,17 +276,17 @@
 
         <h4>{{ _('Upcoming contests') }}</h4>
         {% if future_contests %}
-            <table class="contest-list table striped">
+            <table class="contest-list ind-table ind-table-md">
                 <thead>
-                <tr>
-                    <th>{{ _('Contest') }}</th>
-                    <th style="width:20%"></th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th">{{ _('Contest') }}</th>
+                    <th class="ind-th" style="width:20%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for contest in future_contests %}
-                    <tr>
-                        <td>
+                    <tr class="ind-tr-hover">
+                        <td class="ind-td">
                             <div class="contest-block">
                                 {{ contest_head(contest) }}
                                 {% if contest.start_time %}
@@ -300,7 +301,7 @@
                         {% if contest.require_registration %}
                             {{ contest_register(contest, request) }}
                         {% else %}
-                            <td></td>
+                            <td class="ind-td"></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -325,37 +326,37 @@
             </div>
         {% endif %}
         {% if past_contests %}
-            <table class="contest-list table striped">
+            <table class="contest-list ind-table ind-table-md">
                 <thead>
-                <tr>
-                    <th style="width:80%">{{ _('Contest') }}</th>
-                    <th>{{ _('Users') }}</th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th" style="width:80%">{{ _('Contest') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Users') }}</th>
                     {% if not request.in_contest %}
-                        <th style="width:15%"></th>
+                        <th class="ind-th" style="width:15%"></th>
                     {% endif %}
                 </tr>
                 </thead>
                 <tbody>
                 {% for contest in past_contests %}
-                    <tr>
-                        <td>
+                    <tr class="ind-tr-hover">
+                        <td class="ind-td">
                             <div class="contest-block">
                                 {{ contest_head(contest) }}
                                 {{ time_left(contest) }}
                             </div>
                         </td>
-                        <td>
+                        <td class="ind-td ind-td-right">
                             {{ user_count(contest, request.user) }}
                         </td>
                         {% if not request.in_contest %}
                             {% if not contest.disallow_virtual %}
-                                <td><form action="{{ url('contest_join', contest.key) }}" method="post">
+                                <td class="ind-td"><form action="{{ url('contest_join', contest.key) }}" method="post">
                                     {% csrf_token %}
                                     <input type="submit" class="unselectable button full participate-button"
                                            value="{{ _('Virtual join') }}">
                                 </form></td>
                             {% else %}
-                                <td></td>
+                                <td class="ind-td"></td>
                             {% endif %}
                         {% endif %}
                     </tr>
@@ -369,5 +370,6 @@
             <i>{{ _('There are no past contests.') }}</i>
             <br>
         {% endif %}
+    </div>
     </div>
 {% endblock %}

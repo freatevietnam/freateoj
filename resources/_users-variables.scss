@@ -1,13 +1,13 @@
-// Industrial/Brutalist Design Tokens
-$ind-bg: #0A0A0A;
-$ind-surface: #141414;
-$ind-surface-elevated: #1E1E1E;
-$ind-border: #333333;
-$ind-text: #F5F5F5;
+// Lightmode Design Tokens
+$ind-bg: #FAFAFA;
+$ind-surface: #FFFFFF;
+$ind-surface-elevated: #F5F5F5;
+$ind-border: #D0D0D0;
+$ind-text: #1A1A1A;
 $ind-text-muted: #888888;
 $ind-accent-primary: #FF6B00;
-$ind-accent-success: #00FF88;
-$ind-accent-danger: #FF3366;
+$ind-accent-success: #00C853;
+$ind-accent-danger: #D50000;
 $ind-font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 $ind-font-ui: 'Space Grotesk', system-ui, sans-serif;
 $ind-border-width: 1px;
@@ -17,3 +17,13 @@ $ind-sidebar-width: 280px;
 $ind-transition: none;
 $ind-breakpoint-sm: 640px;
 $ind-breakpoint-md: 1024px;
+
+// Rating Colors (from DMOJ standard)
+$ind-rate-none: #999;
+$ind-rate-newbie: #808080;
+$ind-rate-pupil: #99badd;
+$ind-rate-specialist: #8badd4;
+$ind-rate-expert: #1e90ff;
+$ind-rate-candidate-master: #aa00aa;
+$ind-rate-master: #ff8c00;
+$ind-rate-grandmaster: #ff0000;

@@ -94,16 +94,6 @@
     }
 }
 
-#random {
-    background: $gradient_css;
-    color: white;
-    border: none;
-
-    &:hover {
-        opacity: 0.9;
-    }
-}
-
 @media (max-width: 768px) {
     .problem-header-card {
         padding: 24px;

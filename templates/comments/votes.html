@@ -1,21 +1,23 @@
 <h2 style="text-align: center">{{ _('Votes') }}</h2>
-<table class="table striped">
+<div class="ind-table-wrap">
+<table class="ind-table ind-table-md">
     <thead>
-    <tr>
-        <th>{{ _('Voter') }}</th>
-        <th>{{ _('Score') }}</th>
+    <tr class="ind-tr-border">
+        <th class="ind-th">{{ _('Voter') }}</th>
+        <th class="ind-th ind-th-right">{{ _('Score') }}</th>
     </tr>
     </thead>
     <tbody>
     {% for vote in votes %}
-        <tr>
-            <td>{{ link_user(vote.voter) }}</td>
-            <td>{{ vote.score }}</td>
+        <tr class="ind-tr-hover">
+            <td class="ind-td">{{ link_user(vote.voter) }}</td>
+            <td class="ind-td ind-td-right ind-td-text">{{ vote.score }}</td>
         </tr>
     {% else %}
-        <tr>
-            <td colspan="2">{{ _('No votes') }}</td>
+        <tr class="ind-tr-hover">
+            <td class="ind-td" colspan="2">{{ _('No votes') }}</td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+</div>

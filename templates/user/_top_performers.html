@@ -1,17 +1,23 @@
 {% if top_performers %}
-<div class="brutalist-grid top-performers" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 16px 24px;">
+<div class="brutalist-grid top-performers top-performers-grid">
     {% for card in top_performers %}
-    <div class="brutalist-border" style="background: #141414; padding: 12px;">
+    <div class="ind-card brutalist-border">
         <div class="data-label">{{ card.label }}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-            <img src="{{ gravatar(card.profile, 32) }}" style="width:32px;height:32px;border:1px solid #333;">
+        {% if card.profile %}
+        <div class="ind-flex-row ind-mt-4">
+            <img src="{{ gravatar(card.profile, 32) }}" class="ind-avatar-md">
             <div>
-                <a href="{{ url('user_page', card.profile.user.username) }}" style="font-family:'JetBrains Mono',monospace;font-size:1rem;color:#F5F5F5;text-decoration:none;">{{ card.profile.user.username }}</a>
-                <div class="data-value" style="color:#FF6B00;">{{ card.value }}</div>
+                <a href="{{ url('user_page', card.profile.user.username) }}" class="ind-username">{{ card.profile.user.username }}</a>
+                <div class="data-value ind-value">{{ card.value }}</div>
             </div>
         </div>
+        {% else %}
+        <div class="ind-mt-4">
+            <div class="data-value ind-value">{{ card.value }}</div>
+        </div>
+        {% endif %}
         {% if card.trend %}
-        <div class="data-label" style="margin-top:4px;color:{% if card.trend > 0 %}#00FF88{% else %}#FF3366{% endif %};">{{ '+' if card.trend > 0 }}{{ card.trend }}</div>
+        <div class="data-label ind-mt-4" style="color:{% if card.trend > 0 %}#00C853{% else %}#D50000{% endif %};">{{ '+' if card.trend > 0 }}{{ card.trend }}</div>
         {% endif %}
     </div>
     {% endfor %}

@@ -1,10 +1,10 @@
-<section class="brutalist-panel brutalist-border" id="rating-chart-panel" style="background:#141414;">
-    <header style="padding:8px 12px;border-bottom:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">{{ _('Rating History') }}</header>
-    <div class="panel-content" style="padding:12px;min-height:400px;">
+<section class="brutalist-panel brutalist-border ind-panel" id="rating-chart-panel">
+    <header class="ind-panel-header">{{ _('Rating History') }}</header>
+    <div class="panel-content ind-panel-content ind-panel-content-tall">
         <canvas id="rating-chart-canvas" width="800" height="360"></canvas>
-        <div id="rating-tooltip" style="display:none;position:absolute;background:#0A0A0A;color:#F5F5F5;padding:6px;border:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;pointer-events:none;">
+        <div id="rating-tooltip" class="ind-tooltip">
             <div class="contest"></div>
-            <div class="date" style="color:#888;"></div>
+            <div class="date data-label"></div>
             <div class="rate-group"><span class="rating"></span> #<span class="rank"></span></div>
         </div>
     </div>

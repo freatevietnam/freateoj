@@ -1,28 +1,29 @@
-<table {% if table_id %}id="{{ table_id }}"{% endif %} class="users-table table striped">
+<div class="ind-table-wrap">
+<table {% if table_id %}id="{{ table_id }}"{% endif %} class="ind-table ind-table-md">
     <thead>
-    <tr>
-        <th class="header rank">{{ rank_header or _("Rank") }}</th>
-        <th class="header">{{ _('Username') }}</th>
-        <th class="header">{{ _('Full Name') }}</th>
+    <tr class="ind-tr-border">
+        <th class="ind-th ind-th-right">{{ rank_header or _("Rank") }}</th>
+        <th class="ind-th">{{ _('Username') }}</th>
+        <th class="ind-th">{{ _('Full Name') }}</th>
         {% for problem in problems %}
-            <th class="points header">
+            <th class="ind-th ind-th-right">
                 {{ problem }}
             </th>
         {% endfor %}
-        <th class="header points">{{ _('Points') }}</th>
+        <th class="ind-th ind-th-right">{{ _('Points') }}</th>
     </tr>
     </thead>
 
     <tbody>
     {% for rank, user in users %}
-        <tr id="user-{{ user.username }}">
-            <td>{{ rank }}</td>
-            <td class="user-name">
+        <tr id="user-{{ user.username }}" class="ind-tr-hover">
+            <td class="ind-td ind-td-right ind-td-muted">{{ rank }}</td>
+            <td class="ind-td user-name">
                 <div style="float:left">
                     <span class="wrap-name">{{ user.username }}</span>
                 </div>
             </td>
-            <td class="user-name">
+            <td class="ind-td user-name">
                 <div style="float:left">
                     <span class="wrap-name" > {{ user.full_name }} </span>
                 </div>
@@ -35,3 +36,4 @@
     {% endfor %}
     </tbody>
 </table>
+</div>

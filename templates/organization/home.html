@@ -1,39 +1,6 @@
 {% extends "base.html" %}
 
-{% block media %}
-    <style>
-        .post {
-            margin: 0 0.5em;
-        }
 
-        .post:first-child {
-            margin-top: 0.6em;
-        }
-
-        .comment-count {
-            font-size: 12px;
-        }
-
-        .comment-icon {
-            padding: 0.1em 0.2em 0 0.5em;
-        }
-
-        .comment-count-link {
-            color: #555;
-        }
-
-        table.bottom td.left {
-            text-align: left;
-            border-right: none !important;
-            border-top: none !important;
-        }
-
-        table.bottom td.right {
-            text-align: right;
-            border-top: none !important;
-        }
-    </style>
-{% endblock %}
 
 {% block js_media %}
     {% include "blog/media-js.html" %}
@@ -53,12 +20,16 @@
 {% endblock %}
 
 {% block title_row %}
-    {% set tab = 'home' %}
-    {% include "organization/tabs.html" %}
+    <header class="users-header brutalist-border">
+        {% set tab = 'home' %}
+        {% include "organization/tabs.html" %}
+        <hr class="brutalist-divider ind-divider-top">
+    </header>
 {% endblock %}
 {% block title_ruler %}{% endblock %}
 
 {% block body %}
+    <div class="org-detail">
     {% block before_posts %}{% endblock %}
     <div id="blog-container">
         <div class="blog-content sidebox">
@@ -181,6 +152,7 @@
                 </div>
             {% endif %}
         </div>
+    </div>
     </div>
 {% endblock %}
 

@@ -26,21 +26,15 @@
 
 {% block media %}
     {{ form.media.css }}
-    <style>
-        #id_name, #id_slug, #id_about, #id_logo_override_image {
-            width: 100%;
-        }
-        .django-as-table th {
-            width: 10em;
-        }
-    </style>
+
 {% endblock %}
 
 {% block body %}
+    <div class="org-form-area">
     <form action="" method="post" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
         {% csrf_token %}
         <table border="0" class="django-as-table">{{ form.as_table() }}</table>
-        <div style="display: flex; justify-content: flex-end;">
+        <div class="submit-bar">
             <button class="submit-bar" type="submit">
                 {% if request.resolver_match.url_name == 'organization_create' %}
                     {{ _('Create') }}
@@ -56,27 +50,28 @@
     <h3>{{ _('Quota Grants') }}</h3>
 
     {% if existing_quotas %}
-    <table class="table" style="width: auto; margin-bottom: 1em;">
+    <div class="ind-table-wrap">
+    <table class="ind-table ind-table-md">
         <thead>
-            <tr>
-                <th>{{ _('Start') }}</th>
-                <th>{{ _('End') }}</th>
-                <th>{{ _('+ Problems') }}</th>
-                <th>{{ _('+ Storage') }}</th>
-                <th></th>
+            <tr class="ind-tr-border">
+                <th class="ind-th">{{ _('Start') }}</th>
+                <th class="ind-th">{{ _('End') }}</th>
+                <th class="ind-th ind-th-right">{{ _('+ Problems') }}</th>
+                <th class="ind-th ind-th-right">{{ _('+ Storage') }}</th>
+                <th class="ind-th"></th>
             </tr>
         </thead>
         <tbody>
             {% for q in existing_quotas %}
-            <tr>
-                <td>{{ q.start_date }}</td>
-                <td>{{ q.end_date }}</td>
-                <td>+{{ q.added_problems }}</td>
-                <td>+{{ q.added_storage|filesizeformat }}</td>
-                <td>
+            <tr class="ind-tr-hover">
+                <td class="ind-td">{{ q.start_date }}</td>
+                <td class="ind-td">{{ q.end_date }}</td>
+                <td class="ind-td ind-td-right ind-td-text">+{{ q.added_problems }}</td>
+                <td class="ind-td ind-td-right ind-td-muted">+{{ q.added_storage|filesizeformat }}</td>
+                <td class="ind-td">
                     <form method="post" action="{{ url('organization_quota_delete', organization.slug, q.id) }}" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-xs btn-danger"
+                        <button type="submit" class="ind-btn-ghost"
                                 onclick="return confirm('{{ _('Delete this quota grant?') }}')">
                             <i class="fa fa-trash"></i>
                         </button>
@@ -86,17 +81,19 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
     {% else %}
-    <p style="color: #999;">{{ _('No quota grants yet.') }}</p>
+    <p class="no-quota-text">{{ _('No quota grants yet.') }}</p>
     {% endif %}
 
     <h4>{{ _('Add Quota Grant') }}</h4>
     <form method="post" action="{{ url('organization_quota_add', organization.slug) }}" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
         {% csrf_token %}
         <table class="django-as-table">{{ quota_form.as_table() }}</table>
-        <div style="display: flex; justify-content: flex-end; margin-top: 0.5em;">
+        <div class="submit-bar">
             <button class="submit-bar" type="submit">{{ _('Add') }}</button>
         </div>
     </form>
     {% endif %}
+    </div>
 {% endblock %}

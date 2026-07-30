@@ -3,41 +3,53 @@
     <script src="{{ static('libs/tablesorter.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         $(function () {
-            $('.organization-table').tablesorter({sortList: [[1, 1]]});
+            $('.org-table').tablesorter({sortList: [[1, 1]]});
         });
     </script>
 {% endblock %}
-
-{% block title_ruler %}{% endblock %}
 
 {% block title_row %}
     {% set tab = 'organizations' %}
     {% include "organization/list-tabs.html" %}
 {% endblock %}
 
-{% macro org_table(name, queryset) %}
-    <h4>{{ name }}</h4>
-    <table class="organization-table table striped">
-        <thead>
-            <tr>
-                <th style="width:70%">{{ _('Name') }}</th>
-                <th style="width:15%">{{ _('Points') }}</th>
-                <th>{{ _('Members') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for org in queryset %}
-            <tr>
-                <td class="organization-name"><a href="{{ org.get_absolute_url() }}">{{ org.name }}</a></td>
-                <td><a href="{{ org.get_users_url() }}">{{ org.performance_points|floatformat(2) }}</a></td>
-                <td><a href="{{ org.get_users_url() }}">{{ org.member_count }}</a></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endmacro %}
+{% block title_ruler %}{% endblock %}
 
 {% block body %}
+    <header class="users-header brutalist-border">
+        <div class="ind-flex-between">
+            <h1 class="page-title">{{ title }}</h1>
+        </div>
+        <hr class="brutalist-divider ind-divider-top">
+        <div class="page-stats">
+            {{ _('Total: %(count)s organizations', count=organizations|length) }}
+        </div>
+    </header>
+
+    {% macro org_table(name, queryset) %}
+        <h4>{{ name }}</h4>
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md org-table">
+            <thead>
+                <tr class="ind-tr-border">
+                    <th class="ind-th" style="width:70%">{{ _('Name') }}</th>
+                    <th class="ind-th ind-th-right" style="width:15%">{{ _('Points') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Members') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for org in queryset %}
+                <tr class="ind-tr-hover">
+                    <td class="ind-td organization-name"><a class="ind-sort-link" href="{{ org.get_absolute_url() }}">{{ org.name }}</a></td>
+                    <td class="ind-td ind-td-right ind-td-text"><a class="ind-sort-link" href="{{ org.get_users_url() }}">{{ org.performance_points|floatformat(2) }}</a></td>
+                    <td class="ind-td ind-td-right ind-td-muted"><a class="ind-sort-link" href="{{ org.get_users_url() }}">{{ org.member_count }}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    {% endmacro %}
+
     <div class="content-description">
         {% if request.user.is_authenticated %}
             {% with orgs=request.profile.organizations.all() %}

@@ -724,18 +724,18 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, DiggPaginatorMixin
         top_points = ProfileModel.objects.filter(is_unlisted=False).order_by('-performance_points').select_related('user')[:1].first()
         rising_star_qs = ProfileModel.objects.filter(is_unlisted=False, rating__isnull=False).order_by('-rating')[:10]
         rising_star = ProfileModel.objects.filter(is_unlisted=False).order_by('-rating')[:3].last() if ProfileModel.objects.filter(is_unlisted=False).count() > 2 else None
-        top_org = Organization.objects.filter(is_unlisted=False).annotate(member_count=Count('member')).order_by('-member_count').first()
+        top_org = Organization.objects.filter(is_unlisted=False).annotate(_member_count=Count('member')).order_by('-_member_count').first()
 
         context['top_performers'] = [
             {'label': '#1 RATED', 'profile': top_rated, 'value': str(top_rated.rating) if top_rated and top_rated.rating else 'N/A', 'trend': None},
             {'label': '#1 POINTS', 'profile': top_points, 'value': '%.1f pp' % top_points.performance_points if top_points else 'N/A', 'trend': None},
             {'label': 'RISING STAR', 'profile': rising_star, 'value': str(rising_star.rating) if rising_star and rising_star.rating else 'N/A', 'trend': None},
-            {'label': 'TOP ORG', 'profile': None, 'value': top_org.name if top_org else 'N/A', 'trend': top_org.member_count if top_org else None},
+            {'label': 'TOP ORG', 'profile': None, 'value': top_org.name if top_org else 'N/A', 'trend': top_org._member_count if top_org else None},
         ]
         context['total_users'] = ProfileModel.objects.filter(is_unlisted=False).count()
         context['active_users'] = ProfileModel.objects.filter(is_unlisted=False, user__last_login__gte=timezone.now() - datetime.timedelta(hours=24)).count()
-        top_1 = ProfileModel.objects.filter(is_unlisted=False).order_by('-performance_points').values_list('performance_points', flat=True)[:max(1, int(ProfileModel.objects.filter(is_unlisted=False).count() * 0.01))]
-        context['top_1_percent_threshold'] = '%.0f' % (top_1.last() if top_1 else 0)
+        top_1 = list(ProfileModel.objects.filter(is_unlisted=False).order_by('-performance_points').values_list('performance_points', flat=True)[:max(1, int(ProfileModel.objects.filter(is_unlisted=False).count() * 0.01))])
+        context['top_1_percent_threshold'] = '%.0f' % (top_1[-1] if top_1 else 0)
         return context
 
 

@@ -4,26 +4,32 @@
     {% include "organization/requests/tabs.html" %}
 
     {% if requests %}
-        <table class="table">
-            <tr>
-                <th>{{ _('User') }}</th>
-                <th>{{ _('Time') }}</th>
-                <th>{{ _('State') }}</th>
-                <th>{{ _('Reason') }}</th>
-            </tr>
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md">
+            <thead>
+                <tr class="ind-tr-border">
+                    <th class="ind-th">{{ _('User') }}</th>
+                    <th class="ind-th">{{ _('Time') }}</th>
+                    <th class="ind-th">{{ _('State') }}</th>
+                    <th class="ind-th">{{ _('Reason') }}</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for r in requests %}
-                <tr id="request-{{ r.id }}">
-                    <td>{{ link_user(r.user) }}</td>
-                    <td>
-                        <a href="{{ url('request_organization_detail', object.slug, r.id) }}">
+                <tr class="ind-tr-hover" id="request-{{ r.id }}">
+                    <td class="ind-td">{{ link_user(r.user) }}</td>
+                    <td class="ind-td">
+                        <a class="ind-sort-link" href="{{ url('request_organization_detail', object.slug, r.id) }}">
                             {{- r.time|date(_("N j, Y, H:i")) -}}
                         </a>
                     </td>
-                    <td>{{ r.get_state_display() }}</td>
-                    <td>{{ r.reason|truncatechars(50) }}</td>
+                    <td class="ind-td">{{ r.get_state_display() }}</td>
+                    <td class="ind-td">{{ r.reason|truncatechars(50) }}</td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
+        </div>
     {% else %}
         <p>{{ _('There are no requests to approve.') }}</p>
     {% endif %}

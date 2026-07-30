@@ -1,19 +1,19 @@
-<section class="brutalist-panel brutalist-border" id="activity-feed-panel" style="background:#141414;">
-    <header style="padding:8px 12px;border-bottom:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">{{ _('Recent Activity') }}</header>
-    <div class="panel-content" style="padding:12px;min-height:100px;">
-        <div id="activity-timeline" style="border-left:2px solid #333;padding-left:16px;">
+<section class="brutalist-panel brutalist-border ind-panel" id="activity-feed-panel">
+    <header class="ind-panel-header">{{ _('Recent Activity') }}</header>
+    <div class="panel-content ind-panel-content ind-panel-content-activity">
+        <div id="activity-timeline" class="ind-timeline">
             {% for activity in recent_activity %}
-            <div class="activity-item" style="margin-bottom:12px;position:relative;">
-                <div style="position:absolute;left:-21px;top:4px;width:8px;height:8px;background:#333;border:1px solid #333;"></div>
-                <div class="data-label" style="font-size:0.65rem;color:#555;">{{ activity.timestamp }}</div>
-                <div style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#F5F5F5;margin-top:2px;">{{ activity.html|safe }}</div>
+            <div class="ind-timeline-item">
+                <div class="ind-timeline-dot"></div>
+                <div class="data-label ind-label-sm">{{ activity.timestamp }}</div>
+                <div class="ind-timeline-text">{{ activity.html|safe }}</div>
             </div>
             {% else %}
-            <div style="text-align:center;padding:24px 0;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#666;">{{ _('No recent activity.') }}</div>
+            <div class="ind-placeholder ind-placeholder-md">{{ _('No recent activity.') }}</div>
             {% endfor %}
         </div>
         {% if has_more_activity %}
-        <button class="brutalist-btn" data-load-more-activity style="width:100%;padding:10px;border:1px solid #333;background:transparent;color:#888;font-family:'JetBrains Mono',monospace;font-size:0.75rem;cursor:pointer;margin-top:8px;">{{ _('Load more...') }}</button>
+        <button class="ind-btn-wide brutalist-btn" data-load-more-activity>{{ _('Load more...') }}</button>
         {% endif %}
     </div>
 </section>
@@ -29,11 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 var timeline = document.getElementById('activity-timeline');
                 data.items.forEach(function (item) {
                     var div = document.createElement('div');
-                    div.className = 'activity-item';
-                    div.style.cssText = 'margin-bottom:12px;position:relative;';
-                    div.innerHTML = '<div style="position:absolute;left:-21px;top:4px;width:8px;height:8px;background:#333;border:1px solid #333;"></div>' +
-                        '<div class="data-label" style="font-size:0.65rem;color:#555;">' + item.timestamp + '</div>' +
-                        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.8rem;color:#F5F5F5;margin-top:2px;">' + item.html + '</div>';
+                    div.className = 'ind-timeline-item';
+                    div.innerHTML = '<div class=\"ind-timeline-dot\"></div>' +
+                        '<div class=\"data-label ind-label-sm\">' + item.timestamp + '</div>' +
+                        '<div class=\"ind-timeline-text\">' + item.html + '</div>';
                     timeline.appendChild(div);
                     offset++;
                 });

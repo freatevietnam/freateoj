@@ -17,6 +17,8 @@ def gravatar(email, size=80, default=None):
     elif isinstance(email, AbstractUser):
         email = email.email
 
+    if email is None:
+        email = ''
     gravatar_url = 'https://www.gravatar.com/avatar/' + hashlib.md5(utf8bytes(email.strip().lower())).hexdigest() + '?'
     args = {'d': 'identicon', 's': str(size)}
     if default:

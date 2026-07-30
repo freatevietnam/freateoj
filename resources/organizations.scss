@@ -1,0 +1,112 @@
+// ─── Organization Page Styles ────────────────────────────────────────
+@use "users-variables" as *;
+
+.org-table {
+  td { vertical-align: middle !important; }
+}
+
+.org-detail {
+  .post {
+    margin: 0 0.5em;
+  }
+
+  .comment-count { font-size: 12px; }
+  .comment-icon { padding: 0.1em 0.2em 0 0.5em; }
+  .comment-count-link { color: $ind-text-muted; }
+}
+
+.org-form-area {
+  #id_name, #id_slug, #id_about, #id_logo_override_image { width: 100%; }
+
+  .django-as-table th { width: 10em; }
+
+  .submit-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5em;
+  }
+
+  .no-quota-text { color: $ind-text-muted; }
+}
+
+.org-usage {
+  .storage-table {
+    td.problem-code, th.problem-code,
+    td.problem-name, th.problem-name {
+      text-align: left;
+      padding: 0 10px;
+    }
+    td.problem-code { word-break: break-all; }
+  }
+
+  .page-tab-content { display: none; }
+  .page-tab-content.active { display: block; }
+
+  .filter-section {
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: $ind-border-width solid $ind-border;
+  }
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+  }
+
+  .filter-item {
+    flex: 1;
+    min-width: 200px;
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+  }
+
+  .bulk-actions {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-danger-bulk {
+    background: $ind-accent-danger;
+    color: #fff;
+    border: $ind-border-width solid darken($ind-accent-danger, 5%);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: $ind-font-mono;
+    &:disabled {
+      background: $ind-border;
+      color: $ind-text-muted;
+      border-color: darken($ind-border, 5%);
+      cursor: not-allowed;
+    }
+  }
+
+  .storage-summary {
+    padding: 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2em;
+    color: $ind-text-muted;
+  }
+}
+
+.org-requests {
+  .reason {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+    width: 30%;
+    &:hover {
+      overflow: visible;
+      white-space: unset;
+    }
+  }
+}

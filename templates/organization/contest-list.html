@@ -1,6 +1,9 @@
 {% extends "contest/list.html" %}
 
 {% block title_row %}
-    {% set tab = 'contest-list' %}
-    {% include "organization/tabs.html" %}
+    <header class="users-header brutalist-border">
+        {% set tab = 'contest-list' %}
+        {% include "organization/tabs.html" %}
+        <hr class="brutalist-divider ind-divider-top">
+    </header>
 {% endblock %}

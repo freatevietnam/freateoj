@@ -47,9 +47,10 @@
 
 {% block body %}
     <div class="source-wrap">
-        <table>
-            <tr>
-                <td class="source-ln">
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md">
+            <tr class="ind-tr-hover">
+                <td class="source-ln ind-td">
                     <div>
                         {% for line in raw_source.split('\n') %}
                             <a href="#line-{{ loop.index }}" name="line-{{ loop.index }}">
@@ -58,8 +59,9 @@
                         {% endfor %}
                     </div>
                 </td>
-                <td class="source-code">{{ highlighted_source }}</td>
+                <td class="source-code ind-td">{{ highlighted_source }}</td>
             </tr>
         </table>
+        </div>
     </div>
 {% endblock %}

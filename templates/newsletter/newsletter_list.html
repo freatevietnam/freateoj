@@ -7,18 +7,18 @@
         <form method="POST" action="" class="form-area">
             {% csrf_token %}
             {{ formset.management_form }}
-            <table>
-                <tr>
-                    <th>Newsletter</th>
-                    <th>Subscribe</th>
+            <table class="ind-table ind-table-md">
+                <tr class="ind-tr-border">
+                    <th class="ind-th">Newsletter</th>
+                    <th class="ind-th">Subscribe</th>
                 </tr>
                 {% for form in formset.forms %}
-                    <tr>
-                        <td>{{ form.id }}{{ form.newsletter }}
+                    <tr class="ind-tr-hover">
+                        <td class="ind-td">{{ form.id }}{{ form.newsletter }}
                             <a href="{{ url('newsletter_archive', form.instance.newsletter.slug) }}">
                                 {{ form.instance.newsletter.title }}</a>
                         </td>
-                        <td>{{ form.subscribed }}</td>
+                        <td class="ind-td">{{ form.subscribed }}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -28,13 +28,13 @@
             </p>
         </form>
     {% else %}
-        <table class="form-area">
-            <tr>
-                <th>Newsletter</th>
+        <table class="form-area ind-table ind-table-md">
+            <tr class="ind-tr-border">
+                <th class="ind-th">Newsletter</th>
             </tr>
             {% for newsletter in object_list %}
-                <tr>
-                    <td><a href="{{ url('newsletter_detail', newsletter.slug) }}">{{ newsletter.title }}</a></td>
+                <tr class="ind-tr-hover">
+                    <td class="ind-td"><a href="{{ url('newsletter_detail', newsletter.slug) }}">{{ newsletter.title }}</a></td>
                 </tr>
             {% endfor %}
         </table>

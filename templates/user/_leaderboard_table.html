@@ -1,44 +1,40 @@
 {% if users %}
-<div style="overflow-x:auto;">
-<table class="users-table" style="width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:0.8rem;background:#141414;">
+<div class="ind-table-wrap">
+<table class="users-table ind-table ind-table-md">
     <thead>
-        <tr style="border-bottom:1px solid #333;">
-            <th style="padding:6px 8px;text-align:right;width:48px;color:#888;font-weight:400;">#</th>
-            <th style="padding:6px 8px;text-align:left;color:#888;font-weight:400;">{{ _('Handle') }}</th>
-            <th style="padding:6px 8px;text-align:center;width:80px;color:#888;font-weight:400;">
-                {% if sort_links %}<a href="{{ sort_links.rating }}" style="color:#888;text-decoration:none;">{% endif %}●{{ sort_order.rating }}{% if sort_links %}</a>{% endif %}
+        <tr class="ind-tr-border">
+            <th class="ind-th ind-th-right ind-th-w48">#</th>
+            <th class="ind-th">{{ _('Handle') }}</th>
+            <th class="ind-th ind-th-center ind-th-w80">
+                {% if sort_links %}<a class="ind-sort-link" href="{{ sort_links.rating }}">{% endif %}●{{ sort_order.rating }}{% if sort_links %}</a>{% endif %}
             </th>
-            <th style="padding:6px 8px;text-align:right;width:100px;color:#888;font-weight:400;">
-                {% if sort_links %}<a href="{{ sort_links.performance_points }}" style="color:#888;text-decoration:none;">{% endif %}{{ _('Points') }}{{ sort_order.performance_points }}{% if sort_links %}</a>{% endif %}
+            <th class="ind-th ind-th-right ind-th-w100">
+                {% if sort_links %}<a class="ind-sort-link" href="{{ sort_links.performance_points }}">{% endif %}{{ _('Points') }}{{ sort_order.performance_points }}{% if sort_links %}</a>{% endif %}
             </th>
-            <th style="padding:6px 8px;text-align:right;width:80px;color:#888;font-weight:400;">
-                {% if sort_links %}<a href="{{ sort_links.problem_count }}" style="color:#888;text-decoration:none;">{% endif %}{{ _('Solved') }}{{ sort_order.problem_count }}{% if sort_links %}</a>{% endif %}
+            <th class="ind-th ind-th-right ind-th-w80">
+                {% if sort_links %}<a class="ind-sort-link" href="{{ sort_links.problem_count }}">{% endif %}{{ _('Solved') }}{{ sort_order.problem_count }}{% if sort_links %}</a>{% endif %}
             </th>
-            <th style="padding:6px 8px;text-align:left;color:#888;font-weight:400;">{{ _('Org') }}</th>
+            <th class="ind-th">{{ _('Contribution Points') }}</th>
         </tr>
     </thead>
     <tbody>
     {% for rank, profile in users %}
-        <tr id="user-{{ profile.user.username }}" style="border-bottom:1px solid #222;transition:background 0.1s;" onmouseover="this.style.background='#1E1E1E'" onmouseout="this.style.background=''">
-            <td style="padding:6px 8px;text-align:right;color:#888;">{{ rank }}</td>
-            <td style="padding:6px 8px;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <img src="{{ gravatar(profile, 24) }}" style="width:24px;height:24px;border:1px solid #333;flex-shrink:0;">
-                    <a href="{{ url('user_page', profile.user.username) }}" style="color:#F5F5F5;text-decoration:none;">{{ profile.user.username }}</a>
+        <tr id="user-{{ profile.user.username }}" class="ind-tr-hover">
+            <td class="ind-td ind-td-right ind-td-muted">{{ rank }}</td>
+            <td class="ind-td">
+                <div class="ind-flex-row">
+                    <img src="{{ gravatar(profile, 24) }}" class="ind-avatar-sm">
+                    <a href="{{ url('user_page', profile.user.username) }}" class="rate-group" style="text-decoration:none;color:inherit;"><span class="rating {{ rating_class(profile.rating) }}">{{ profile.user.username }}</span></a>
                 </div>
             </td>
-            <td style="padding:6px 8px;text-align:center;">
+            <td class="ind-td ind-td-center">
                 {% if profile.rating %}
-                    <span style="color:{% if profile.rating >= 2400 %}#FF0000{% elif profile.rating >= 1900 %}#AA00AA{% elif profile.rating >= 1600 %}#0000FF{% elif profile.rating >= 1400 %}#03A89E{% elif profile.rating >= 1200 %}#008000{% else %}#888{% endif %};">● {{ profile.rating }}</span>
+                    <span style="color:{% if profile.rating >= 2400 %}#FF0000{% elif profile.rating >= 1900 %}#AA00AA{% elif profile.rating >= 1600 %}#0000FF{% elif profile.rating >= 1400 %}#03A89E{% elif profile.rating >= 1200 %}#008000{% else %}#888888{% endif %};">● {{ profile.rating }}</span>
                 {% endif %}
             </td>
-            <td style="padding:6px 8px;text-align:right;color:#F5F5F5;">{{ profile.performance_points|floatformat(1) }}</td>
-            <td style="padding:6px 8px;text-align:right;color:#888;">{{ profile.problem_count }}</td>
-            <td style="padding:6px 8px;color:#888;font-size:0.75rem;">
-                {% for org in profile.organizations.all() %}
-                    <a href="{{ org.get_absolute_url() }}" style="color:#888;text-decoration:none;">{{ org.name }}</a>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </td>
+            <td class="ind-td ind-td-right ind-td-text">{{ profile.performance_points|floatformat(1) }}</td>
+            <td class="ind-td ind-td-right ind-td-muted">{{ profile.problem_count }}</td>
+            <td class="ind-td ind-td-right ind-td-text">{{ profile.contribution_points }}</td>
         </tr>
     {% endfor %}
     </tbody>

@@ -45,64 +45,70 @@
 {% endblock %}
 
 {% block body %}
-    {# Combined Header and Search Card #}
-    <div class="problem-header-card">
-        <div class="problem-header-card__info">
-            <h1 class="problem-header-card__title">{{ _('Bài tập') }}</h1>
-            <p class="problem-header-card__desc">{{ _('Khám phá và giải quyết các bài tập lập trình với nhiều chủ đề và độ khó khác nhau.') }}</p>
-            {% if request.user.has_perm('judge.add_problem') %}
-              <a href="{{ url('problem_create') }}" class="problem-create-btn">
-                <i class="fa fa-plus"></i> {{ _('Tạo bài tập') }}
-              </a>
-            {% endif %}
+    <header class="users-header brutalist-border">
+        <div class="ind-flex-between">
+            <h1 class="page-title">{{ _('Bài tập') }}</h1>
+            <form class="problem-search-bar" action="" method="get" style="display:flex;gap:4px;">
+                <input id="search" type="text" name="search" value="{{ search_query or '' }}"
+                       placeholder="{{ _('Tìm theo tên, mã, dạng đề, nguồn...') }}" class="ind-input">
+                <a href="javascript:void(0)" id="go" class="ind-btn-primary">{{ _('Tìm kiếm') }}</a>
+                <a href="javascript:void(0)" id="random" class="ind-btn-primary">{{ _('Ngẫu nhiên') }}</a>
+            </form>
         </div>
-        <form class="problem-search-bar" action="" method="get">
-            <input id="search" type="text" name="search" value="{{ search_query or '' }}"
-                   placeholder="{{ _('Tìm theo tên, mã, dạng đề, nguồn...') }}">
-            <button type="submit" id="go">{{ _('Tìm kiếm') }}</button>
-            <button type="button" id="random">{{ _('Ngẫu nhiên') }}</button>
-        </form>
-    </div>
+        <hr class="brutalist-divider ind-divider-top">
+        <div class="page-stats">
+            {{ _('Total: %(count)s problems', count=page_obj.unfiltered_queryset.count()) }}
+        </div>
+    </header>
+
+    {% if request.user.has_perm('judge.add_problem') %}
+        <div style="margin: 16px 0;">
+            <a href="{{ url('problem_create') }}" class="ind-btn-primary">
+                <i class="fa fa-plus"></i> {{ _('Tạo bài tập') }}
+            </a>
+        </div>
+    {% endif %}
 
     {# Problem Table #}
     <div id="common-content">
         <div id="content-left" class="problems h-scrollable-table">
-            <table id="problem-table" class="table striped">
+            <div class="ind-table-wrap">
+            <table id="problem-table" class="ind-table ind-table-md">
                 <thead>
-                <tr>
+                <tr class="ind-tr-border">
                     {% if request.user.is_authenticated %}
-                        <th class="solved">
+                        <th class="solved ind-th ind-th-center">
                             <a href="{{ sort_links.solved }}">
                                 <i class="fa fa-check"></i>{{ sort_order.solved }}
                             </a>
                         </th>
                     {% endif %}
-                    <th class="problem-code">
+                    <th class="problem-code ind-th">
                         <a href="{{ sort_links.code }}">{{ _('ID') }}{{ sort_order.code}}</a>
                     </th>
-                    <th class="problem-name">
+                    <th class="problem-name ind-th">
                         <a href="{{ sort_links.name }}">{{ _('Bài tập') }}{{ sort_order.name }}</a>
                     </th>
-                    <th class="category">
+                    <th class="category ind-th">
                         <a href="{{ sort_links.group }}">{{ _('Danh mục') }}{{ sort_order.group }}</a>
                     </th>
-                    <th class="points">
+                    <th class="points ind-th ind-th-right">
                         <a href="{{ sort_links.points }}">{{ _('Điểm') }}{{ sort_order.points }}</a>
                     </th>
-                    <th class="ac-rate">
+                    <th class="ac-rate ind-th ind-th-right">
                         <a href="{{ sort_links.ac_rate }}">{{ _('%% AC') }}{{ sort_order.ac_rate }}</a>
                     </th>
-                    <th class="users">
+                    <th class="users ind-th ind-th-right">
                         <a href="{{ sort_links.user_count }}">{{ _('# AC') }}{{ sort_order.user_count }}</a>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for problem in problems %}
-                    <tr>
+                    <tr class="ind-tr-hover">
                         {% if request.user.is_authenticated %}
                             {% if problem.id in completed_problem_ids %}
-                                <td class="solved" solved="1">
+                                <td class="solved ind-td ind-td-center" solved="1">
                                     <a href="{{ url('user_submissions', problem.code, request.user.username) }}">
                                         {% if problem.is_public %}
                                             <i class="solved-problem-color fa fa-check-circle"></i>
@@ -112,7 +118,7 @@
                                     </a>
                                 </td>
                             {% elif problem.id in attempted_problems %}
-                                <td class="solved" solved="0">
+                                <td class="solved ind-td ind-td-center" solved="0">
                                     <a href="{{ url('user_submissions', problem.code, request.user.username) }}">
                                         {% if problem.is_public %}
                                             <i class="attempted-problem-color fa fa-frown-o"></i>
@@ -122,7 +128,7 @@
                                     </a>
                                 </td>
                             {% else %}
-                                <td class="solved" solved="-1">
+                                <td class="solved ind-td ind-td-center" solved="-1">
                                     {% if problem.is_public %}
                                         <i class="unsolved-problem-color fa"></i>
                                     {% else %}
@@ -131,16 +137,16 @@
                                 </td>
                             {% endif %}
                         {% endif %}
-                        <td class="problem-code">
+                        <td class="problem-code ind-td">
                             <a href="{{ url('problem_detail', problem.code) }}">{{ problem.code}}</a>
                         </td>
-                        <td class="problem-name">
+                        <td class="problem-name ind-td">
                             <a href="{{ url('problem_detail', problem.code) }}">{{ problem.i18n_name or problem.name }}</a>
                         </td>
-                        <td class="category">{{ problem.group.full_name }}</td>
-                        <td class="p">{{ problem.points|floatformat(2) }}</td>
-                        <td class="ac-rate">{{ problem.ac_rate|floatformat(1) }}%</td>
-                        <td class="users">
+                        <td class="category ind-td ind-td-muted">{{ problem.group.full_name }}</td>
+                        <td class="p ind-td ind-td-right ind-td-text">{{ problem.points|floatformat(2) }}</td>
+                        <td class="ac-rate ind-td ind-td-right ind-td-muted">{{ problem.ac_rate|floatformat(1) }}%</td>
+                        <td class="users ind-td ind-td-right ind-td-text">
                             <a href="{{ url('ranked_submissions', problem.code) }}">
                                 {{ problem.user_count }}
                             </a>
@@ -149,6 +155,7 @@
                 {% endfor %}
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
     {% if page_obj.has_other_pages() %}

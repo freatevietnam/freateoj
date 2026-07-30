@@ -313,12 +313,6 @@
         <script type="text/javascript">{{ request.profile.user_script|safe }}</script>
     {% endif %}
     <script>
-        function submmit_language(lang) {
-            if (lang != "{{ LANGUAGE_CODE }}" ) {
-                $("input[name=language]").val(lang)
-                $("#set_language").submit()
-            }
-        }
         async function bustStatic() {
             if ('caches' in window) {
                 var keys = await caches.keys();
@@ -400,10 +394,7 @@
                         <li>
                             <div class="nav-settings-row">
                                 <span class="nav-settings-lbl">{{ _('Language') }}</span>
-                                <span class="nav-seg">
-                                    <span onclick="submmit_language('vi')" class="nav-seg-btn{% if LANGUAGE_CODE == 'vi' %} active{% endif %}">VI</span>
-                                    <span onclick="submmit_language('en')" class="nav-seg-btn{% if LANGUAGE_CODE == 'en' %} active{% endif %}">EN</span>
-                                </span>
+                                <span class="nav-settings-lbl" style="font-family:var(--ind-font-mono);font-size:0.75rem;color:var(--ind-text-muted);text-transform:uppercase;">VI</span>
                             </div>
                         </li>
                         <li>
@@ -561,13 +552,6 @@
                     <span class="footer-sep">|</span>
                 {% endif %}
                 <span>{{ _('Powered by %(dmoj)s', dmoj=safe('<a href="https://dmoj.ca">DMOJ</a>')) }}</span>
-            </div>
-            <div class="footer-section footer-forms">
-                <form id="set_language" action="{{ url('set_language') }}" method="post" style="display: inline">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.get_full_path() }}">
-                    <input name="language" type="hidden" value="{{LANGUAGE_CODE}}">
-                </form>
             </div>
         </div>
     </footer>

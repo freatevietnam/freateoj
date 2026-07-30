@@ -1,71 +1,6 @@
 {% extends "base.html" %}
 
-{% block media %}
-    <style>
-        .storage-table {
-            td, th {
-                &.problem-code, &.problem-name {
-                    text-align: left;
-                    padding: 0 10px;
-                }
 
-                &.problem-code {
-                    word-break: break-all;
-                }
-            }
-        }
-
-        .page-tab-content {
-            display: none;
-        }
-
-        .page-tab-content.active {
-            display: block;
-        }
-
-        .filter-section {
-            padding: 15px 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--table-border, #ddd);
-        }
-        .filter-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: flex-end;
-        }
-        .filter-item {
-            flex: 1;
-            min-width: 200px;
-        }
-        .filter-item label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .bulk-actions {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .btn-danger-bulk {
-            background: #d9534f;
-            color: #fff;
-            border: 1px solid #d43f3a;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-danger-bulk:disabled {
-            background: #e6e6e6;
-            color: #ababab;
-            border-color: #dcdcdc;
-            cursor: not-allowed;
-        }
-    </style>
-{% endblock %}
 
 {% block js_media %}
     {% include "stats/media-js.html" %}
@@ -242,26 +177,28 @@
 {% endblock %}
 
 {% block title_row %}
-    {% set tab = 'usage' %}
-    {% include "organization/tabs.html" %}
+    <header class="users-header brutalist-border">
+        {% set tab = 'usage' %}
+        {% include "organization/tabs.html" %}
+        <hr class="brutalist-divider ind-divider-top">
+    </header>
 {% endblock %}
 {% block title_ruler %}{% endblock %}
 
 {% block body %}
-    <div class="tabs" id="inner-page-tabs" style="margin-top: 0.5em;">
-        <ul>
-            <li class="tab">
-                <a href="#" data-tab="storage">
-                    <i class="tab-icon fa fa-hdd-o"></i>{{ _('Storage usage') }}
-                </a>
-            </li>
-            <li class="tab">
-                <a href="#" data-tab="credit">
-                    <i class="tab-icon fa fa-line-chart"></i>{{ _('Credit usage') }}
-                </a>
-            </li>
-        </ul>
-    </div>
+    <div class="org-usage">
+    <ul class="user-list-tabs" id="inner-page-tabs" style="margin-top: 0.5em;">
+        <li class="tab">
+            <a href="#" data-tab="storage">
+                <i class="tab-icon fa fa-hdd-o"></i>{{ _('Storage usage') }}
+            </a>
+        </li>
+        <li class="tab">
+            <a href="#" data-tab="credit">
+                <i class="tab-icon fa fa-line-chart"></i>{{ _('Credit usage') }}
+            </a>
+        </li>
+    </ul>
 
     {% include "messages.html" %}
 
@@ -277,28 +214,30 @@
             </div>
 
             {% if active_quotas and request.user.is_superuser %}
-            <div style="margin-left: 2em; margin-top: 0.75em;">
-                <h4 style="margin-bottom: 0.4em;">{{ _('Active Quota Grants') }}</h4>
-                <table class="table" style="width: auto;">
+            <div class="ind-mt-4">
+                <h4 class="ind-mb-4">{{ _('Active Quota Grants') }}</h4>
+                <div class="ind-table-wrap">
+                <table class="ind-table ind-table-md" style="width: auto;">
                     <thead>
-                        <tr>
-                            <th>{{ _('Start') }}</th>
-                            <th>{{ _('Expires') }}</th>
-                            <th>{{ _('+ Problems') }}</th>
-                            <th>{{ _('+ Storage') }}</th>
+                        <tr class="ind-tr-border">
+                            <th class="ind-th">{{ _('Start') }}</th>
+                            <th class="ind-th">{{ _('Expires') }}</th>
+                            <th class="ind-th ind-th-right">{{ _('+ Problems') }}</th>
+                            <th class="ind-th ind-th-right">{{ _('+ Storage') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for q in active_quotas %}
-                        <tr>
-                            <td>{{ q.start_date }}</td>
-                            <td>{{ q.end_date }}</td>
-                            <td>+{{ q.added_problems }}</td>
-                            <td>+{{ q.added_storage|filesizeformat }}</td>
+                        <tr class="ind-tr-hover">
+                            <td class="ind-td">{{ q.start_date }}</td>
+                            <td class="ind-td">{{ q.end_date }}</td>
+                            <td class="ind-td ind-td-right ind-td-text">+{{ q.added_problems }}</td>
+                            <td class="ind-td ind-td-right ind-td-muted">+{{ q.added_storage|filesizeformat }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                </div>
             </div>
             {% endif %}
 
@@ -329,13 +268,13 @@
             {% endif %}
         </div>
 
-        <div style="display: flex; gap: 30px; margin: 20px 0; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 280px;">
-                <h4 style="text-align: center; margin-bottom: 8px;">{{ _('Problems by last submission time') }}</h4>
+        <div class="ind-flex ind-gap-24" style="margin:20px 0;">
+            <div class="ind-flex-1" style="min-width:280px;">
+                <h4 class="ind-mb-8" style="text-align:center;">{{ _('Problems by last submission time') }}</h4>
                 <div id="storage-count-chart" style="height: 320px;"><canvas></canvas></div>
             </div>
-            <div style="flex: 1; min-width: 280px;">
-                <h4 style="text-align: center; margin-bottom: 8px;">{{ _('Storage by last submission time') }}</h4>
+            <div class="ind-flex-1" style="min-width:280px;">
+                <h4 class="ind-mb-8" style="text-align:center;">{{ _('Storage by last submission time') }}</h4>
                 <div id="storage-size-chart" style="height: 320px;"><canvas></canvas></div>
             </div>
         </div>
@@ -406,53 +345,54 @@
             </button>
         </div>
 
-        <table class="storage-table table">
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md storage-table">
             <thead>
-                <tr>
-                    <th style="width: 30px; text-align: center;"></th>
-                    <th>{{ _('Problem Code') }}</th>
-                    <th>{{ _('Problem Name') }}</th>
-                    <th>{{ _('Authors') }}</th>
-                    <th>{{ _('Total Size') }}</th>
-                    <th>{{ _('Last Submission') }}</th>
-                    <th>{{ _('Download') }}</th>
-                    <th>{{ _('Delete') }}</th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th" style="width: 30px; text-align: center;"></th>
+                    <th class="ind-th">{{ _('Problem Code') }}</th>
+                    <th class="ind-th">{{ _('Problem Name') }}</th>
+                    <th class="ind-th">{{ _('Authors') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Total Size') }}</th>
+                    <th class="ind-th">{{ _('Last Submission') }}</th>
+                    <th class="ind-th">{{ _('Download') }}</th>
+                    <th class="ind-th">{{ _('Delete') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for problem in problems %}
-                <tr>
-                    <td style="text-align: center; vertical-align: middle;">
+                <tr class="ind-tr-hover">
+                    <td class="ind-td" style="text-align: center; vertical-align: middle;">
                         <input type="checkbox" class="problem-select-checkbox" value="{{ problem.id }}"
                                data-author-ids="{{ (problem.authors.all()|map(attribute='id')|list + problem.curators.all()|map(attribute='id')|list)|tojson }}"
                                style="transform: scale(1.2); cursor: pointer;">
                     </td>
-                    <td class="problem-code">
-                        <a href="{{ url('problem_detail', problem.code) }}">{{ problem.code }}</a>
+                    <td class="ind-td problem-code">
+                        <a class="ind-sort-link" href="{{ url('problem_detail', problem.code) }}">{{ problem.code }}</a>
                     </td>
-                    <td class="problem-name">
-                        <a href="{{ url('problem_detail', problem.code) }}">{{ problem.i18n_name or problem.name }}</a>
+                    <td class="ind-td problem-name">
+                        <a class="ind-sort-link" href="{{ url('problem_detail', problem.code) }}">{{ problem.i18n_name or problem.name }}</a>
                     </td>
-                    <td>
+                    <td class="ind-td ind-td-muted">
                         {{ link_users((problem.authors.all()|list + problem.curators.all()|list)|unique(attribute='id')) }}
                     </td>
-                    <td class="size-cell">
+                    <td class="ind-td ind-td-right ind-td-text size-cell">
                         {{ problem.data_size|filesizeformat }}
                     </td>
-                    <td>
+                    <td class="ind-td ind-td-muted">
                         {{ problem.last_submission_date|date("Y-m-d H:i:s") if problem.last_submission_date else '—' }}
                     </td>
-                    <td>
+                    <td class="ind-td">
                         <a href="{{ url('problem_download_full_package', problem.code) }}"
-                           class="btn btn-xs delete-btn"
+                           class="ind-btn-ghost delete-btn"
                            data-author-ids="{{ (problem.authors.all()|map(attribute='id')|list + problem.curators.all()|map(attribute='id')|list)|tojson }}"
                            style="display:none;">
                             <i class="fa fa-download"></i> {{ _('Test data') }}
                         </a>
                     </td>
-                    <td>
+                    <td class="ind-td">
                         <a href="{{ url('problem_delete', problem.code) }}?next={{ request.path }}"
-                           class="btn btn-xs btn-danger delete-btn"
+                           class="ind-btn-ghost delete-btn"
                            data-author-ids="{{ (problem.authors.all()|map(attribute='id')|list + problem.curators.all()|map(attribute='id')|list)|tojson }}"
                            style="display:none;">
                             <i class="fa fa-trash"></i> {{ _('Delete') }}
@@ -461,7 +401,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 2em; color: #999;">
+                    <td colspan="8" class="empty-state">
                         {{ _('No problems found for this organization.') }}
                     </td>
                 </tr>
@@ -484,27 +424,29 @@
             <br><br>
         </div>
 
-        <table id="stats-table" class="table">
-            <tr>
-                <th colspan="2">{{ _('Organization Monthly cost') }}</th>
+        <div class="ind-table-wrap">
+        <table id="stats-table" class="ind-table ind-table-md">
+            <tr class="ind-tr-border">
+                <th class="ind-th" colspan="2">{{ _('Organization Monthly cost') }}</th>
             </tr>
             <tr>
-                <td colspan="2">
+                <td class="ind-td" colspan="2">
                     <div id="org-cost" style="height: 500px">
                         <canvas></canvas>
                     </div>
                 </td>
             </tr>
-            <tr>
-                <th colspan="2">{{ _('Organization Monthly Credit usage') }}</th>
+            <tr class="ind-tr-border">
+                <th class="ind-th" colspan="2">{{ _('Organization Monthly Credit usage') }}</th>
             </tr>
             <tr>
-                <td colspan="2">
+                <td class="ind-td" colspan="2">
                     <div id="org-credit" style="height: 500px">
                         <canvas></canvas>
                     </div>
                 </td>
             </tr>
         </table>
+    </div>
     </div>
 {% endblock %}

@@ -84,22 +84,23 @@
             </div>
         </div>
         <div id="content-left" class="problems h-scrollable-table">
-            <table id="tagproblem-table" class="table striped">
+            <div class="ind-table-wrap">
+            <table id="tagproblem-table" class="ind-table ind-table-md">
                 <thead>
-                <tr>
-                    <th class="problem-code">{{ _('Problem code') }}</th>
-                    <th class="problem-name">{{ _('Problem name') }}</th>
-                    <th class="judge">{{ _('OJ') }}</th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th problem-code">{{ _('Problem code') }}</th>
+                    <th class="ind-th problem-name">{{ _('Problem name') }}</th>
+                    <th class="ind-th judge">{{ _('OJ') }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for problem in tagproblems %}
                 {% set detail_link = url('tagproblem_detail', problem.code) %}
-                    <tr>
-                        <td class="problem-code">
+                    <tr class="ind-tr-hover">
+                        <td class="ind-td problem-code">
                             <a href="{{ detail_link }}">{{ problem.code }}</a>
                         </td>
-                        <td class="problem-name">
+                        <td class="ind-td problem-name">
                             <div style="float: left">
                                 <a href="{{ detail_link }}">{{ problem.name }}</a>
                             </div>
@@ -109,13 +110,14 @@
                                 {% endfor %}
                             </div>
                         </td>
-                        <td class="judge">
+                        <td class="ind-td judge">
                             <a href="{{ problem.link }}">{{ problem.judge }}</a>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            </div>
             {% if page_obj.has_other_pages() %}
                 <div class="bottom-pagination-bar">{% include "list-pages.html" %}</div>
             {% endif %}

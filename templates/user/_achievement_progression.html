@@ -1,33 +1,33 @@
-<section class="brutalist-panel brutalist-border" style="background:#141414;">
-    <header style="padding:8px 12px;border-bottom:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">{{ _('Achievements') }}</header>
-    <div class="panel-content" style="padding:12px;">
+<section class="brutalist-panel brutalist-border ind-panel">
+    <header class="ind-panel-header">{{ _('Achievements') }}</header>
+    <div class="panel-content ind-panel-content">
         {% set badges = user.badges.all() %}
         {% set bronze = badges|selectattr('name', 'equalto', 'Bronze')|list|length %}
         {% set silver = badges|selectattr('name', 'equalto', 'Silver')|list|length %}
         {% set gold = badges|selectattr('name', 'equalto', 'Gold')|list|length %}
         <div class="data-label">{{ _('Bronze') }}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-            <div style="flex:1;height:8px;background:#1E1E1E;">
-                <div style="width:{{ (bronze / 20 * 100)|round(0) if bronze <= 20 else 100 }}%;height:100%;background:#FF6B00;"></div>
+        <div class="ind-flex-row ind-mb-12">
+            <div class="ind-bar-track">
+                <div class="ind-bar-orange" style="width:{{ (bronze / 20 * 100)|round(0) if bronze <= 20 else 100 }}%;"></div>
             </div>
-            <span class="data-value" style="font-size:0.8rem;">{{ bronze }}/20</span>
+            <span class="data-value ind-value-sm">{{ bronze }}/20</span>
         </div>
         <div class="data-label">{{ _('Silver') }}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-            <div style="flex:1;height:8px;background:#1E1E1E;">
-                <div style="width:{{ (silver / 10 * 100)|round(0) if silver <= 10 else 100 }}%;height:100%;background:#888;"></div>
+        <div class="ind-flex-row ind-mb-12">
+            <div class="ind-bar-track">
+                <div class="ind-bar-gray" style="width:{{ (silver / 10 * 100)|round(0) if silver <= 10 else 100 }}%;"></div>
             </div>
-            <span class="data-value" style="font-size:0.8rem;">{{ silver }}/10</span>
+            <span class="data-value ind-value-sm">{{ silver }}/10</span>
         </div>
         <div class="data-label">{{ _('Gold') }}</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-            <div style="flex:1;height:8px;background:#1E1E1E;">
-                <div style="width:{{ (gold / 5 * 100)|round(0) if gold <= 5 else 100 }}%;height:100%;background:#00FF88;"></div>
+        <div class="ind-flex-row">
+            <div class="ind-bar-track">
+                <div class="ind-bar-green" style="width:{{ (gold / 5 * 100)|round(0) if gold <= 5 else 100 }}%;"></div>
             </div>
-            <span class="data-value" style="font-size:0.8rem;">{{ gold }}/5</span>
+            <span class="data-value ind-value-sm">{{ gold }}/5</span>
         </div>
         {% if not badges %}
-        <div style="text-align:center;padding:16px 0;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#666;">{{ _('No badges earned yet.') }}</div>
+        <div class="ind-placeholder ind-placeholder-md">{{ _('No badges earned yet.') }}</div>
         {% endif %}
     </div>
 </section>

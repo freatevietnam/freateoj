@@ -86,10 +86,17 @@ body.users-page, body.user-profile-page {
   .top-performers {
     grid-template-columns: 1fr !important;
   }
-  .brutalist-grid[style*="grid-template-columns: 1fr 1fr"] {
+.ind-h2h-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  text-align: center;
+}
+
+.ind-compare-grid {
     grid-template-columns: 1fr !important;
   }
-  .users-header > div {
+  .users-header {
     flex-direction: column;
     align-items: stretch !important;
     gap: 8px;
@@ -141,7 +148,46 @@ body.users-page, body.user-profile-page {
   to { opacity: 1; }
 }
 
+// ─── Rating Colors ─────────────────────────────────────────────────
+.users-page, .user-profile-page {
+  .rate-none { color: $ind-rate-none; }
+  .rate-newbie { color: $ind-rate-newbie; }
+  .rate-pupil { color: $ind-rate-pupil; }
+  .rate-specialist { color: $ind-rate-specialist; }
+  .rate-expert { color: $ind-rate-expert; }
+  .rate-candidate-master { color: $ind-rate-candidate-master; }
+  .rate-master { color: $ind-rate-master; }
+  .rate-international-master { color: $ind-rate-master; }
+  .rate-grandmaster { color: $ind-rate-grandmaster; }
+  .rate-international-grandmaster { color: $ind-rate-grandmaster; }
+  .rate-legendary-grandmaster { color: $ind-rate-grandmaster; }
+
+  .rate-group {
+    white-space: nowrap;
+    display: inline-block;
+    color: black;
+
+    .rating {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .rate-box {
+      margin-right: 0.2em;
+      vertical-align: middle;
+    }
+  }
+}
+
 // ─── Tab Navigation ─────────────────────────────────────────────────
+.tab-title {
+  font-family: $ind-font-ui;
+  font-size: 1.2rem;
+  color: $ind-text;
+  margin: 0 0 0 24px;
+  padding: 12px 0;
+}
+
 .user-list-tabs {
   display: flex;
   border-bottom: 1px solid $ind-border;
@@ -154,7 +200,7 @@ body.users-page, body.user-profile-page {
   li {
     margin: 0;
 
-    a {
+    a, span {
       display: block;
       padding: 10px 16px 8px;
       color: $ind-text-muted;
@@ -162,13 +208,800 @@ body.users-page, body.user-profile-page {
       border-bottom: 2px solid transparent;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      cursor: pointer;
 
       &:hover { color: $ind-text; }
     }
 
-    &.active a {
+    &.active a, &.active span {
       color: $ind-accent-primary;
       border-bottom-color: $ind-accent-primary;
     }
+  }
+}
+
+// ─── Users Header ───────────────────────────────────────────────
+.users-header {
+  padding: 16px 24px;
+  margin-bottom: 0;
+}
+
+.page-title {
+  font-family: $ind-font-ui;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $ind-text;
+  margin: 0;
+}
+
+.page-stats {
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  color: $ind-text-muted;
+  margin-top: 8px;
+}
+
+// ─── Panel ──────────────────────────────────────────────────────
+.ind-panel {
+  background: $ind-surface;
+}
+
+.ind-panel-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid $ind-border;
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  color: $ind-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ind-panel-content {
+  padding: 12px;
+}
+
+.ind-panel-content-tall {
+  min-height: 400px;
+}
+
+.ind-panel-content-radar {
+  min-height: 300px;
+}
+
+.ind-panel-content-heatmap {
+  min-height: 320px;
+}
+
+.ind-panel-content-activity {
+  min-height: 100px;
+}
+
+.ind-panel-content-table {
+  overflow-x: auto;
+}
+
+.ind-placeholder {
+  text-align: center;
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  color: $ind-text-muted;
+}
+
+.ind-placeholder-sm {
+  padding: 16px 0;
+}
+
+.ind-placeholder-md {
+  padding: 24px 0;
+}
+
+.ind-placeholder-lg {
+  padding: 40px 0;
+}
+
+.ind-placeholder-xl {
+  padding: 20px 0;
+}
+
+// ─── Cards ──────────────────────────────────────────────────────
+.ind-card {
+  background: $ind-surface;
+  padding: 12px;
+}
+
+.ind-card-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ind-card-compare {
+  background: $ind-surface;
+  padding: 16px;
+}
+
+.ind-card-compare-h2h {
+  background: $ind-surface-elevated;
+  padding: 12px;
+}
+
+.ind-card-full {
+  grid-column: 1 / -1;
+  background: $ind-surface;
+  padding: 16px;
+}
+
+.ind-card-bottom {
+  margin-top: 24px;
+}
+
+.ind-card-error {
+  padding: 16px;
+  background: $ind-surface;
+  font-family: $ind-font-mono;
+  font-size: 0.8rem;
+  color: $ind-accent-danger;
+  margin-bottom: 24px;
+}
+
+// ─── Avatars ────────────────────────────────────────────────────
+.ind-avatar-sm {
+  width: 24px;
+  height: 24px;
+  border: 1px solid $ind-border;
+  flex-shrink: 0;
+}
+
+.ind-avatar-md {
+  width: 32px;
+  height: 32px;
+  border: 1px solid $ind-border;
+}
+
+.ind-avatar-lg {
+  width: 40px;
+  height: 40px;
+  border: 1px solid $ind-border;
+}
+
+.ind-avatar-xl {
+  width: 64px;
+  height: 64px;
+  border: 2px solid $ind-border;
+}
+
+.ind-avatar-profile {
+  display: block;
+  width: 135px;
+  height: 135px;
+  border: 2px solid $ind-border;
+  margin-bottom: 12px;
+}
+
+// ─── Username Links ─────────────────────────────────────────────
+.ind-username {
+  font-family: $ind-font-mono;
+  font-size: 1rem;
+  color: $ind-text;
+  text-decoration: none;
+}
+
+.ind-username-sm {
+  font-size: 0.9rem;
+}
+
+.ind-username-lg {
+  font-family: $ind-font-mono;
+  font-size: 1.2rem;
+  color: $ind-accent-primary;
+  text-decoration: none;
+}
+
+// ─── Data Values ────────────────────────────────────────────────
+.ind-value {
+  color: $ind-accent-primary;
+}
+
+.ind-value-sm {
+  font-size: 0.8rem;
+}
+
+.ind-value-xs {
+  font-size: 0.75rem;
+}
+
+.ind-value-right {
+  width: 60px;
+  text-align: right;
+}
+
+// ─── Rank ───────────────────────────────────────────────────────
+.ind-rank {
+  font-family: $ind-font-mono;
+  font-size: 1.5rem;
+  color: $ind-text-muted;
+  min-width: 36px;
+  text-align: right;
+}
+
+.ind-rank-green {
+  color: $ind-accent-success;
+}
+
+.ind-rank-red {
+  color: $ind-accent-danger;
+}
+
+// ─── Flex Utilities ─────────────────────────────────────────────
+.ind-flex {
+  display: flex;
+}
+
+.ind-flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.ind-flex-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ind-flex-row-wide {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ind-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ind-flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+}
+
+.ind-flex-wrap {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.ind-gap-8 {
+  gap: 8px;
+}
+
+.ind-gap-12 {
+  gap: 12px;
+}
+
+.ind-gap-24 {
+  gap: 24px;
+}
+
+.ind-mt-4 {
+  margin-top: 4px;
+}
+
+.ind-mb-4 {
+  margin-bottom: 4px;
+}
+
+.ind-mb-8 {
+  margin-bottom: 8px;
+}
+
+.ind-mb-12 {
+  margin-bottom: 12px;
+}
+
+.ind-flex-1 {
+  flex: 1;
+  min-width: 0;
+}
+
+.ind-flex-center-text {
+  text-align: center;
+}
+
+// ─── Label ──────────────────────────────────────────────────────
+.ind-label-sm {
+  font-size: 0.65rem;
+  color: $ind-text-muted;
+}
+
+.ind-label-fixed {
+  width: 80px;
+}
+
+.ind-label-wide {
+  width: 100px;
+}
+
+.ind-label-center {
+  margin-top: 8px;
+  text-align: center;
+}
+
+// ─── Table ──────────────────────────────────────────────────────
+.ind-table-wrap {
+  overflow-x: auto;
+}
+
+.ind-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $ind-font-mono;
+}
+
+.ind-table-sm {
+  font-size: 0.75rem;
+}
+
+.ind-table-md {
+  font-size: 0.8rem;
+}
+
+.ind-th {
+  padding: 6px 8px;
+  color: $ind-text-muted;
+  font-weight: 600;
+}
+
+.ind-th-right {
+  text-align: right;
+}
+
+.ind-th-center {
+  text-align: center;
+}
+
+.ind-th-w48 {
+  width: 48px;
+}
+
+.ind-th-w80 {
+  width: 80px;
+}
+
+.ind-th-w100 {
+  width: 100px;
+}
+
+.ind-tr-border {
+  border-bottom: 2px solid $ind-border;
+}
+
+.ind-tr-hover {
+  border-bottom: 2px solid $ind-border;
+  transition: background 0.1s;
+
+  &:hover {
+    background: $ind-surface-elevated;
+  }
+}
+
+.ind-td {
+  padding: 6px 8px;
+}
+
+.ind-td-right {
+  text-align: right;
+}
+
+.ind-td-muted {
+  color: $ind-text-muted;
+}
+
+.ind-td-text {
+  color: $ind-text;
+}
+
+.ind-td-center {
+  text-align: center;
+}
+
+.ind-td-mono-sm {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+.ind-sort-link {
+  color: $ind-text-muted;
+  text-decoration: none;
+}
+
+// ─── Progress Bars ──────────────────────────────────────────────
+.ind-bar-track {
+  flex: 1;
+  height: 8px;
+  background: $ind-surface-elevated;
+}
+
+.ind-bar-track-sm {
+  height: 6px;
+  position: relative;
+}
+
+.ind-bar-fill {
+  height: 100%;
+}
+
+.ind-bar-orange {
+  background: $ind-accent-primary;
+  height: 100%;
+}
+
+.ind-bar-green {
+  background: $ind-accent-success;
+  height: 100%;
+}
+
+.ind-bar-gray {
+  background: $ind-text-muted;
+  height: 100%;
+}
+
+// ─── Topic Differential ─────────────────────────────────────────
+.ind-topic-bar-pos {
+  position: absolute;
+  right: 50%;
+  height: 100%;
+  background: $ind-accent-success;
+  top: 0;
+}
+
+.ind-topic-bar-neg {
+  position: absolute;
+  left: 50%;
+  height: 100%;
+  background: $ind-accent-danger;
+  top: 0;
+}
+
+.ind-topic-bar-center {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 1px;
+  height: 10px;
+  background: $ind-border;
+}
+
+// ─── Input & Button ─────────────────────────────────────────────
+.ind-input {
+  height: 36px;
+  background: $ind-bg;
+  border: 1px solid $ind-border;
+  color: $ind-text;
+  font-family: $ind-font-mono;
+  font-size: 0.8rem;
+  padding: 0 12px;
+}
+
+.ind-input-wide {
+  width: 280px;
+}
+
+.ind-input-md {
+  width: 200px;
+}
+
+.ind-btn-ghost {
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 16px;
+  border: 1px solid $ind-border;
+  color: $ind-text-muted;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+
+  &:hover {
+    border-color: $ind-accent-primary;
+    color: $ind-accent-primary;
+  }
+}
+
+.ind-btn-accent {
+  height: 36px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid $ind-accent-primary;
+  color: $ind-accent-primary;
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.ind-btn-orange {
+  border-color: $ind-accent-primary !important;
+  color: $ind-accent-primary !important;
+}
+
+.ind-btn-wide {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid $ind-border;
+  background: transparent;
+  color: $ind-text-muted;
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+// ─── Sidebar ────────────────────────────────────────────────────
+.user-sidebar {
+  background: $ind-surface;
+  padding: 16px;
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.user-sidebar-username {
+  font-family: $ind-font-mono;
+  font-size: 1rem;
+  color: $ind-text;
+  margin-bottom: 8px;
+}
+
+.user-sidebar-divider {
+  margin: 8px 0;
+}
+
+// ─── Compare Page ───────────────────────────────────────────────
+.ind-compare-page {
+  padding: 24px;
+}
+
+.ind-compare-header {
+  padding: 16px 24px;
+  background: $ind-surface;
+  margin-bottom: 24px;
+}
+
+.ind-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.ind-compare-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.ind-compare-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+// ─── Leaderboard Grids ──────────────────────────────────────────
+.top-performers-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 16px 24px;
+}
+
+.cards-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  padding: 16px 24px;
+}
+
+// ─── Pagination ─────────────────────────────────────────────────
+.ind-pagination {
+  padding: 8px 24px;
+}
+
+// ─── Activity Timeline ──────────────────────────────────────────
+.ind-timeline {
+  border-left: 2px solid $ind-border;
+  padding-left: 16px;
+}
+
+.ind-timeline-item {
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.ind-timeline-dot {
+  position: absolute;
+  left: -21px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  background: $ind-border;
+  border: 1px solid $ind-border;
+}
+
+.ind-timeline-text {
+  font-family: $ind-font-mono;
+  font-size: 0.8rem;
+  color: $ind-text;
+  margin-top: 2px;
+}
+
+// ─── Heatmap Legend ─────────────────────────────────────────────
+.ind-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 1px solid $ind-border;
+}
+
+.ind-swatch-empty {
+  background: $ind-surface-elevated;
+}
+
+.ind-swatch-light {
+  background: $ind-border;
+}
+
+.ind-swatch-mid {
+  background: $ind-text-muted;
+}
+
+.ind-swatch-full {
+  background: $ind-accent-primary;
+}
+
+.ind-org-link {
+  color: $ind-accent-primary;
+}
+
+.ind-svg-block {
+  display: block;
+}
+
+.ind-radar-container {
+  width: 100%;
+  height: 280px;
+}
+
+.ind-tooltip {
+  display: none;
+  position: absolute;
+  background: $ind-bg;
+  color: $ind-text;
+  padding: 6px;
+  border: 1px solid $ind-border;
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.ind-profile-page {
+  padding: 24px;
+}
+
+.ind-divider-top {
+  margin: 12px 0 0 0;
+}
+
+.ind-email-wrap {
+  word-wrap: break-word;
+}
+
+// ─── Forms ────────────────────────────────────────────────────
+.ind-form {
+  max-width: 600px;
+}
+
+.ind-field {
+  margin-bottom: 16px;
+}
+
+.ind-field-error {
+  input, select, textarea {
+    border-color: $ind-accent-danger;
+  }
+}
+
+.ind-label {
+  display: block;
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  color: $ind-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.ind-helptext {
+  font-family: $ind-font-mono;
+  font-size: 0.7rem;
+  color: $ind-text-muted;
+  margin-top: 4px;
+}
+
+.ind-error {
+  font-family: $ind-font-mono;
+  font-size: 0.7rem;
+  color: $ind-accent-danger;
+  margin-top: 2px;
+}
+
+.ind-alert {
+  background: $ind-surface;
+  border: 1px solid $ind-border;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-family: $ind-font-mono;
+  font-size: 0.8rem;
+  color: $ind-text;
+}
+
+.ind-alert-error {
+  border-color: $ind-accent-danger;
+  color: $ind-accent-danger;
+}
+
+.ind-btn {
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  padding: 10px 16px;
+  border: 1px solid $ind-border;
+  background: transparent;
+  color: $ind-text-muted;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1;
+
+  &:hover {
+    border-color: $ind-accent-primary;
+    color: $ind-accent-primary;
+  }
+}
+
+.ind-btn-sm {
+  font-size: 0.7rem;
+  padding: 6px 12px;
+}
+
+.ind-btn-primary {
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  padding: 10px 16px;
+  border: 1px solid $ind-accent-primary;
+  background: transparent;
+  color: $ind-accent-primary;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1;
+
+  &:hover {
+    background: $ind-accent-primary;
+    color: $ind-surface;
+  }
+}
+
+.ind-import-info {
+  max-width: 600px;
+}
+
+.ind-confirm-form {
+  margin-top: 16px;
+
+  .ind-btn, .ind-btn-primary {
+    margin-right: 8px;
   }
 }

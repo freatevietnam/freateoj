@@ -1,28 +1,6 @@
 {% extends "user/base-users.html" %}
 
-{% block users_media %}
-    <style>
-        .kick-form .button {
-            margin: -8px 0;
-        }
-
-        form.kick-form a.button {
-            visibility: hidden;
-        }
-
-        tr:hover td > form.kick-form a.button {
-            visibility: visible;
-        }
-    </style>
-
-    {% if is_admin %}
-        <style>
-            th.username, td.user-name {
-                border-right: none;
-            }
-        </style>
-    {% endif %}
-{% endblock %}
+{% block users_media %}{% endblock %}
 
 {% block user_search_select2_ajax %}{{ url('org_user_search_select2_ajax', organization.slug) }}{% endblock %}
 

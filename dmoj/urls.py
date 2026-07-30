@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
-from django.http import Http404, HttpResponsePermanentRedirect
+from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseForbidden
 from django.urls import include, path, re_path, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -102,7 +102,7 @@ urlpatterns = [
     path('500/', exception),
     path('admin/create_profile/<int:user_id>/', create_profile, name='create_profile'),
     path('admin/', admin.site.urls),
-    path('i18n/', include('django.conf.urls.i18n')),
+    path('i18n/', lambda r: HttpResponseForbidden(), name='i18n_forbidden'),
     path('accounts/', include(register_patterns)),
     path('', include('social_django.urls')),
 

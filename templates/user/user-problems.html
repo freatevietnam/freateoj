@@ -52,28 +52,28 @@
             <h3 class="unselectable toggle closed">
                 <span class="fa fa-chevron-right fa-fw"></span>{{ _('Authored problems') }} ({{ authored|length }})
             </h3>
-            <table style="display: none" class="table striped toggled">
+            <div class="ind-table-wrap"><table style="display: none" class="ind-table ind-table-md toggled">
                 <thead>
-                <tr>
-                    <th>{{ _('Problem') }}</th>
-                    <th>{{ _('Category') }}</th>
-                    <th>{{ _('Points') }}</th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th">{{ _('Problem') }}</th>
+                    <th class="ind-th">{{ _('Category') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Points') }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for problem in authored %}
-                    <tr>
-                        <td>
-                            <a href="{{ url('problem_detail', problem.code) }}">{{ problem.name }}</a>
+                    <tr class="ind-tr-hover">
+                        <td class="ind-td">
+                            <a class="ind-sort-link" href="{{ url('problem_detail', problem.code) }}">{{ problem.name }}</a>
                         </td>
-                        <td>{{ problem.group.full_name }}</td>
-                        <td><a href="{{ url('ranked_submissions', problem.code) }}">
+                        <td class="ind-td">{{ problem.group.full_name }}</td>
+                        <td class="ind-td ind-td-right"><a class="ind-sort-link" href="{{ url('ranked_submissions', problem.code) }}">
                             {{ problem.points|floatformat }}{% if problem.partial %}p{% endif %}
                         </a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
-            </table>
+            </table></div>
         </div>
     {% endif %}
 
@@ -96,21 +96,21 @@
                     {{ _('%(group)s (%(val)s points)', group=group.name, val=points_str) }}
                 {%- endwith -%}
             </h3>
-            <table style="display: none" class="table striped toggled">
+            <div class="ind-table-wrap"><table style="display: none" class="ind-table ind-table-md toggled">
                 <thead>
-                <tr>
-                    <th>{{ _('Problem') }}</th>
-                    <th>{{ _('Score') }}</th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th">{{ _('Problem') }}</th>
+                    <th class="ind-th ind-th-right">{{ _('Score') }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for entry in group.problems %}
-                    <tr>
-                        <td>
-                            <a href="{{ url('problem_detail', entry.code) }}">{{ entry.name }}</a>
+                    <tr class="ind-tr-hover">
+                        <td class="ind-td">
+                            <a class="ind-sort-link" href="{{ url('problem_detail', entry.code) }}">{{ entry.name }}</a>
                         </td>
-                        <td>
-                            <a href="{{ url('user_submissions', entry.code, user.user.username) }}">
+                        <td class="ind-td ind-td-right">
+                            <a class="ind-sort-link" href="{{ url('user_submissions', entry.code, user.user.username) }}">
                                 {%- with points_str=entry.points|floatformat(-3), total_str=entry.total|floatformat(-3) -%}
                                     {{ _('%(points)s / %(total)s', points=points_str, total=total_str) }}
                                 {%- endwith -%}
@@ -119,7 +119,7 @@
                     </tr>
                 {% endfor %}
                 </tbody>
-            </table>
+            </table></div>
         </div>
     {% endfor %}
 {% endblock %}

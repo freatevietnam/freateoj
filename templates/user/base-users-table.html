@@ -1,12 +1,13 @@
 {% spaceless %}
-<table {% if table_id %}id="{{ table_id }}"{% endif %} class="users-table table striped">
+<div class="ind-table-wrap">
+<table {% if table_id %}id="{{ table_id }}"{% endif %} class="ind-table ind-table-md">
     <thead>
-        <tr>
-            <th class="header rank" style="width: 5%;">{{ rank_header or _("Rank") }}</th>
+        <tr class="ind-tr-border">
+            <th class="ind-th ind-th-right" style="width: 5%;">{{ rank_header or _("Rank") }}</th>
             {% block after_rank_head %}{% endblock %}
-            <th class="header username">{{ _('Username') }}</th>
+            <th class="ind-th">{{ _('Username') }}</th>
             {% block before_point_head %}{% endblock %}
-            <th class="header points">
+            <th class="ind-th ind-th-right">
                 {%- block point_head %}
                     {% if sort_links %}<a href="{{ sort_links.performance_points }}">{% endif -%}
                     {{ _('Points') }}
@@ -19,10 +20,10 @@
 
     <tbody>
     {% for rank, user in users %}
-        <tr id="user-{{ user.user.username }}" {% block row_extra scoped %}{% endblock %}>
-            <td>{{ rank }}</td>
+        <tr id="user-{{ user.user.username }}" class="ind-tr-hover" {% block row_extra scoped %}{% endblock %}>
+            <td class="ind-td ind-td-right ind-td-muted">{{ rank }}</td>
             {% block after_rank scoped %}{% endblock %}
-            <td class="user-name">
+            <td class="ind-td user-name">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; min-width: 0;">
                         <img src="{{ gravatar(user, 32) }}" class="user-avatar" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 8px; flex-shrink: 0;">
@@ -55,7 +56,7 @@
                 </div>
             {% block before_point scoped %}{% endblock %}
             {% block point scoped %}
-                <td title="{{ user.performance_points|floatformat(2) }}" class="user-points">
+                <td class="ind-td ind-td-right ind-td-text" title="{{ user.performance_points|floatformat(2) }}">
                     {{- user.performance_points|floatformat(2) -}}
                 </td>
             {% endblock %}
@@ -65,4 +66,5 @@
     {% block after_user_list scoped %}{% endblock %}
     </tbody>
 </table>
+</div>
 {% endspaceless %}

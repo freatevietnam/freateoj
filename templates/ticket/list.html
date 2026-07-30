@@ -191,14 +191,15 @@
 
         <main>
             <div class="h-scrollable-table">
-                <table id="ticket-list" class="table striped">
+                <div class="ind-table-wrap">
+                <table id="ticket-list" class="ind-table ind-table-md">
                     <thead>
-                    <tr>
-                        <th></th>
-                        <th>{{ _('ID') }}</th>
-                        <th>{{ _('Title') }}</th>
-                        <th>{{ _('User') }}</th>
-                        <th>{{ _('Assignees') }}</th>
+                    <tr class="ind-tr-border">
+                        <th class="ind-th"></th>
+                        <th class="ind-th">{{ _('ID') }}</th>
+                        <th class="ind-th">{{ _('Title') }}</th>
+                        <th class="ind-th">{{ _('User') }}</th>
+                        <th class="ind-th">{{ _('Assignees') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -207,6 +208,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                </div>
             </div>
         </main>
     </div>

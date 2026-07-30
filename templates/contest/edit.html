@@ -167,75 +167,27 @@
     <link rel="stylesheet" href="{{ static('freateoj/jquery-ui/jquery-ui.min.css') }}">
     {{ form.media.css }}
     <link rel="stylesheet" type="text/css" href="{{ static('ui_form.css') }}">
-    <style>
-        body.dragging, body.dragging * {
-            cursor: move !important;
-        }
-
-        .dragged {
-            position: absolute;
-            opacity: 0.5;
-            z-index: 2000;
-        }
-
-        tr.placeholder {
-            display: block;
-            background: red;
-            position: relative;
-            margin: 0;
-            padding: 0;
-            border: none;
-        }
-
-        tr.placeholder:before {
-            content: "";
-            position: absolute;
-            width: 0;
-            height: 0;
-            border: 5px solid transparent;
-            border-left-color: red;
-            margin-top: -5px;
-            left: -5px;
-            border-right: none;
-        }
-
-        i.fa-ellipsis-v {
-            cursor: move;
-        }
-
-        .order-column {
-            width: 1em;
-        }
-
-        span.order {
-            padding-right: 0.5em;
-        }
-
-        tbody td {
-            white-space: nowrap;
-        }
-    </style>
 {% endblock %}
 
 {% block body %}
 
 {% macro form_as_row(form) -%}
     {% if form.non_field_errors() %}
-    <tr>
-        <td colspan="5">{{ form.non_field_errors() }}</td>
+    <tr class="ind-tr-hover">
+        <td colspan="5" class="ind-td">{{ form.non_field_errors() }}</td>
     </tr>
     {% endif %}
-    <tr>
-        <td>{{ form.order.errors }}{{ form.order }}</td>
-        <td>{{ form.id }} {{ form.problem.errors }}{{ form.problem }}</td>
-        <td class="points-column">{{ form.points.errors }}{{ form.points }}</td>
-        <td>{{ form.max_submissions.errors }}{{ form.max_submissions }}</td>
-        <td>
+    <tr class="ind-tr-hover">
+        <td class="ind-td">{{ form.order.errors }}{{ form.order }}</td>
+        <td class="ind-td">{{ form.id }} {{ form.problem.errors }}{{ form.problem }}</td>
+        <td class="ind-td points-column">{{ form.points.errors }}{{ form.points }}</td>
+        <td class="ind-td">{{ form.max_submissions.errors }}{{ form.max_submissions }}</td>
+        <td class="ind-td">
         {% if contest_problem_formset.can_delete and form.instance.pk %}
             {{ form.DELETE }}
         {% endif %}
         </td>
-    <tr>
+    </tr>
 {%- endmacro %}
 
 <div>
@@ -247,7 +199,7 @@
             </div>
         {% endif %}
     {% endblock %}
-    <form action="" method="post" class="form-area" style="display: flex; justify-content: center; flex-direction: column;">
+    <form action="" method="post" class="form-area">
         {% csrf_token %}
         {{ contest_problem_formset.management_form }}
         <div id="contest-data" data-org-id="{{ contest.organization_id if contest else '' }}"
@@ -259,22 +211,17 @@
         <table class="django-as-table">{{ form.as_table() }}</table>
         <hr>
         <center><h3> {{ _('Problems') }} </h3></center>
-        <table class="table">
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md">
             <thead>
-                <tr>
-                    <th class="order-column"></th>
-                    <th class="problem-column" style="width: 20em;"> {{ _('Problems') }} </th>
-                    <th class="points-column"> {{ _('Points') }} </th>
-                    <th>
+                <tr class="ind-tr-border">
+                    <th class="ind-th order-column"></th>
+                    <th class="ind-th problem-column" style="width: 20em;"> {{ _('Problems') }} </th>
+                    <th class="ind-th points-column"> {{ _('Points') }} </th>
+                    <th class="ind-th">
                         {{ _('Max submission') }}
-                        <br>
-                        <span class="helptext">
-                            {{ _('Maximum number of submissions') }}
-                            <br>
-                            {{_('or leave blank for no limit.') }}
-                        </span>
                     </th>
-                    <th> {{ _('Delete') }} </th>
+                    <th class="ind-th"> {{ _('Delete') }} </th>
                 </tr>
             </thead>
             <tbody id="form_set">
@@ -283,7 +230,8 @@
                 {% endfor %}
             </tbody>
         </table>
-        <div style="display: flex; justify-content: flex-end;"><button class="submit-bar" type="submit">
+        </div>
+        <div class="ind-flex-end"><button class="submit-bar" type="submit">
             {% if request.resolver_match.url_name == 'contest_edit' %}
                 {{ _('Update') }}
             {% else %}

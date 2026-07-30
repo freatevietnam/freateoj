@@ -1,10 +1,10 @@
-<section class="brutalist-panel brutalist-border" data-panel="{{ panel_id }}" style="background: #141414;" {% if lazy %}data-lazy="{{ lazy_endpoint }}"{% endif %}>
+<section class="brutalist-panel brutalist-border ind-panel" data-panel="{{ panel_id }}" {% if lazy %}data-lazy="{{ lazy_endpoint }}"{% endif %}>
     {% if title %}
-        <header style="padding: 8px 12px; border-bottom: 1px solid #333; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em;">{{ title }}</header>
+        <header class="ind-panel-header">{{ title }}</header>
     {% endif %}
-    <div class="panel-content" style="padding: 12px;">
+    <div class="panel-content ind-panel-content">
         {% if lazy %}
-            <div class="panel-placeholder" style="text-align:center;padding:40px 0;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#666;">{{ _('Loading...') }}</div>
+            <div class="ind-placeholder ind-placeholder-lg">{{ _('Loading...') }}</div>
         {% else %}
             {{ content }}
         {% endif %}

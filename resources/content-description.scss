@@ -15,16 +15,14 @@
 @media (min-width: 700px) {
     #common-content {
         display: flex;
-        flex-direction: row-reverse;
+        flex-direction: row;
     }
 
     #content-left {
-        flex: 5;
-        width: 100%;
-
-        &.split-common-content {
-            width: 70%;
-        }
+        flex: 1 1 0%;
+        min-width: 0;
+        max-width: 90vw;
+        order: 0;
 
         .content-description {
             width: 100%;
@@ -32,10 +30,11 @@
     }
 
     #content-right {
-        flex: 1;
-        max-width: 12.5em;
+        flex: 0 0 auto;
+        width: 14em;
         padding-left: 1.5em;
         padding-top: 1em;
+        order: 1;
 
         .info-float {
             float: none;

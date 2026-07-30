@@ -1,12 +1,17 @@
-{% extends "tabs-base.html" %}
+{% macro make_tab(name, fa, url, text) %}
+    <li class="{% if tab == name %}active{% endif %}">
+        <a href="{{ url }}"><i class="tab-icon fa {{ fa }}"></i> {{ text }}</a>
+    </li>
+{% endmacro %}
 
-{% block tabs %}
-    {{ make_tab('list', 'fa-users', url('user_list'), _('Leaderboard')) }}
-    {{ make_tab('contributor', 'fa-thumbs-up', url('contributors_list'), _('Contributors')) }}
-    {{ make_tab('organizations', 'fa-university', url('organization_list'), _('Organizations')) }}
-    {{ make_tab('compare', 'fa-balance-scale', url('user_compare'), _('Compare')) }}
-    {% if request.user.is_staff or request.user.is_superuser %}
-        {{ make_tab('add-user', 'fa-plus', url('add_user'), _('Add User')) }}
-        {{ make_tab('import-users', 'fa-upload', url('import_users'), _('Import Users')) }}
-    {% endif %}
-{% endblock %}
+<ul class="user-list-tabs">
+    {% block tabs %}
+        {{ make_tab('list', 'fa-users', url('user_list'), _('Leaderboard')) }}
+        {{ make_tab('organizations', 'fa-university', url('organization_list'), _('Organizations')) }}
+        {{ make_tab('compare', 'fa-balance-scale', url('user_compare'), _('Compare')) }}
+        {% if request.user.is_staff or request.user.is_superuser %}
+            {{ make_tab('add-user', 'fa-plus', url('add_user'), _('Add User')) }}
+            {{ make_tab('import-users', 'fa-upload', url('import_users'), _('Import Users')) }}
+        {% endif %}
+    {% endblock %}
+</ul>
