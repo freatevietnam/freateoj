@@ -555,6 +555,14 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var footer = document.getElementById('site-footer');
+            if (footer && footer.parentNode) {
+                footer.parentNode.appendChild(footer);
+            }
+        });
+    </script>
 </div>
 </body>
 </html>
