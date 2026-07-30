@@ -265,7 +265,7 @@ class UserAboutPage(UserPage):
             {
                 'timestamp': s.date.strftime('%Y-%m-%d %H:%M:%S'),
                 'html': '<a href="%s" style="color:#FF6B00;text-decoration:none;">%s</a> — %.1f pts' % (
-                    reverse('submission', args=(s.id,)),
+                    reverse('submission_status', args=(s.id,)),
                     s.problem.name if s.problem else '?',
                     s.points or 0,
                 ),
@@ -336,7 +336,7 @@ class ActivityFeedView(View):
             items.append({
                 'timestamp': s.date.strftime('%Y-%m-%d %H:%M:%S UTC'),
                 'html': '<a href="%s" style="color:#FF6B00;text-decoration:none;">%s</a> — %s pts' % (
-                    reverse('submission', args=(s.id,)),
+                    reverse('submission_status', args=(s.id,)),
                     s.problem.name if s.problem else '?',
                     '%.1f' % s.points if s.points else '0',
                 ),
