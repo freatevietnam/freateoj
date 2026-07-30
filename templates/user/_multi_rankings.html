@@ -1,0 +1,35 @@
+<section class="brutalist-panel brutalist-border" style="background:#141414;">
+    <header style="padding:8px 12px;border-bottom:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">{{ _('Rankings') }}</header>
+    <div class="panel-content" style="padding:12px;">
+        {% set total_users = total_users or 1 %}
+        {% set global_percentile = ((total_users - rank) / total_users * 100)|round(0) %}
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span class="data-label" style="width:80px;">{{ _('Global') }}</span>
+            <span class="data-value" style="width:60px;">#{{ rank }}</span>
+            <div style="flex:1;height:8px;background:#1E1E1E;">
+                <div style="width:{{ global_percentile }}%;height:100%;background:#FF6B00;"></div>
+            </div>
+            <span class="data-value" style="font-size:0.75rem;">{{ global_percentile }}th %ile</span>
+        </div>
+        {% if profile_country_rank is defined %}
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span class="data-label" style="width:80px;">{{ _('Country') }}</span>
+            <span class="data-value" style="width:60px;">#{{ profile_country_rank }}</span>
+            <div style="flex:1;height:8px;background:#1E1E1E;">
+                <div style="width:{{ ((country_total or 1) - profile_country_rank) / (country_total or 1) * 100 }}%;height:100%;background:#666;"></div>
+            </div>
+            <span class="data-value" style="font-size:0.75rem;">{{ (((country_total or 1) - profile_country_rank) / (country_total or 1) * 100)|round(0) }}th %ile</span>
+        </div>
+        {% endif %}
+        {% if rating_rank is defined %}
+        <div style="display:flex;align-items:center;gap:8px;">
+            <span class="data-label" style="width:80px;">{{ _('Contest') }}</span>
+            <span class="data-value" style="width:60px;">#{{ rating_rank }}</span>
+            <div style="flex:1;height:8px;background:#1E1E1E;">
+                <div style="width:{{ ((total_users - rating_rank|int) / total_users * 100)|round(0) }}%;height:100%;background:#00FF88;"></div>
+            </div>
+            <span class="data-value" style="font-size:0.75rem;">{{ ((total_users - rating_rank|int) / total_users * 100)|round(0) }}th %ile</span>
+        </div>
+        {% endif %}
+    </div>
+</section>

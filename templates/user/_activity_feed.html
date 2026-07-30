@@ -1,0 +1,44 @@
+<section class="brutalist-panel brutalist-border" id="activity-feed-panel" style="background:#141414;">
+    <header style="padding:8px 12px;border-bottom:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">{{ _('Recent Activity') }}</header>
+    <div class="panel-content" style="padding:12px;min-height:100px;">
+        <div id="activity-timeline" style="border-left:2px solid #333;padding-left:16px;">
+            {% for activity in recent_activity %}
+            <div class="activity-item" style="margin-bottom:12px;position:relative;">
+                <div style="position:absolute;left:-21px;top:4px;width:8px;height:8px;background:#333;border:1px solid #333;"></div>
+                <div class="data-label" style="font-size:0.65rem;color:#555;">{{ activity.timestamp }}</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#F5F5F5;margin-top:2px;">{{ activity.html|safe }}</div>
+            </div>
+            {% else %}
+            <div style="text-align:center;padding:24px 0;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#666;">{{ _('No recent activity.') }}</div>
+            {% endfor %}
+        </div>
+        {% if has_more_activity %}
+        <button class="brutalist-btn" data-load-more-activity style="width:100%;padding:10px;border:1px solid #333;background:transparent;color:#888;font-family:'JetBrains Mono',monospace;font-size:0.75rem;cursor:pointer;margin-top:8px;">{{ _('Load more...') }}</button>
+        {% endif %}
+    </div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.querySelector('[data-load-more-activity]');
+    if (!btn) return;
+    var offset = {{ recent_activity|length }};
+    btn.addEventListener('click', function () {
+        fetch('/user/{{ user.user.username }}/activity-feed/?offset=' + offset + '&limit=20')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var timeline = document.getElementById('activity-timeline');
+                data.items.forEach(function (item) {
+                    var div = document.createElement('div');
+                    div.className = 'activity-item';
+                    div.style.cssText = 'margin-bottom:12px;position:relative;';
+                    div.innerHTML = '<div style="position:absolute;left:-21px;top:4px;width:8px;height:8px;background:#333;border:1px solid #333;"></div>' +
+                        '<div class="data-label" style="font-size:0.65rem;color:#555;">' + item.timestamp + '</div>' +
+                        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.8rem;color:#F5F5F5;margin-top:2px;">' + item.html + '</div>';
+                    timeline.appendChild(div);
+                    offset++;
+                });
+                if (!data.has_more) btn.style.display = 'none';
+            });
+    });
+});
+</script>

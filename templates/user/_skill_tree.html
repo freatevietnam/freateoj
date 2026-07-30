@@ -1,0 +1,29 @@
+<section class="brutalist-panel brutalist-border" data-panel="skill_tree" id="skill-tree-panel" style="background:#141414;">
+    <header style="padding:8px 12px;border-bottom:1px solid #333;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">{{ _('Skill Tree') }}</header>
+    <div class="panel-content" style="padding:12px;min-height:400px;">
+        <svg id="skill-tree-svg" width="100%" height="380" style="display:block;"></svg>
+        <div class="panel-placeholder" style="text-align:center;padding:20px 0;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#666;">{{ _('Loading skill tree...') }}</div>
+    </div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var el = document.getElementById('skill-tree-panel');
+    if (!el) return;
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                var script = document.createElement('script');
+                script.src = '{{ static("d3.min.js") }}';
+                script.onload = function () {
+                    fetch('/user/{{ user.user.username }}/skill-tree-data/')
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) { renderSkillTree(data); });
+                };
+                document.head.appendChild(script);
+                observer.unobserve(el);
+            }
+        });
+    }, { rootMargin: '200px' });
+    observer.observe(el);
+});
+</script>
