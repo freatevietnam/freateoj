@@ -633,10 +633,67 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, DiggPaginatorMixin
         context['first_page_href'] = '.'
         context.update(self.get_sort_context())
         context.update(self.get_sort_paginate_context())
+
+        from judge.models import Profile as ProfileModel, Organization
+        top_rated = ProfileModel.objects.filter(is_unlisted=False).order_by('-rating').select_related('user')[:1].first()
+        top_points = ProfileModel.objects.filter(is_unlisted=False).order_by('-performance_points').select_related('user')[:1].first()
+        rising_star_qs = ProfileModel.objects.filter(is_unlisted=False, rating__isnull=False).order_by('-rating')[:10]
+        rising_star = ProfileModel.objects.filter(is_unlisted=False).order_by('-rating')[:3].last() if ProfileModel.objects.filter(is_unlisted=False).count() > 2 else None
+        top_org = Organization.objects.filter(is_unlisted=False).annotate(member_count=Count('member')).order_by('-member_count').first()
+
+        context['top_performers'] = [
+            {'label': '#1 RATED', 'profile': top_rated, 'value': str(top_rated.rating) if top_rated and top_rated.rating else 'N/A', 'trend': None},
+            {'label': '#1 POINTS', 'profile': top_points, 'value': '%.1f pp' % top_points.performance_points if top_points else 'N/A', 'trend': None},
+            {'label': 'RISING STAR', 'profile': rising_star, 'value': str(rising_star.rating) if rising_star and rising_star.rating else 'N/A', 'trend': None},
+            {'label': 'TOP ORG', 'profile': None, 'value': top_org.name if top_org else 'N/A', 'trend': top_org.member_count if top_org else None},
+        ]
+        context['total_users'] = ProfileModel.objects.filter(is_unlisted=False).count()
+        context['active_users'] = ProfileModel.objects.filter(is_unlisted=False, user__last_login__gte=timezone.now() - datetime.timedelta(hours=24)).count()
+        top_1 = ProfileModel.objects.filter(is_unlisted=False).order_by('-performance_points').values_list('performance_points', flat=True)[:max(1, int(ProfileModel.objects.filter(is_unlisted=False).count() * 0.01))]
+        context['top_1_percent_threshold'] = '%.0f' % (top_1.last() if top_1 else 0)
         return context
 
 
 user_list_view = UserList.as_view()
+
+
+class UserComparisonView(TitleMixin, TemplateView):
+    template_name = 'user/compare.html'
+    title = gettext_lazy('Compare Users')
+
+    def get(self, request, *args, **kwargs):
+        from judge.utils.user_stats import common_solved_problems, head_to_head, topic_differential
+        u1_name = request.GET.get('u1', '')
+        u2_name = request.GET.get('u2', '')
+        if not u1_name:
+            u1_name = request.user.username if request.user.is_authenticated else ''
+        if not u2_name or not u1_name:
+            return render(request, self.template_name, {
+                'title': self.title,
+                'error': _('Please specify two usernames: ?u1=user1&u2=user2'),
+            })
+        try:
+            profile_a = Profile.objects.select_related('user').get(user__username=u1_name)
+        except Profile.DoesNotExist:
+            return render(request, self.template_name, {'title': self.title, 'error': _('User "%s" not found') % u1_name})
+        try:
+            profile_b = Profile.objects.select_related('user').get(user__username=u2_name)
+        except Profile.DoesNotExist:
+            return render(request, self.template_name, {'title': self.title, 'error': _('User "%s" not found') % u2_name})
+
+        common = common_solved_problems(profile_a, profile_b)
+        h2h = head_to_head(profile_a, profile_b, common)
+        topic_diff = topic_differential(profile_a, profile_b)
+
+        context = self.get_context_data()
+        context.update({
+            'user_a': profile_a,
+            'user_b': profile_b,
+            'common_count': len(common),
+            'head_to_head': h2h,
+            'topic_diff': topic_diff,
+        })
+        return self.render_to_response(context)
 
 
 class ContribList(QueryStringSortMixin, DiggPaginatorMixin, InfinitePaginationMixin, TitleMixin, ListView):
