@@ -64,3 +64,111 @@ body.users-page, body.user-profile-page {
     letter-spacing: 0.05em;
   }
 }
+
+// ─── Responsive ─────────────────────────────────────────────────────
+@media (max-width: 1023px) {
+  .brutalist-two-col {
+    grid-template-columns: 1fr;
+  }
+  .user-sidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 16px;
+    align-items: start;
+  }
+  .user-sidebar img {
+    grid-row: 1 / 4;
+  }
+}
+
+@media (max-width: 639px) {
+  .top-performers {
+    grid-template-columns: 1fr !important;
+  }
+  .brutalist-grid[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  .users-header > div {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 8px;
+  }
+  #search-form, #search-handle {
+    width: 100% !important;
+  }
+  .user-sidebar {
+    display: block;
+  }
+  .users-table {
+    font-size: 0.7rem;
+  }
+  .users-table th:nth-child(3),
+  .users-table td:nth-child(3),
+  .users-table th:nth-child(6),
+  .users-table td:nth-child(6) {
+    display: none;
+  }
+}
+
+// ─── Brutalist Button ───────────────────────────────────────────────
+.brutalist-btn {
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+  padding: 10px 16px;
+  border: 1px solid $ind-border;
+  background: transparent;
+  color: $ind-text;
+  transition: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1;
+
+  &:hover {
+    border-color: $ind-accent-primary;
+    color: $ind-accent-primary;
+  }
+}
+
+// ─── Panel ──────────────────────────────────────────────────────────
+.brutalist-panel {
+  animation: panelFadeIn 200ms ease-out both;
+}
+
+@keyframes panelFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// ─── Tab Navigation ─────────────────────────────────────────────────
+.user-list-tabs {
+  display: flex;
+  border-bottom: 1px solid $ind-border;
+  margin: 0;
+  padding: 0 24px;
+  list-style: none;
+  font-family: $ind-font-mono;
+  font-size: 0.75rem;
+
+  li {
+    margin: 0;
+
+    a {
+      display: block;
+      padding: 10px 16px 8px;
+      color: $ind-text-muted;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+
+      &:hover { color: $ind-text; }
+    }
+
+    &.active a {
+      color: $ind-accent-primary;
+      border-bottom-color: $ind-accent-primary;
+    }
+  }
+}
