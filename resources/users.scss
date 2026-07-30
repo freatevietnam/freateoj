@@ -862,6 +862,37 @@ body.users-page, body.user-profile-page {
   background: $ind-accent-primary;
 }
 
+.ind-activity-table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  width: 100%;
+  font-size: 0.7rem;
+  font-family: $ind-font-mono;
+}
+
+.ind-activity-cell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  cursor: default;
+  border: 1px solid transparent;
+
+  &:hover {
+    border-color: $ind-accent-primary;
+  }
+}
+
+.ind-activity-empty {
+  background: $ind-surface-elevated;
+}
+
+.ind-activity-header {
+  font-size: 0.75rem;
+  color: $ind-text-muted;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
 .ind-org-link {
   color: $ind-accent-primary;
 }

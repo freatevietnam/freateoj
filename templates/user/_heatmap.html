@@ -1,7 +1,10 @@
 <section class="brutalist-panel brutalist-border ind-panel" data-panel="heatmap" id="heatmap-panel">
     <header class="ind-panel-header">{{ _('Submission Activity') }}</header>
     <div class="panel-content ind-panel-content ind-panel-content-heatmap">
-        <canvas id="heatmap-canvas" width="800" height="280"></canvas>
+        <div class="ind-summary-activity">
+            <div class="ind-activity-header" id="heatmap-activity-header"></div>
+            <div class="ind-activity-grid" id="heatmap-activity-grid"></div>
+        </div>
         <div class="ind-flex-end ind-mt-4">
             <span class="data-label">{{ _('Less') }}</span>
             <span class="ind-swatch ind-swatch-empty"></span>
@@ -15,16 +18,76 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var el = document.getElementById('heatmap-canvas');
-    if (!el) return;
+    var grid = document.getElementById('heatmap-activity-grid');
+    if (!grid) return;
     var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
             if (entry.isIntersecting) {
-                renderHeatmap(el, window.HEATMAP_DATA || {});
-                observer.unobserve(el);
+                var data = window.HEATMAP_DATA || {};
+                var dates = Object.keys(data).sort();
+                var dayStrings = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+                var firstDate = new Date(dates[0] || Date.now());
+                var startDay = firstDate.getDay();
+                var maxVal = 1;
+                for (var k in data) { if (data[k] > maxVal) maxVal = data[k]; }
+
+                var today = new Date();
+                var endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                var startDate = new Date(endDate);
+                startDate.setDate(startDate.getDate() - 364);
+                var startDayIdx = startDate.getDay();
+
+                var html = '<table class="ind-activity-table"><thead><tr>';
+                for (var d = 0; d < 7; d++) {
+                    html += '<th class="ind-day-label">' + dayStrings[(startDayIdx + d) % 7] + '</th>';
+                }
+                html += '</tr></thead><tbody>';
+
+                var row = 0;
+                var col = 0;
+                var current = new Date(startDate);
+                var totalDays = 0;
+                var weeks = [];
+                var week = [];
+
+                while (totalDays < 365) {
+                    var key = current.toISOString().slice(0, 10);
+                    var val = data[key] || 0;
+                    var intensity = maxVal > 0 ? val / maxVal : 0;
+                    var color;
+                    if (val === 0) color = '#E0E0E0';
+                    else if (intensity < 0.33) color = '#FFB366';
+                    else if (intensity < 0.66) color = '#FF8C00';
+                    else color = '#FF6B00';
+
+                    week.push('<td class="ind-activity-cell" style="background-color:' + color + '" title="' + key + ': ' + val + ' submissions"></td>');
+                    current.setDate(current.getDate() + 1);
+                    totalDays++;
+
+                    if (current.getDay() === startDayIdx) {
+                        weeks.push('<tr>' + week.join('') + '</tr>');
+                        week = [];
+                    }
+                }
+                if (week.length > 0) {
+                    while (week.length < 7) week.push('<td class="ind-activity-cell ind-activity-empty"></td>');
+                    weeks.push('<tr>' + week.join('') + '</tr>');
+                }
+
+                html += weeks.join('') + '</tbody></table>';
+                grid.innerHTML = html;
+
+                var header = document.getElementById('heatmap-activity-header');
+                if (header) {
+                    var total = 0;
+                    for (var k in data) { total += data[k]; }
+                    header.textContent = total + ' submissions in the past year';
+                }
+
+                observer.unobserve(grid);
             }
         });
     }, { rootMargin: '200px' });
-    observer.observe(el);
+    observer.observe(grid);
 });
 </script>
