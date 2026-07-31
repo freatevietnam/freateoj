@@ -22,6 +22,10 @@
                                 <button class="ind-btn-primary ind-btn-sm" onclick="acceptTypeChange({{ rel.id }})">{{ _('Chấp nhận đổi loại') }}</button>
                                 <button class="ind-btn-primary ind-btn-sm" onclick="rejectTypeChange({{ rel.id }})">{{ _('Từ chối') }}</button>
                             </div>
+                        {% elif is_owner and rel.status == 'accepted' and not rel.pending_type_change %}
+                            <div class="ind-relationship-actions">
+                                <button class="ind-btn-primary ind-btn-sm" onclick="openChangeTypeModal({{ rel.id }})">{{ _('Đổi loại') }}</button>
+                            </div>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -64,7 +68,7 @@
 <div id="relationship-modal" class="ind-modal" style="display: none;">
     <div class="ind-modal-content">
         <div class="ind-modal-header">
-            <h3>{{ _('Gửi lời mời kết bạn') }}</h3>
+            <h3 id="ind-modal-title">{{ _('Gửi lời mời kết bạn') }}</h3>
             <span class="ind-modal-close">&times;</span>
         </div>
         <div class="ind-modal-body">
@@ -255,6 +259,7 @@
 
 <script>
 var selectedRelationshipType = null;
+var changeTypeRelationshipId = null;
 
 $(document).ready(function() {
     $.get('/relationship/types/', function(data) {
@@ -280,18 +285,33 @@ $(document).ready(function() {
             alert('Vui lòng chọn loại mối quan hệ');
             return;
         }
-        var username = $('#relationship-modal').data('username');
-        $.post('/relationship/send/' + username + '/', {
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-            'relationship_type': selectedRelationshipType
-        }, function(data) {
-            alert(data.message);
-            $('#relationship-modal').hide();
-            location.reload();
-        }).fail(function(xhr) {
-            var data = xhr.responseJSON;
-            alert(data.error || 'Có lỗi xảy ra');
-        });
+
+        if (changeTypeRelationshipId) {
+            $.post('/relationship/change-type/' + changeTypeRelationshipId + '/', {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'new_type': selectedRelationshipType
+            }, function(data) {
+                alert(data.message);
+                $('#relationship-modal').hide();
+                location.reload();
+            }).fail(function(xhr) {
+                var data = xhr.responseJSON;
+                alert(data.error || 'Có lỗi xảy ra');
+            });
+        } else {
+            var username = $('#relationship-modal').data('username');
+            $.post('/relationship/send/' + username + '/', {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'relationship_type': selectedRelationshipType
+            }, function(data) {
+                alert(data.message);
+                $('#relationship-modal').hide();
+                location.reload();
+            }).fail(function(xhr) {
+                var data = xhr.responseJSON;
+                alert(data.error || 'Có lỗi xảy ra');
+            });
+        }
     });
 
     $('#ind-cancel-relationship').click(function() {
@@ -304,7 +324,16 @@ $(document).ready(function() {
 
     $(document).on('click', '#btn-send-relationship', function() {
         var username = $(this).data('username');
+        changeTypeRelationshipId = null;
+        $('#ind-modal-title').text('{{ _('Gửi lời mời kết bạn') }}');
         $('#relationship-modal').data('username', username).show();
+    });
+
+    $(document).on('click', '.btn-change-type', function() {
+        var relId = $(this).data('relid');
+        changeTypeRelationshipId = relId;
+        $('#ind-modal-title').text('{{ _('Đổi loại mối quan hệ') }}');
+        $('#relationship-modal').removeData('username').show();
     });
 });
 
@@ -330,5 +359,13 @@ function rejectTypeChange(id) {
     $.post('/relationship/reject-type-change/' + id + '/', {
         'csrfmiddlewaretoken': '{{ csrf_token }}'
     }, function() { location.reload(); });
+}
+
+function openChangeTypeModal(id) {
+    changeTypeRelationshipId = id;
+    $('#ind-modal-title').text('{{ _('Đổi loại mối quan hệ') }}');
+    selectedRelationshipType = null;
+    $('.ind-relationship-type-btn').removeClass('selected');
+    $('#relationship-modal').removeData('username').show();
 }
 </script>
