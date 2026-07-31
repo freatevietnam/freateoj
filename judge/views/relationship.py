@@ -234,6 +234,11 @@ def change_relationship_type(request, relationship_id):
         max_limit = new_type.max_per_user
         return JsonResponse({'error': _('You have reached the limit of %(count)s for this type', count=max_limit)}, status=400)
 
+    if request.user.is_staff or request.user.is_superuser:
+        relationship.relationship_type = new_type
+        relationship.save()
+        return JsonResponse({'success': True, 'message': _('Type changed directly by admin')})
+
     # Set pending type change - requires approval from the other user
     relationship.request_type_change(new_type, request.profile)
     return JsonResponse({'success': True, 'message': _('Type change request sent, waiting for approval')})
