@@ -920,7 +920,12 @@ class AddUserGUI(LoginRequiredMixin, View):
             user.password = make_password(form.cleaned_data['password'])
             user.save()
 
-            profile = Profile.objects.create(user=user)
+            from django.db import IntegrityError
+            try:
+                profile = Profile.objects.create(user=user)
+            except IntegrityError:
+                Profile.objects.filter(user_id=user.id).delete()
+                profile = Profile.objects.create(user=user)
 
             if form.cleaned_data['timezone']:
                 profile.timezone = form.cleaned_data['timezone']
@@ -928,10 +933,10 @@ class AddUserGUI(LoginRequiredMixin, View):
                 profile.language = form.cleaned_data['language']
             if form.cleaned_data['organizations']:
                 profile.organizations.set(form.cleaned_data['organizations'])
-                profile.save()
+            profile.save()
 
-                messages.success(request, _('User "%s" created successfully.') % user.username)
-                return HttpResponseRedirect(reverse('user_list'))
+            messages.success(request, _('User "%s" created successfully.') % user.username)
+            return HttpResponseRedirect(reverse('user_list'))
 
         return render(request, self.template_name, {
             'form': form,
@@ -1076,7 +1081,12 @@ class AddUserCSV(LoginRequiredMixin, View):
                 user.password = make_password(row['password'])
                 user.save()
 
-                profile = Profile.objects.create(user=user)
+                from django.db import IntegrityError
+                try:
+                    profile = Profile.objects.create(user=user)
+                except IntegrityError:
+                    Profile.objects.filter(user_id=user.id).delete()
+                    profile = Profile.objects.create(user=user)
 
                 if row['timezone']:
                     profile.timezone = row['timezone']
