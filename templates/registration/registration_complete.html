@@ -7,8 +7,8 @@
         <p>{{ _('If you didn\'t receive the email, check your spam folder or contact the administrator.') }}</p>
         <br>
         {% if completed_username %}
-            <a href="{{ url('registration_verify_otp', completed_username) }}" class="button">{{ _('Verify Email Now') }}</a>
-            <a href="{{ url('registration_resend_verification') }}" class="button">{{ _('Resend Verification Email') }}</a>
+            <button onclick="window.location.href='{{ url('registration_verify_otp', completed_username) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Verify Email Now') }}</button>
+            <button onclick="window.location.href='{{ url('registration_resend_verification') }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Resend Verification Email') }}</button>
         {% else %}
             <p><a href="{{ url('registration_resend_verification') }}">{{ _('Resend verification email') }}</a></p>
         {% endif %}
@@ -16,6 +16,6 @@
         <p>{{ _('Your account has been created successfully!') }}</p>
         <p>{{ _('You can now log in with your credentials.') }}</p>
         <br>
-        <a href="{{ url('auth_login') }}" class="button">{{ _('Log In') }}</a>
+        <button onclick="window.location.href='{{ url('auth_login') }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Log In') }}</button>
     {% endif %}
 {% endblock %}

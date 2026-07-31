@@ -52,8 +52,8 @@
         <table class="django-as-table">{{ form.as_table() }}</table>
         <hr>
         <div style="display: flex; justify-content: flex-end; gap: 0.5em;">
-            {% if delete %}<input type="submit" value="{{ _('Delete') }}" id="delete-button" form="deleteForm" class="ind-btn-primary">{% endif %}
-            <input type="submit" value="{% if edit %} {{ _('Update') }} {% else %} {{ _('Create') }} {% endif %}" class="ind-btn-primary">
+            {% if delete %}<input type="submit" value="{{ _('Delete') }}" id="delete-button" form="deleteForm" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{% endif %}
+            <input type="submit" value="{% if edit %} {{ _('Update') }} {% else %} {{ _('Create') }} {% endif %}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
         </div>
     </form>
 </div>

@@ -322,7 +322,7 @@
                         </div>
 
                         <div style="display: flex; gap: 10px;">
-                            <button type="submit" style="height: 34px;" class="ind-btn-primary">
+                            <button type="submit" style="height: 34px;" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                                 <i class="fa fa-filter"></i> {{ _('Filter') }}
                             </button>
                             <a href="{{ request.path }}" class="btn btn-default" style="height: 34px; line-height: 20px;">
@@ -383,7 +383,7 @@
                         {{ problem.last_submission_date|date("Y-m-d H:i:s") if problem.last_submission_date else '—' }}
                     </td>
                     <td class="ind-td">
-                        <a href="{{ url('problem_download_full_package', problem.code) }}"
+                        <button onclick="window.location.href='{{ url('problem_download_full_package', problem.code) }}'"
                            class="ind-btn-ghost delete-btn"
                            data-author-ids="{{ (problem.authors.all()|map(attribute='id')|list + problem.curators.all()|map(attribute='id')|list)|tojson }}"
                            style="display:none;">
@@ -391,7 +391,7 @@
                         </a>
                     </td>
                     <td class="ind-td">
-                        <a href="{{ url('problem_delete', problem.code) }}?next={{ request.path }}"
+                        <button onclick="window.location.href='{{ url('problem_delete', problem.code) }}?next={{ request.path }}'"
                            class="ind-btn-ghost delete-btn"
                            data-author-ids="{{ (problem.authors.all()|map(attribute='id')|list + problem.curators.all()|map(attribute='id')|list)|tojson }}"
                            style="display:none;">

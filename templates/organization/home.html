@@ -62,16 +62,16 @@
                         {% if is_member %}
                             <form method="post" action="{{ url('leave_organization', organization.slug) }}">
                                 {% csrf_token %}
-                                <input type="submit" value="{{ _('Leave organization') }}" class="ind-btn-primary">
+                                <input type="submit" value="{{ _('Leave organization') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                             </form>
                         {% elif organization.is_open %}
                             <form method="post" action="{{ url('join_organization', organization.slug) }}">
                                 {% csrf_token %}
-                                <input type="submit" value="{{ _('Join organization') }}" class="ind-btn-primary">
+                                <input type="submit" value="{{ _('Join organization') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                             </form>
                         {% else %}
-                            <a href="{{ url('request_organization', organization.slug) }}"
-                            class="unselectable button full">{{ _('Request membership') }}</a>
+                            <button onclick="window.location.href='{{ url('request_organization', organization.slug) }}'"
+                            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn full">{{ _('Request membership') }}</button>
                         {% endif %}
                     {% endif %}
                     <br>

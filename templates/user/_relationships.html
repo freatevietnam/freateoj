@@ -13,20 +13,20 @@
                         </span>
                         {% if is_owner and rel.status == 'pending' %}
                             <div class="ind-relationship-actions">
-                                <button class="ind-btn-primary ind-btn-sm" onclick="acceptRelationship({{ rel.id }})">{{ _('Chấp nhận') }}</button>
-                                <button class="ind-btn-primary ind-btn-sm" onclick="rejectRelationship({{ rel.id }})">{{ _('Từ chối') }}</button>
+                                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="acceptRelationship({{ rel.id }})">{{ _('Chấp nhận') }}</button>
+                                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="rejectRelationship({{ rel.id }})">{{ _('Từ chối') }}</button>
                             </div>
                         {% elif is_owner and rel.status == 'accepted' and rel.pending_type_change and rel.type_change_requested_by != user %}
                             <span class="ind-relationship-pending-type">Yêu cầu đổi loại: {{ rel.pending_type_change.name }}</span>
                             <div class="ind-relationship-actions">
-                                <button class="ind-btn-primary ind-btn-sm" onclick="acceptTypeChange({{ rel.id }})">{{ _('Chấp nhận đổi loại') }}</button>
-                                <button class="ind-btn-primary ind-btn-sm" onclick="rejectTypeChange({{ rel.id }})">{{ _('Từ chối') }}</button>
+                                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="acceptTypeChange({{ rel.id }})">{{ _('Chấp nhận đổi loại') }}</button>
+                                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="rejectTypeChange({{ rel.id }})">{{ _('Từ chối') }}</button>
                             </div>
                         {% elif is_owner and rel.status == 'accepted' and rel.pending_type_change and rel.type_change_requested_by == user %}
                             <span class="ind-relationship-pending-type">Đang chờ phê duyệt đổi loại</span>
                         {% elif is_owner and rel.status == 'accepted' and not rel.pending_type_change %}
                             <div class="ind-relationship-actions">
-                                <button class="ind-btn-primary ind-btn-sm" onclick="openChangeTypeModal({{ rel.id }})">{{ _('Đổi loại') }}</button>
+                                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="openChangeTypeModal({{ rel.id }})">{{ _('Đổi loại') }}</button>
                             </div>
                         {% endif %}
                     </div>
@@ -46,8 +46,8 @@
                         <span class="ind-relationship-date">{{ req.created_at }}</span>
                         {% if is_owner %}
                             <div class="ind-relationship-actions">
-                                <button class="ind-btn-primary ind-btn-sm" onclick="acceptRelationship({{ req.id }})">{{ _('Chấp nhận') }}</button>
-                                <button class="ind-btn-primary ind-btn-sm" onclick="rejectRelationship({{ req.id }})">{{ _('Từ chối') }}</button>
+                                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="acceptRelationship({{ req.id }})">{{ _('Chấp nhận') }}</button>
+                                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="rejectRelationship({{ req.id }})">{{ _('Từ chối') }}</button>
                             </div>
                         {% endif %}
                     </div>
@@ -56,7 +56,7 @@
         {% endif %}
 
         {% if show_send_button %}
-            <button id="btn-send-relationship" class="ind-btn-primary ind-btn-block" data-username="{{ user.user.username }}">
+            <button id="btn-send-relationship" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn ind-btn-block" data-username="{{ user.user.username }}">
                 {{ _('Gửi lời mời kết bạn') }}
             </button>
         {% endif %}
@@ -82,8 +82,8 @@
             </div>
         </div>
         <div class="ind-modal-footer">
-            <button id="ind-send-relationship" class="ind-btn-primary">{{ _('Gửi') }}</button>
-            <button id="ind-cancel-relationship" class="ind-btn-primary">{{ _('Hủy') }}</button>
+            <button id="ind-send-relationship" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Gửi') }}</button>
+            <button id="ind-cancel-relationship" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Hủy') }}</button>
         </div>
     </div>
 </div>

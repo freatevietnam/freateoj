@@ -51,8 +51,8 @@
             <form class="problem-search-bar" action="" method="get" style="display:flex;gap:4px;">
                 <input id="search" type="text" name="search" value="{{ search_query or '' }}"
                        placeholder="{{ _('Tìm theo tên, mã, dạng đề, nguồn...') }}" class="ind-input">
-                <a href="javascript:void(0)" id="go" class="ind-btn-primary">{{ _('Tìm kiếm') }}</a>
-                <a href="javascript:void(0)" id="random" class="ind-btn-primary">{{ _('Ngẫu nhiên') }}</a>
+                <a href="javascript:void(0)" id="go" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Tìm kiếm') }}</a>
+                <a href="javascript:void(0)" id="random" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Ngẫu nhiên') }}</a>
             </form>
         </div>
         <hr class="brutalist-divider ind-divider-top">
@@ -63,7 +63,7 @@
 
     {% if request.user.has_perm('judge.add_problem') %}
         <div style="margin: 16px 0;">
-            <a href="{{ url('problem_create') }}" class="ind-btn-primary">
+            <a href="{{ url('problem_create') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                 <i class="fa fa-plus"></i> {{ _('Tạo bài tập') }}
             </a>
         </div>

@@ -11,7 +11,7 @@
         <form enctype="multipart/form-data" method="post" action=".">
             {% csrf_token %}
             {{ form.as_p() }}
-            <p><input id="id_submit" name="submit" value="{{ _('Update subscription') }}" type="submit" class="ind-btn-primary"></p>
+            <p><input id="id_submit" name="submit" value="{{ _('Update subscription') }}" type="submit" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn"></p>
         </form>
     {% endif %}
 {% endblock body %}

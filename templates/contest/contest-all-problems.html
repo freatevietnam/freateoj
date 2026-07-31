@@ -34,9 +34,9 @@
                             {% endif %}
                             <a href="{{ url('problem_detail', problem.code) }}">{{ problem.i18n_name or problem.name }}</a>
                         </h2>
-                        <a href="{{ url('problem_submit', problem.code) }}" class="button" style="display: inline; margin: auto 0;">
+                        <button onclick="window.location.href='{{ url('problem_submit', problem.code) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" style="display: inline; margin: auto 0;">
                             {{ _('Submit') }}
-                        </a>
+                        </button>
                     </div>
 
                     <div>

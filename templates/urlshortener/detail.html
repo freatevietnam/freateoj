@@ -60,7 +60,7 @@
 <div class="shortener-detail">
     <div class="short-url-box">
         <code>{{ shortener.get_full_short_url() }}</code>
-        <button type="button" class="button" onclick="copyToClipboard('{{ shortener.get_full_short_url() }}', this)">
+        <button type="button" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="copyToClipboard('{{ shortener.get_full_short_url() }}', this)">
             <i class="fa fa-clipboard"></i> {{ _('Copy') }}
         </button>
     </div>
@@ -94,10 +94,10 @@
     </dl>
 
     <div class="actions">
-        <a href="{{ url('urlshortener_edit', shortener.short_code) }}" class="button">
+        <button onclick="window.location.href='{{ url('urlshortener_edit', shortener.short_code) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
             <i class="fa fa-pencil"></i> {{ _('Edit') }}
         </a>
-        <a href="{{ url('urlshortener_delete', shortener.short_code) }}" class="button">
+        <button onclick="window.location.href='{{ url('urlshortener_delete', shortener.short_code) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
             <i class="fa fa-trash"></i> {{ _('Delete') }}
         </a>
     </div>

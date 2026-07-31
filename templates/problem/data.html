@@ -257,7 +257,7 @@
                 '<tr class="fill-test-row">' +
                 '  <th><label>' + {{ _('Fill test cases')|htmltojs }} + '</label></th>' +
                 '  <td>' +
-                '    <a href="#" id="fill-test-case-btn" class="button">' +
+                '    <button  id="fill-test-case-btn" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">' +
                 '      <i class="fa fa-magic"></i> ' + {{ _('Fill test')|htmltojs }} +
                 '    </a>' +
                 '  </td>' +
@@ -921,20 +921,20 @@
             </tbody>
         </table>
         </div>
-        <input type="submit" value="{{ _('Save') }}" id="submit-button" class="ind-btn-primary">
+        <input type="submit" value="{{ _('Save') }}" id="submit-button" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
         <a id="add-case-row" href="#" style="display: None;"><i class="fa fa-plus"></i> {{ _('Add new case') }}</a>
     </form>
-    <div style="display: none" class="generator-args-editor"><textarea></textarea><a class="button">{{ _('Save') }}</a></div>
+    <div style="display: none" class="generator-args-editor"><textarea></textarea><button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Save') }}</button></div>
 
     <div id="build-test-data-modal" style="display: none;">
         <div id="build-test-data-overlay"></div>
         <div id="build-test-data-dialog">
             <h3>{{ _('Build Test Data') }}</h3>
             <div class="build-actions">
-                <button type="button" id="btn-choose-files" class="button">
+                <button type="button" id="btn-choose-files" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                     <i class="fa fa-file-o"></i> {{ _('Choose Files') }}
                 </button>
-                <button type="button" id="btn-choose-folder" class="button">
+                <button type="button" id="btn-choose-folder" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                     <i class="fa fa-folder-open-o"></i> {{ _('Choose Folder') }}
                 </button>
             </div>
@@ -945,8 +945,8 @@
             <p id="build-test-data-count">{{ _('No files selected') }}</p>
             <ul id="build-test-data-file-list"></ul>
             <div class="build-footer">
-                <button type="button" id="btn-build-cancel" class="button">{{ _('Cancel') }}</button>
-                <button type="button" id="btn-build-upload" class="button" disabled>{{ _('Build & Upload ZIP') }}</button>
+                <button type="button" id="btn-build-cancel" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Cancel') }}</button>
+                <button type="button" id="btn-build-upload" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" disabled>{{ _('Build & Upload ZIP') }}</button>
             </div>
             <input type="file" id="build-files-input" multiple accept=".in,.inp,.out,.ok,.ans,.a,.txt" style="display: none;">
             <input type="file" id="build-folder-input" style="display: none;">

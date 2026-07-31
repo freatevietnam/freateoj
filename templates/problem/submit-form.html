@@ -74,7 +74,7 @@
         <div class="submit-bar">
             {{ form.judge }}
             <input type="submit" value="{{ _('Submit!') }}"
-                   {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %} class="ind-btn-primary">
+                   {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %} class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
         </div>
     {% endif %}
 </form>

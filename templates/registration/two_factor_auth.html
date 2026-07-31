@@ -89,9 +89,9 @@
                 <button style="display: inline" id="use-webauthn" type="button">{{ _('Use security key') }}</button>
             {% endif %}
             {% if request.profile.is_totp_enabled %}
-                <button type="submit" class="ind-btn-primary">{{ _('Login!') }}</button>
+                <button type="submit" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Login!') }}</button>
             {% elif request.profile.scratch_codes %}
-                <button type="submit" class="ind-btn-primary">{{ _('Use scratch code') }}</button>
+                <button type="submit" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Use scratch code') }}</button>
             {% endif %}
         </form>
         {% if not is_hardcore and misc_config.discord_invite_link and misc_config.discord_invite_shieldio %}

@@ -64,7 +64,7 @@
             <form method="post" action="{{ url('contest_moss', contest.key) }}">
                 {% csrf_token %}
                 <input type="submit" style="padding:10px;"
-                       value="{% if has_results %} {{ _('Re-MOSS contest') }} {% else %} {{ _('MOSS contest') }} {% endif %}" class="ind-btn-primary">
+                       value="{% if has_results %} {{ _('Re-MOSS contest') }} {% else %} {{ _('MOSS contest') }} {% endif %}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
             </form>
         </div>
         {% if has_results %}
@@ -72,7 +72,7 @@
                 <form method="post" action="{{ url('contest_moss_delete', contest.key) }}">
                     {% csrf_token %}
                     <input type="submit" style="padding:10px;"
-                           value="{{ _('Delete MOSS results') }}" class="ind-btn-primary">
+                           value="{{ _('Delete MOSS results') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                 </form>
             </div>
         {% endif %}

@@ -121,9 +121,9 @@
 
                             // Add remove button on-the-fly
                             if ($('#remove-api-token-button').length == 0) {
-                                $('#generate-api-token-button').after($('<a id="remove-api-token-button" \
-                                    href="{{ url('remove_api_token') }}" \
-                                    class="button inline-button ml-5">{{ _('Remove') }}</a>'));
+                                $('#generate-api-token-button').after($('<button id="remove-api-token-button" \
+                                    onclick="window.location.href='{{ url('remove_api_token') }}'" \
+                                    class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn inline-button ml-5">{{ _('Remove') }}</button>'));
                             }
                         },
                     });
@@ -387,22 +387,22 @@
                             <div class="block-header grayed">{{ _('Two-factor authentication is enabled:') }}</div>
                             <div class="block-buttons">
                                 {% if require_staff_2fa and request.user.is_staff and not profile.is_webauthn_enabled %}
-                                    <a id="disable-2fa-button" class="button inline-button">{{ _('Disable') }}</a>
+                                    <button id="disable-2fa-button" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Disable') }}</button>
                                 {% else %}
-                                    <a href="{{ url('disable_2fa') }}"
-                                       class="button inline-button">{{ _('Disable') }}</a>
+                                    <button onclick="window.location.href='{{ url('disable_2fa') }}'"
+                                       class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Disable') }}</button>
                                 {% endif %}
-                                <a href="{{ url('refresh_2fa') }}" class="button inline-button">{{ _('Refresh') }}</a>
+                                <button onclick="window.location.href='{{ url('refresh_2fa') }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Refresh') }}</button>
                             </div>
                             <div class="block-header grayed">
                                 {{ _('Scratch codes:') }}
                                 {% if profile.scratch_codes %}
-                                    <a id="generate-scratch-codes-button" href="{{ url('generate_scratch_codes') }}"
-                                       class="button inline-button">{{ _('Regenerate') }}</a>
+                                    <button id="generate-scratch-codes-button" onclick="window.location.href='{{ url('generate_scratch_codes') }}'"
+                                       class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Regenerate') }}</button>
                                     <div id="hidden-word">{{ _('Hidden') }}</div>
                                 {% else %}
-                                    <a id="generate-scratch-codes-button" href="{{ url('generate_scratch_codes') }}"
-                                       class="button inline-button">{{ _('Generate') }}</a>
+                                    <button id="generate-scratch-codes-button" onclick="window.location.href='{{ url('generate_scratch_codes') }}'"
+                                       class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Generate') }}</button>
                                 {% endif %}
                                 <div style="display: none" id="scratch-codes-regen">
                                     <div id="scratch-codes-text">
@@ -418,7 +418,7 @@
                         {% else %}
                             <span class="inline-header grayed">
                                 {{ _('Two-factor Authentication is disabled:') }}
-                                <a href="{{ url('enable_2fa') }}" class="button inline-button">{{ _('Enable') }}</a>
+                                <button onclick="window.location.href='{{ url('enable_2fa') }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Enable') }}</button>
                             </span>
                         {% endif %}
                     </div>
@@ -433,7 +433,7 @@
                                     <tr class="ind-tr-hover">
                                         <td class="ind-td">{{ credential.name }}</td>
                                         <td class="ind-td">
-                                            <button class="webauthn-delete inline-button"
+                                            <button class="webauthn-delete ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn"
                                                     data-delete-url="{{ url('webauthn_delete', credential.id) }}">
                                                 {{ _('Delete') }}
                                             </button>
@@ -443,7 +443,7 @@
                             {% endif %}
                             <tr class="ind-tr-hover">
                                 <td class="ind-td"><input id="new-webauthn-name" type="text" placeholder="{{ _('Enter a name for this key') }}"></td>
-                                <td class="ind-td"><button id="new-webauthn" class="inline-button">{{ _('Add') }}</button></td>
+                                <td class="ind-td"><button id="new-webauthn" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Add') }}</button></td>
                             </tr>
                         </table></div>
                     {% endif %}
@@ -452,7 +452,7 @@
             </div>
             <hr>
 
-            <input type="submit" value="{{ _('Update profile') }}" class="ind-btn-primary">
+            <input type="submit" value="{{ _('Update profile') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
         </form>
     </div>
 {% endblock %}

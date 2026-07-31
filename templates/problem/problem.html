@@ -162,9 +162,9 @@
 {% block info_float %}
     {% if request.user.is_authenticated and request.in_contest and submission_limit %}
         {% if submissions_left > 0 %}
-            <a href="{{ url('problem_submit', problem.code) }}" class="unselectable button full">
+            <button onclick="window.location.href='{{ url('problem_submit', problem.code) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn full">
                 {{ _('Submit solution') }}
-            </a>
+            </button>
             <div class="submissions-left">
                 {% trans trimmed counter=submissions_left %}
                     {{ counter }} submission left
@@ -173,13 +173,13 @@
                 {% endtrans %}
             </div>
         {% else %}
-            <a class="unselectable button full disabled">{{ _('Submit solution') }}</a>
+            <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn full disabled">{{ _('Submit solution') }}</button>
             <div class="no-submissions-left submissions-left">{{ _('0 submissions left') }}</div>
         {% endif %}
     {% else %}
-        <a href="{{ url('problem_submit', problem.code) }}" class="unselectable button full">
+        <button onclick="window.location.href='{{ url('problem_submit', problem.code) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn full">
             {{ _('Submit solution') }}
-        </a>
+        </button>
     {% endif %}
 
     <hr style="padding-bottom: 0.3em">
@@ -392,13 +392,13 @@
 
 {% block post_description_end %}
     {% if request.user.is_authenticated and not request.profile.mute %}
-        <a href="{{ url('new_problem_ticket', problem.code) }}" class="button clarify">
+        <button onclick="window.location.href='{{ url('new_problem_ticket', problem.code) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn clarify">
             {%- if comment_lock and request.profile.current_contest.live -%}
                 {{ _('Request clarification') }}
             {%- else -%}
                 {{ _('Report an issue') }}
             {%- endif -%}
-        </a>
+        </button>
     {% endif %}
 {% endblock %}
 

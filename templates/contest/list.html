@@ -150,13 +150,13 @@
                 <form action="{{ url('contest_join', contest.key) }}" method="post">
                     {% csrf_token %}
                     <input type="submit"
-                           value="{{ _('Spectate') }}" class="ind-btn-primary">
+                           value="{{ _('Spectate') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                 </form>
             {% else %}
                 <form action="{{ url('contest_join', contest.key) }}" method="post">
                     {% csrf_token %}
                     <input type="submit"
-                        value="{{ _('Join') }}" class="ind-btn-primary">
+                        value="{{ _('Join') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                 </form>
             {% endif %}
         </td>
@@ -178,7 +178,7 @@
                 <form action="{{ url('contest_register', contest.key) }}" method="post">
                     {% csrf_token %}
                     <input type="submit"
-                            value="{{ _('Register') }}" class="ind-btn-primary">
+                            value="{{ _('Register') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                 </form>
             {% endif %}
         {% endif %}
@@ -353,7 +353,7 @@
                                 <td class="ind-td"><form action="{{ url('contest_join', contest.key) }}" method="post">
                                     {% csrf_token %}
                                     <input type="submit"
-                                           value="{{ _('Virtual join') }}" class="ind-btn-primary">
+                                           value="{{ _('Virtual join') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                                 </form></td>
                             {% else %}
                                 <td class="ind-td"></td>

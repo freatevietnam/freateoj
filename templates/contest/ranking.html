@@ -483,11 +483,11 @@
             <input id="show-virtual-participations-checkbox" type="checkbox" style="vertical-align: bottom">
             <label for="show-virtual-participations-checkbox" style="vertical-align: bottom">{{ _('Show virtual participations') }}</label>
             {% if not is_ICPC_format %}
-            <a href="#" onclick="download_table_as_csv()" class="ind-btn-ghost" style="float:right;">{{ _('Download as CSV') }}</a>
+            <button  onclick="download_table_as_csv()" class="ind-btn-ghost" style="float:right;">{{ _('Download as CSV') }}</button>
             {% endif %}
             {% if contest.can_replay %}
-            <a href="{{ url('contest_replay_data', contest.key, contest.replay_version) }}" 
-               class="ind-btn-ghost" style="float:right; margin-right:1em;">{{ _('Replay') }}</a>
+            <button onclick="window.location.href='{{ url('contest_replay_data', contest.key, contest.replay_version) }}'" 
+               class="ind-btn-ghost" style="float:right; margin-right:1em;">{{ _('Replay') }}</button>
             {% endif %}
         {% endif %}
     </div>

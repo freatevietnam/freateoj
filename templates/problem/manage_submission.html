@@ -164,9 +164,9 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <a id="rejudge-selected" class="unselectable button full" href="#">
+                    <button id="rejudge-selected" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn full" >
                         {{ _('Rejudge selected submissions') }}
-                    </a>
+                    </button>
                 </form>
             </div>
         {% endif %}
@@ -180,14 +180,14 @@
             {% endtrans %}</p>
             <form action="{{ url('problem_submissions_rescore_all', problem.code) }}" method="post">
                 {% csrf_token %}
-                <a id="rescore-all" class="unselectable button full" href="#"
+                <button id="rescore-all" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn full" 
                    data-warning="{% trans trimmed count=submission_count %}
                                     Are you sure you want to rescore {{ count }} submission?
                                  {% pluralize %}
                                     Are you sure you want to rescore {{ count }} submissions?
                                  {% endtrans %}">
                     {{ _('Rescore all submissions') }}
-                </a>
+                </button>
             </form>
         </div>
 
@@ -197,9 +197,9 @@
                 <label for="id_user">{{ _('Filter by user:') }}</label>
                 {{ form_compare.user }}
             </div>
-            <a id="compare" class="unselectable button full" href="#">
+            <button id="compare" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn full" >
                 {{ _('Compare submissions') }}
-            </a>
+            </button>
         </div>
     </div>
 {% endblock %}

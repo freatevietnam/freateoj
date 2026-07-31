@@ -18,9 +18,9 @@
                 </select>
             </div>
             <div class="form-submit-group">
-                <a id="go" class="button">{{ _('Go') }}</a>
-                <a id="random" class="button">{{ _('Random') }}</a>
-                <a class="button" href="{{url('tagproblem_list')}}">{{ _('Clear search') }}</a>
+                <button id="go" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Go') }}</button>
+                <button id="random" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Random') }}</button>
+                <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" onclick="window.location.href='{{url('tagproblem_list')}}'">{{ _('Clear search') }}</button>
             </div>
         </form>
     </div>

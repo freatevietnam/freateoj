@@ -33,51 +33,51 @@
                 {# Allow users to leave the virtual contest #}
                 {% if is_in_contest %}
                     <form action="{{ url('contest_leave', contest.key) }}" method="post"
-                          class="contest-join-pseudotab unselectable button">
+                          class="contest-join-pseudotab ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                         {% csrf_token %}
-                        <input type="submit" value="{{ _('Leave contest') }}" class="ind-btn-primary">
+                        <input type="submit" value="{{ _('Leave contest') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                     </form>
                 {% elif not contest.disallow_virtual %}
                     {# Allow users to virtual join #}
                     <form action="{{ url('contest_join', contest.key) }}" method="post"
-                          class="contest-join-pseudotab unselectable button">
+                          class="contest-join-pseudotab ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                         {% csrf_token %}
-                        <input type="submit" value="{{ _('Virtual join') }}" class="ind-btn-primary">
+                        <input type="submit" value="{{ _('Virtual join') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                     </form>
                 {% endif %}
             {% else %}
                 {# Allow users to leave the contest #}
                 {% if is_in_contest %}
                     <form action="{{ url('contest_leave', contest.key) }}" method="post"
-                          class="contest-join-pseudotab unselectable button">
+                          class="contest-join-pseudotab ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                         {% csrf_token %}
                         <input type="submit" value="
                             {%- if request.participation.spectate %}
                                 {{- _('Stop spectating') -}}
                             {% else %}
                                 {{- _('Leave contest') -}}
-                            {% endif %}" class="ind-btn-primary">
+                            {% endif %}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                     </form>
                 {% elif is_editor or is_tester or live_participation.ended %}
                     <form action="{{ url('contest_join', contest.key) }}" method="post"
-                          class="contest-join-pseudotab unselectable button">
+                          class="contest-join-pseudotab ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                         {% csrf_token %}
-                        <input type="submit" value="{{ _('Spectate contest') }}" class="ind-btn-primary">
+                        <input type="submit" value="{{ _('Spectate contest') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                     </form>
                 {% else %}
                     {% if contest.can_join and (has_joined or not contest.require_registration or contest.can_register) %}
                         <form action="{{ url('contest_join', contest.key) }}" method="post"
-                            class="contest-join-pseudotab unselectable button">
+                            class="contest-join-pseudotab ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                             {% csrf_token %}
                             <input type="submit"
-                                value="{{ _('Join contest') }}" class="ind-btn-primary">
+                                value="{{ _('Join contest') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                         </form>
                     {% elif contest.can_register and not has_joined %}
                         <form action="{{ url('contest_register', contest.key) }}" method="post"
-                            class="contest-join-pseudotab unselectable button" style="background: linear-gradient(to bottom, #87ab69 0, #4b6043 100%) repeat-x">
+                            class="contest-join-pseudotab ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" style="background: linear-gradient(to bottom, #87ab69 0, #4b6043 100%) repeat-x">
                             {% csrf_token %}
                             <input type="submit"
-                                value="{{ _('Register') }}" class="ind-btn-primary">
+                                value="{{ _('Register') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                         </form>
                     {% endif %}
                 {% endif %}
@@ -85,9 +85,9 @@
         {% endif %}
     {% elif (contest.can_join and not contest.require_registration) or contest.can_register %}
         <form action="{{ url('auth_login') }}" method="get"
-              class="contest-join-pseudotab unselectable button">
+              class="contest-join-pseudotab ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
             <input type="hidden" name="next" value="{{ LOGIN_RETURN_PATH|urlencode }}">
-            <input type="submit" value="{{ _('Log in to participate') }}" class="ind-btn-primary">
+            <input type="submit" value="{{ _('Log in to participate') }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
         </form>
     {% endif %}
 {% endblock %}

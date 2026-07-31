@@ -36,8 +36,8 @@
         <hr class="brutalist-divider user-sidebar-divider">
 
         <div class="ind-flex ind-gap-8">
-            <a href="{{ url('all_user_submissions', user.user.username) }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text brutalist-btn">{{ _('Submissions') }}</a>
-            <a href="/users/compare/?u1={{ user.user.username }}" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Compare') }}</a>
+            <button onclick="window.location.href='{{ url('all_user_submissions', user.user.username) }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text brutalist-btn">{{ _('Submissions') }}</button>
+            <button onclick="window.location.href='/users/compare/?u1={{ user.user.username }}'" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">{{ _('Compare') }}</button>
         </div>
 
         {% if ratings %}

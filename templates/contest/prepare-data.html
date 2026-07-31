@@ -37,7 +37,7 @@
             <div class="alert alert-warning">
                 {{ _('We are currently preparing the contest data.') }}
             </div>
-            <a class="button aux-download-action" href="{{ in_progress_url }}">{{ _('Track progress') }}</a>
+            <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn aux-download-action" onclick="window.location.href='{{ in_progress_url }}'">{{ _('Track progress') }}</button>
         {% elif can_prepare_data %}
             <div class="alert alert-warning">
                 {% set duration=ratelimit|timedelta %}
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div id="submit-bar" class="form-submit-group">
-                    <button id="prepare-download" type="submit" class="ind-btn-primary">
+                    <button id="prepare-download" type="submit" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                         {% if can_download_data %}
                             {{ _('Prepare new download') }}
                         {% else %}
@@ -77,7 +77,7 @@
                         {% endif %}
                     </button>
                     {% if can_download_data %}
-                        <a class="button main-download-action" href="{{ url('contest_download_data', contest.key) }}">{{ _('Download prepared data') }}</a>
+                        <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn main-download-action" onclick="window.location.href='{{ url('contest_download_data', contest.key) }}'">{{ _('Download prepared data') }}</button>
                     {% endif %}
                 </div>
             </form>
@@ -87,7 +87,7 @@
                 <br>
                 {{ _('You will need to wait %(countdown)s to prepare a new data download.', countdown=as_countdown(time_until_can_prepare)) }}
             </div>
-            <a class="button aux-download-action" href="{{ url('contest_download_data', contest.key) }}">{{ _('Download data') }}</a>
+            <button class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn aux-download-action" onclick="window.location.href='{{ url('contest_download_data', contest.key) }}'">{{ _('Download data') }}</button>
         {% endif %}
     </div>
 {% endblock %}
