@@ -84,6 +84,10 @@ class Relationship(models.Model):
         self.type_change_requested_by = None
         self.save()
 
+    @property
+    def status_label(self):
+        return dict(self.STATUS_CHOICES).get(self.status, self.status)
+
     @classmethod
     def cleanup_duplicates(cls):
         """Auto-fix: Remove duplicate relationships, keep only the newest."""
