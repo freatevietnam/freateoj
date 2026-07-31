@@ -28,7 +28,7 @@
         </table>
     </form>
     {% else %}
-    <p>{{ _('Preview of %d users to be imported:')|format(count) }}</p>
+    <p>{{ _('Preview of %d users to be imported:') % count|int }}</p>
 
     <div class="ind-table-wrap">
     <table class="ind-table ind-table-md">
