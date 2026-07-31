@@ -141,7 +141,7 @@
   &--1 {
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba($gradient_start, 0.06) 0%, transparent 70%);
+    background: transparent;
     top: -200px;
     right: -200px;
     animation: float 8s ease-in-out infinite;
@@ -150,7 +150,7 @@
   &--2 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba($gradient_end, 0.06) 0%, transparent 70%);
+    background: transparent;
     bottom: -100px;
     left: -100px;
     animation: float 10s ease-in-out infinite reverse;
