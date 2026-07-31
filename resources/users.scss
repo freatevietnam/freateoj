@@ -1010,18 +1010,39 @@ body.users-page, body.user-profile-page {
 .ind-btn-primary {
   font-family: $ind-font-mono;
   font-size: 0.75rem;
-  padding: 10px 16px;
+  padding: 6px 12px;
   border: 1px solid $ind-accent-primary;
-  background: transparent;
-  color: $ind-accent-primary !important;
+  background: $ind-accent-primary;
+  color: $ind-surface !important;
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
   line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-weight: 400;
+  border-radius: 0;
 
   &:hover {
-    background: $ind-accent-primary;
+    background: darken($ind-accent-primary, 10%);
     color: $ind-surface !important;
+  }
+
+  &:active {
+    background: darken($ind-accent-primary, 15%);
+  }
+
+  &.full {
+    padding: 6px 0;
+    width: 100%;
+  }
+
+  &.disabled {
+    background: $ind-border !important;
+    border-color: $ind-border !important;
+    color: $ind-text-muted !important;
+    cursor: not-allowed;
   }
 }
 
