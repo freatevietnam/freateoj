@@ -39,6 +39,12 @@
                         <span class="ind-relationship-type">{{ req.relationship_type.name }}</span>
                         <span class="ind-relationship-user">{{ req.from_user.user.username }}</span>
                         <span class="ind-relationship-date">{{ req.created_at }}</span>
+                        {% if is_owner %}
+                            <div class="ind-relationship-actions">
+                                <button class="ind-btn-primary ind-btn-sm" onclick="acceptRelationship({{ req.id }})">{{ _('Chấp nhận') }}</button>
+                                <button class="ind-btn-primary ind-btn-sm" onclick="rejectRelationship({{ req.id }})">{{ _('Từ chối') }}</button>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
