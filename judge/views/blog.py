@@ -245,7 +245,7 @@ class PostList(PostListBase):
         context['problem_count'] = Problem.get_public_problems().count()
         context['submission_count'] = Submission.objects.aggregate(max_id=Max('id'))['max_id'] or 0
         context['language_count'] = Language.objects.count()
-        context['organization_count'] = Organization.objects.filter(is_unlisted=False).count()
+        context['organization_count'] = Organization.objects.count()
 
         now = timezone.now()
 
