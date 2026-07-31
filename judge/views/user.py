@@ -732,7 +732,7 @@ class UserList(QueryStringSortMixin, InfinitePaginationMixin, DiggPaginatorMixin
         context['top_performers'] = [
             {'label': '#1 RATED', 'profile': top_rated, 'value': str(top_rated.rating) if top_rated and top_rated.rating else 'N/A', 'trend': None},
             {'label': '#1 POINTS', 'profile': top_points, 'value': '%.1f pp' % top_points.performance_points if top_points else 'N/A', 'trend': None},
-            {'label': 'RISING STAR', 'profile': rising_star, 'value': str(rising_star.rating) if rising_star and rising_star.rating else 'N/A', 'trend': None},
+            {'label': 'RISING STAR', 'profile': rising_star, 'value': str(rising_star.contribution_points) if rising_star and rising_star.contribution_points else 'N/A', 'trend': None},
             {'label': 'TOP ORG', 'profile': None, 'value': top_org.name if top_org else 'N/A', 'trend': top_org._member_count if top_org else None},
         ]
         context['total_users'] = ProfileModel.objects.filter(is_unlisted=False).count()
