@@ -57,38 +57,6 @@
                 });
             }
 
-            // Auto-update judge status
-            var outdated = false;
-
-            function update_judge_table() {
-                if ($('body').hasClass('window-hidden'))
-                    return outdated = true;
-                $.ajax({
-                    url: '{{ url("status_table") }}'
-                }).done(function (data) {
-                    var new_node = $(data);
-
-                    if (active_lang && active_judge) {
-                        var selected = new_node.find('[data-judge=' + active_judge + '][data-lang=' + active_lang + ']');
-                        if (selected)
-                            display_tooltip(selected);
-                    }
-
-                    $('#judge-status tbody').html(new_node.find('tbody').html());
-                    install_tooltips();
-                    install_expand_collapse();
-                }).always(function () {
-                    outdated = false;
-                    setTimeout(update_judge_table, 10000);
-                });
-            }
-
-            $(window).on('dmoj:window-visible', function () {
-                if (outdated)
-                    update_judge_table();
-            });
-
-            setTimeout(update_judge_table, 10000);
             install_tooltips();
             install_expand_collapse();
             

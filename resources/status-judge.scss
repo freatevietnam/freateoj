@@ -67,10 +67,13 @@
         border: 1px solid rgba(#44AD41, 0.2);
         
         &::before {
-            content: "\f00c";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            font-size: 0.9em;
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #44AD41;
+            box-shadow: 0 0 4px #44AD41;
         }
     }
     
@@ -80,10 +83,12 @@
         border: 1px solid rgba(#DE2121, 0.2);
         
         &::before {
-            content: "\f057";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 400;
-            font-size: 0.9em;
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #DE2121;
         }
     }
 }
