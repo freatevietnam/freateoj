@@ -16,7 +16,15 @@
                                 <button class="ind-btn-primary ind-btn-sm" onclick="acceptRelationship({{ rel.id }})">{{ _('Chấp nhận') }}</button>
                                 <button class="ind-btn-primary ind-btn-sm" onclick="rejectRelationship({{ rel.id }})">{{ _('Từ chối') }}</button>
                             </div>
-                        {% elif is_owner and rel.status == 'accepted' and not rel.pending_type_change and request.user.is_staff %}
+                        {% elif is_owner and rel.status == 'accepted' and rel.pending_type_change and rel.type_change_requested_by != user %}
+                            <span class="ind-relationship-pending-type">Yêu cầu đổi loại: {{ rel.pending_type_change.name }}</span>
+                            <div class="ind-relationship-actions">
+                                <button class="ind-btn-primary ind-btn-sm" onclick="acceptTypeChange({{ rel.id }})">{{ _('Chấp nhận đổi loại') }}</button>
+                                <button class="ind-btn-primary ind-btn-sm" onclick="rejectTypeChange({{ rel.id }})">{{ _('Từ chối') }}</button>
+                            </div>
+                        {% elif is_owner and rel.status == 'accepted' and rel.pending_type_change and rel.type_change_requested_by == user %}
+                            <span class="ind-relationship-pending-type">Đang chờ phê duyệt đổi loại</span>
+                        {% elif is_owner and rel.status == 'accepted' and not rel.pending_type_change %}
                             <div class="ind-relationship-actions">
                                 <button class="ind-btn-primary ind-btn-sm" onclick="openChangeTypeModal({{ rel.id }})">{{ _('Đổi loại') }}</button>
                             </div>
