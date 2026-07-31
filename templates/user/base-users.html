@@ -60,11 +60,7 @@
             </form>
         </div>
         <hr class="brutalist-divider ind-divider-top">
-        {% block users_stats %}
-        <div class="page-stats">
-            {{ _('Total: %(count)s users', count=total_users) }} &bull; {{ _('Active (24h): %(count)s', count=active_users) }} &bull; {{ _('Top 1%%: %(points)s pp', points=top_1_percent_threshold) }}
-        </div>
-        {% endblock %}
+        {% block users_stats %}{% endblock %}
     </header>
 
     {% if page_obj and page_obj.has_other_pages() %}

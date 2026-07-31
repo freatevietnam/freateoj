@@ -461,15 +461,15 @@
     <div style="margin-bottom: 1.25em">
         {% if tab == 'ranking' %}
             <div id="org-dropdown-check-list">
-                <button id="filter-by-organization-button" class="ind-btn-ghost">
+                <button id="filter-by-organization-button" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn">
                     <i class="tab-icon fa fa-filter"></i>
                     <b>{{ _('Filter') }}</b>
                 </button>
 
                 <div id="org-check-list-wrapper">
                     <div>
-                        <button id="apply-organization-filter" class="ind-btn-ghost filter-checklist-button">{{ _('Apply') }}</button>
-                        <button id="clear-organization-filter" class="ind-btn-ghost filter-checklist-button">{{ _('Clear') }}</button>
+                        <button id="apply-organization-filter" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn filter-checklist-button">{{ _('Apply') }}</button>
+                        <button id="clear-organization-filter" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn filter-checklist-button">{{ _('Clear') }}</button>
                     </div>
                     <select id="org-check-list" name="orgs[]" multiple="multiple"></select>
                 </div>
@@ -483,11 +483,11 @@
             <input id="show-virtual-participations-checkbox" type="checkbox" style="vertical-align: bottom">
             <label for="show-virtual-participations-checkbox" style="vertical-align: bottom">{{ _('Show virtual participations') }}</label>
             {% if not is_ICPC_format %}
-            <button  onclick="download_table_as_csv()" class="ind-btn-ghost" style="float:right;">{{ _('Download as CSV') }}</button>
+            <button  onclick="download_table_as_csv()" class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" style="float:right;">{{ _('Download as CSV') }}</button>
             {% endif %}
             {% if contest.can_replay %}
             <button onclick="window.location.href='{{ url('contest_replay_data', contest.key, contest.replay_version) }}'" 
-               class="ind-btn-ghost" style="float:right; margin-right:1em;">{{ _('Replay') }}</button>
+               class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn" style="float:right; margin-right:1em;">{{ _('Replay') }}</button>
             {% endif %}
         {% endif %}
     </div>

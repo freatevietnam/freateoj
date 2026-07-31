@@ -25,7 +25,6 @@ local_urls.py
 # Compiled/Cached resources
 .sass-cache
 sass_processed
-resources/vars.scss
 
 # Built SCSS output (not vendor)
 resources/*.css

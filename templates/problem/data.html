@@ -844,9 +844,11 @@
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ cases_formset.management_form }}
-        <table class="table">
+        <div class="ind-table-wrap">
+        <table class="ind-table ind-table-md">
             {{ data_form.as_table() }}
         </table>
+        </div>
         <div class="alert alert-warning alert-dismissable" id="fill-test-case-noti" style="display: none;">
             <a class="close">x</a>
             <b>{{ _('Test cases have been filled automatically!') }}</b>

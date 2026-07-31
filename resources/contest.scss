@@ -4,18 +4,27 @@
 #contest-calendar {
     border-collapse: collapse;
     width: 100%;
+    font-family: $ind-font-mono;
 
     th {
-        border: 1px solid $color_primary25;
-        background: $color_primary5;
+        border: 1px solid $ind-border;
+        background: none;
+        padding: 6px 8px;
+        color: $ind-text-muted;
+        font-weight: 600;
     }
 
     td {
         height: 110px;
         width: 170px;
         vertical-align: top;
-        border: 1px solid $color_primary25;
-        transition-duration: 0.2s;
+        border: 1px solid $ind-border;
+        transition: background 0.1s;
+        background: none;
+
+        &:hover {
+            background: $ind-surface-elevated;
+        }
 
         .num {
             text-align: right;
