@@ -368,7 +368,6 @@ urlpatterns = [
         path('rejudge', widgets.rejudge_submission, name='submission_rejudge'),
         path('single_submission', submission.single_submission, name='submission_single_query'),
         path('submission_testcases', submission.SubmissionTestCaseQuery.as_view(), name='submission_testcases_query'),
-        path('status-table', status.status_table, name='status_table'),
         path('user-summary/<str:username>/', user_summary.user_summary, name='user_summary'),
 
         path('template', problem.LanguageTemplateAjax.as_view(), name='language_template_ajax'),

@@ -1,9 +1,8 @@
 from collections import defaultdict
 from functools import partial
 
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from packaging import version
 
@@ -27,13 +26,3 @@ def status_all(request):
         'see_all_judges': see_all,
         'languages': languages,
     })
-
-
-def status_table(request):
-    see_all, judges = get_judges(request)
-    html = render_to_string('status/judge-status-table.html', {
-        'judges': judges,
-        'runtime_version_data': Judge.runtime_versions(),
-        'see_all_judges': see_all,
-    })
-    return HttpResponse(html)
