@@ -1013,7 +1013,7 @@ body.users-page, body.user-profile-page {
   padding: 10px 16px;
   border: 1px solid $ind-accent-primary;
   background: transparent;
-  color: $ind-accent-primary;
+  color: $ind-accent-primary !important;
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
@@ -1021,7 +1021,7 @@ body.users-page, body.user-profile-page {
 
   &:hover {
     background: $ind-accent-primary;
-    color: $ind-surface;
+    color: $ind-surface !important;
   }
 }
 
