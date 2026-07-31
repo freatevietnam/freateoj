@@ -7,11 +7,10 @@
                     <div class="ind-relationship-item">
                         <span class="ind-relationship-type">{{ rel.relationship_type.name }}</span>
                         <span class="ind-relationship-user">
-                             <a href="/user/{{ rel.to_user.user.username if rel.from_user == user else rel.from_user.user.username }}/">
+                            <a href="/user/{{ rel.to_user.user.username if rel.from_user == user else rel.from_user.user.username }}/">
                                 {{ rel.to_user.user.username if rel.from_user == user else rel.from_user.user.username }}
                             </a>
                         </span>
-                        <span class="ind-relationship-status">{{ rel.status_label }}</span>
                         {% if is_owner and rel.status == 'pending' %}
                             <div class="ind-relationship-actions">
                                 <button class="ind-btn-primary ind-btn-sm" onclick="acceptRelationship({{ rel.id }})">{{ _('Chấp nhận') }}</button>
