@@ -1,0 +1,329 @@
+<section class="brutalist-panel brutalist-border ind-panel" data-panel="relationships" id="relationships-panel">
+    <header class="ind-panel-header">{{ _('Mối quan hệ') }}</header>
+    <div class="panel-content ind-panel-content">
+        {% if relationships.exists %}
+            <div class="ind-relationship-list">
+                {% for rel in relationships %}
+                    <div class="ind-relationship-item">
+                        <span class="ind-relationship-type">{{ rel.relationship_type.name }}</span>
+                        <span class="ind-relationship-user">
+                            <a href="/user/{{ rel.to_user.user.username if rel.from_user == user.user else rel.from_user.user.username }}/">
+                                {{ rel.to_user.user.username if rel.from_user == user.user else rel.from_user.user.username }}
+                            </a>
+                        </span>
+                        <span class="ind-relationship-status">{{ rel.get_status_display }}</span>
+                        {% if is_owner and rel.status == 'pending' %}
+                            <div class="ind-relationship-actions">
+                                <button class="ind-btn-primary ind-btn-sm" onclick="acceptRelationship({{ rel.id }})">{{ _('Chấp nhận') }}</button>
+                                <button class="ind-btn-primary ind-btn-sm" onclick="rejectRelationship({{ rel.id }})">{{ _('Từ chối') }}</button>
+                            </div>
+                        {% elif is_owner and rel.status == 'accepted' and rel.pending_type_change %}
+                            <span class="ind-relationship-pending-type">Yêu cầu đổi loại: {{ rel.pending_type_change.name }}</span>
+                            <div class="ind-relationship-actions">
+                                <button class="ind-btn-primary ind-btn-sm" onclick="acceptTypeChange({{ rel.id }})">{{ _('Chấp nhận đổi loại') }}</button>
+                                <button class="ind-btn-primary ind-btn-sm" onclick="rejectTypeChange({{ rel.id }})">{{ _('Từ chối') }}</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="ind-placeholder">{{ _('Chưa có mối quan hệ nào') }}</p>
+        {% endif %}
+
+        {% if pending_requests %}
+            <h3 class="ind-section-title">{{ _('Lời mời kết bạn đang chờ') }}</h3>
+            <div class="ind-relationship-list">
+                {% for req in pending_requests %}
+                    <div class="ind-relationship-item">
+                        <span class="ind-relationship-type">{{ req.relationship_type.name }}</span>
+                        <span class="ind-relationship-user">{{ req.from_user.user.username }}</span>
+                        <span class="ind-relationship-date">{{ req.created_at }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if show_send_button %}
+            <button id="btn-send-relationship" class="ind-btn-primary ind-btn-block" data-username="{{ user.user.username }}">
+                {{ _('Gửi lời mời kết bạn') }}
+            </button>
+        {% endif %}
+
+        {% if not show_send_button and not is_owner %}
+            <p class="ind-placeholder">{{ _('Đã có mối quan hệ với người dùng này') }}</p>
+        {% endif %}
+    </div>
+</section>
+
+<div id="relationship-modal" class="ind-modal" style="display: none;">
+    <div class="ind-modal-content">
+        <div class="ind-modal-header">
+            <h3>{{ _('Gửi lời mời kết bạn') }}</h3>
+            <span class="ind-modal-close">&times;</span>
+        </div>
+        <div class="ind-modal-body">
+            <p>{{ _('Chọn loại mối quan hệ:') }}</p>
+            <div id="ind-relationship-types" class="ind-relationship-types">
+            </div>
+            <div id="ind-relationship-limit" class="ind-relationship-limit" style="display: none;">
+                <p class="ind-limit-text"></p>
+            </div>
+        </div>
+        <div class="ind-modal-footer">
+            <button id="ind-send-relationship" class="ind-btn-primary">{{ _('Gửi') }}</button>
+            <button id="ind-cancel-relationship" class="ind-btn-primary">{{ _('Hủy') }}</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.ind-relationship-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.ind-relationship-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #D0D0D0;
+    background: #FAFAFA;
+}
+
+.ind-relationship-type {
+    font-weight: 600;
+    color: #1A1A1A;
+    white-space: nowrap;
+}
+
+.ind-relationship-user a {
+    color: #FF6B00;
+    text-decoration: none;
+}
+
+.ind-relationship-user a:hover {
+    text-decoration: underline;
+}
+
+.ind-relationship-status {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.ind-relationship-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.ind-relationship-pending-type {
+    font-size: 0.85em;
+    color: #FF6B00;
+    font-weight: 600;
+}
+
+.ind-relationship-limit {
+    margin-top: 12px;
+    padding: 10px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+    font-size: 0.85em;
+}
+
+.ind-relationship-types {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.ind-relationship-type-btn {
+    padding: 12px 16px;
+    border: 2px solid #D0D0D0;
+    background: #FFFFFF;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.ind-relationship-type-btn:hover {
+    border-color: #FF6B00;
+}
+
+.ind-relationship-type-btn.selected {
+    border-color: #FF6B00;
+    background: #FF6B00;
+    color: #FFFFFF;
+}
+
+.ind-relationship-type-name {
+    font-weight: 600;
+}
+
+.ind-relationship-type-limit {
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+.ind-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ind-modal-content {
+    background: #FFFFFF;
+    width: 90%;
+    max-width: 400px;
+    border: 2px solid #D0D0D0;
+}
+
+.ind-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 2px solid #D0D0D0;
+}
+
+.ind-modal-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+}
+
+.ind-modal-close {
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #1A1A1A;
+}
+
+.ind-modal-close:hover {
+    color: #FF6B00;
+}
+
+.ind-modal-body {
+    padding: 20px;
+}
+
+.ind-modal-footer {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 2px solid #D0D0D0;
+}
+
+.ind-btn-sm {
+    padding: 4px 12px;
+    font-size: 0.8em;
+}
+
+.ind-btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.ind-section-title {
+    font-size: 0.9em;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    color: #1A1A1A;
+}
+
+.ind-placeholder {
+    color: #888;
+    font-style: italic;
+}
+</style>
+
+<script>
+var selectedRelationshipType = null;
+
+$(document).ready(function() {
+    $.get('/relationship/types/', function(data) {
+        var $types = $('#ind-relationship-types');
+        data.types.forEach(function(type) {
+            $types.append(
+                '<div class="ind-relationship-type-btn" data-id="' + type.id + '" data-max="' + type.max_per_user + '">' +
+                '<div class="ind-relationship-type-name">' + type.name + '</div>' +
+                '<div class="ind-relationship-type-limit">Tối đa ' + type.max_per_user + ' / tài khoản</div>' +
+                '</div>'
+            );
+        });
+    });
+
+    $(document).on('click', '.ind-relationship-type-btn', function() {
+        $('.ind-relationship-type-btn').removeClass('selected');
+        $(this).addClass('selected');
+        selectedRelationshipType = $(this).data('id');
+    });
+
+    $('#ind-send-relationship').click(function() {
+        if (!selectedRelationshipType) {
+            alert('Vui lòng chọn loại mối quan hệ');
+            return;
+        }
+        var username = $('#relationship-modal').data('username');
+        $.post('/relationship/send/' + username + '/', {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'relationship_type': selectedRelationshipType
+        }, function(data) {
+            alert(data.message);
+            $('#relationship-modal').hide();
+            location.reload();
+        }).fail(function(xhr) {
+            var data = xhr.responseJSON;
+            alert(data.error || 'Có lỗi xảy ra');
+        });
+    });
+
+    $('#ind-cancel-relationship').click(function() {
+        $('#relationship-modal').hide();
+    });
+
+    $('.ind-modal-close').click(function() {
+        $('#relationship-modal').hide();
+    });
+
+    $(document).on('click', '#btn-send-relationship', function() {
+        var username = $(this).data('username');
+        $('#relationship-modal').data('username', username).show();
+    });
+});
+
+function acceptRelationship(id) {
+    $.post('/relationship/accept/' + id + '/', {
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+    }, function() { location.reload(); });
+}
+
+function rejectRelationship(id) {
+    $.post('/relationship/reject/' + id + '/', {
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+    }, function() { location.reload(); });
+}
+
+function acceptTypeChange(id) {
+    $.post('/relationship/accept-type-change/' + id + '/', {
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+    }, function() { location.reload(); });
+}
+
+function rejectTypeChange(id) {
+    $.post('/relationship/reject-type-change/' + id + '/', {
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+    }, function() { location.reload(); });
+}
+</script>

@@ -10,6 +10,10 @@
         {% include "user/_heatmap.html" %}
     {% endwith %}
 
+    {% with panel_id='relationships', title=_('Mối quan hệ'), lazy=True %}
+        {% include "user/_relationships.html" %}
+    {% endwith %}
+
     {% with panel_id='rating_chart', title=_('Rating History'), lazy=True %}
         {% include "user/_rating_chart.html" %}
     {% endwith %}
