@@ -71,3 +71,5 @@ celerybeat-schedule.*
 
 # Docs build
 docs/build/
+
+.cursorrules

@@ -4,13 +4,15 @@
 #user-links {
     top: 0;
     right: 0;
-    position: absolute;
+    position: static;
+    margin-left: auto;
     color: #333;
     padding-right: 10px;
     display: inline-flex;
     min-height: 100%;
     align-items: center;
     white-space: nowrap;
+    flex-shrink: 0;
 
     a, button {
         color: #333;
@@ -71,6 +73,8 @@
     border-radius: 12px;
     display: flex;
     align-items: center;
+    width: 100%;
+    min-width: 0;
 }
 
 // -- Liquid Glass Navbar --
@@ -82,28 +86,38 @@ nav {
     top: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 90vw;
-    max-width: 100em;
+    width: 90vw !important;
+    max-width: none !important;
     z-index: 500;
     height: 48px;
     margin: 0;
+    padding: 0 !important;
+    container-type: inline-size;
+    container-name: navbar;
 
-    // Solid navbar
-    background: #fff;
+    // Liquid glass effect
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
     border-radius: 16px;
-    border: 1px solid $ind-border;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    transition: box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    outline: none;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.15s ease-out;
 
     &:hover {
+        background: rgba(255, 255, 255, 0.65);
         box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
     }
 
     ul {
-        margin: 0 0 0 -5px;
-        padding: 0 0 0 1%;
-        display: block;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
         position: relative;
+        flex-shrink: 0;
+        min-width: 0;
 
         .nav-underline {
             position: absolute;
@@ -123,6 +137,8 @@ nav {
             position: relative;
             font-family: 'Noto Serif', serif;
             font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
 
             &.home-nav-element a {
                 padding: 0;
@@ -243,104 +259,58 @@ nav {
 }
 
 @media (max-width: 760px) {
+    // Mobile: giữ layout ngang như desktop, chỉ thu nhỏ
     nav {
-        top: 6px;
-        left: 6px;
-        right: 6px;
-        height: 42px;
-        border-radius: 12px;
-        transform: none;
-        width: auto;
+        width: 95vw !important;
+        max-width: none !important;
     }
 
-    #nav-container {
-        margin: 0 4px;
-        border-radius: 8px;
-    }
-
-    #navigation {
-        height: 36px;
-    }
-
+    // Ẩn hamburger
     #navicon {
-        transition-duration: 0.25s;
-        display: block;
-        line-height: 26px;
-        font-size: 2em;
-        color: #333;
-        padding: 0 0.25em;
-        margin: 4px 0.25em;
-        white-space: nowrap;
-        float: left;
-
-        &.hover {
-            color: $highlight_blue;
-            transition-duration: 0.25s;
-        }
+        display: none !important;
     }
 
+    // Nav-list luôn hiển thị (không cần toggle)
     #nav-list {
-        display: none;
-        padding: 4px;
-        margin: 0;
-        position: fixed;
-        top: 52px;
-        left: 6px;
-        right: 6px;
-        bottom: auto;
-        width: auto;
-
-        // Liquid glass mobile menu
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(12px) saturate(150%);
-        -webkit-backdrop-filter: blur(12px) saturate(150%);
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-
-        &.show-list {
-            display: block;
-            animation: slideInLeft 200ms ease-out both;
-        }
+        display: flex !important;
+        max-height: none !important;
+        opacity: 1 !important;
+        padding: 0 8px !important;
+        overflow: visible !important;
+        position: static !important;
+        pointer-events: auto !important;
+        z-index: auto !important;
 
         li {
-            display: block;
-
-            a {
-                display: block;
-                border-radius: 8px;
-                margin: 2px 0;
-
-                .nav-expand {
-                    float: right;
-                    display: block;
-                    height: inherit;
-                    margin: (-13px) -7px;
-                    padding: inherit;
-                }
-            }
-
-            ul {
-                left: 0;
-                top: 40px;
-                background: #fff;
-                border-radius: 14px;
-                border: 1px solid $ind-border;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-
-                &.show-list {
-                    display: block;
-                }
-            }
+            display: inline-block !important;
+            opacity: 1 !important;
+            transform: none !important;
 
             &.home-nav-element {
-                display: none;
+                display: none !important;
             }
+        }
+
+        > li > ul {
+            position: absolute;
+            top: 100%;
+            left: 0;
         }
     }
 
-    #user-links > ul > li > a > span {
-        padding: 6px 8px;
+    // User-links hiển thị inline
+    #user-links {
+        display: inline-flex !important;
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transform: none !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
     }
 }
 

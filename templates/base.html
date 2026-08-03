@@ -341,7 +341,11 @@
 </svg>
 <nav id="navigation" class="unselectable">
     <div id="nav-container">
-        <a id="navicon" href="javascript:void(0)"><i class="fa fa-bars"></i></a>
+        <button id="navicon" type="button" aria-label="Toggle menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
         <ul id="nav-list">
             {% if request.organization is not defined %}
                 <li class="home-nav-element"><a href="{{ url('home') }}">{% include "site-logo-fragment.html" %}</a></li>
@@ -526,34 +530,35 @@
     {% endif %}
 
     {% block bodyend %}{% endblock %}
-
-    <footer id="site-footer">
-        <div class="footer-inner">
-            <div class="footer-section footer-brand">
-                <span class="footer-logo">FreateOJ</span>
-                <span class="footer-tagline">{{ _('Competitive Programming Platform') }}</span>
-            </div>
-            <div class="footer-section footer-links">
-                <a href="https://github.com/freatevietnam/freateoj">
-                    <i class="fa fa-github"></i> GitHub
-                </a>
-                <span class="footer-sep">|</span>
-                <a href="https://www.facebook.com/profile.php?id=61590965260203">
-                    <i class="fa fa-facebook"></i> Facebook
-                </a>
-                <span class="footer-sep">|</span>
-                <a href="https://dmoj.ca">
-                    <i class="fa fa-code"></i> DMOJ
-                </a>
-            </div>
-            <div class="footer-section footer-meta">
-                {% if misc_config.footer %}
-                    <span>{{ misc_config.footer|safe }}</span>
-                    <span class="footer-sep">|</span>
-                {% endif %}
-                <span>{{ _('Powered by %(dmoj)s', dmoj=safe('<a href="https://dmoj.ca">DMOJ</a>')) }}</span>
-            </div>
-        </div>
-    </footer>
 </div>
+
+<footer id="site-footer">
+    <div class="footer-inner">
+        <div class="footer-section footer-brand">
+            <span class="footer-logo">FreateOJ</span>
+            <span class="footer-tagline">{{ _('Competitive Programming Platform') }}</span>
+        </div>
+        <div class="footer-section footer-links">
+            <a href="https://github.com/freatevietnam/freateoj">
+                <i class="fa fa-github"></i> GitHub
+            </a>
+            <span class="footer-sep">|</span>
+            <a href="https://www.facebook.com/profile.php?id=61590965260203">
+                <i class="fa fa-facebook"></i> Facebook
+            </a>
+            <span class="footer-sep">|</span>
+            <a href="https://dmoj.ca">
+                <i class="fa fa-code"></i> DMOJ
+            </a>
+        </div>
+        <div class="footer-section footer-meta">
+            {% if misc_config.footer %}
+                <span>{{ misc_config.footer|safe }}</span>
+                <span class="footer-sep">|</span>
+            {% endif %}
+            <span>{{ _('Powered by %(dmoj)s', dmoj=safe('<a href="https://dmoj.ca">DMOJ</a>')) }}</span>
+        </div>
+    </div>
+</footer>
+</body>
 </html>

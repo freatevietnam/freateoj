@@ -106,8 +106,10 @@ div.info-float {
 footer {
     color: $color_primary50;
     display: block;
-    width: 90vw;
-    margin: 0 auto;
+    width: 90vw !important;
+    max-width: none !important;
+    margin: 16px auto 0;
+    padding: 0 !important;
 }
 
 body {
@@ -161,7 +163,7 @@ hr {
 
 #content {
     margin: 52px auto auto;
-    width: 90vw;
+    width: 80vw;
 
     .title {
         color: $color_primary75;
@@ -175,20 +177,20 @@ footer {
     border-top: none;
     background: transparent;
     position: relative;
-    padding: 0;
+    padding: 0 8px 8px;
     width: 100%;
-    margin-top: 24px;
+    box-sizing: border-box;
 
     .footer-inner {
-        background: transparent;
-        border-top: 1px solid #e0e0e0;
-        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        padding: 16px 24px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
         gap: 12px 24px;
-        max-width: 100%;
+        max-width: 100em;
         margin-left: auto;
         margin-right: auto;
     }
@@ -264,7 +266,8 @@ footer {
     footer .footer-inner {
         flex-direction: column;
         gap: 10px;
-        padding: 16px 20px;
+        padding: 14px 16px;
+        border-radius: 12px;
     }
 
     footer .footer-brand .footer-logo {
@@ -374,8 +377,9 @@ noscript #noscript {
     margin: 0 auto;
     background: #fff;
     padding: 0 12px;
-    border-radius: 25%;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #ccc;
+    width: 90vw;
+    max-width: none;
 }
 
 // border-bottom: 1px solid rgb(204, 204, 204)
@@ -433,14 +437,14 @@ math {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 90vw;
+    width: 80vw;
     height: 90vh;
     overflow: hidden;
 }
 
 .img-lightbox-img {
     position: relative;
-    max-width: 90vw;
+    max-width: 80vw;
     max-height: 90vh;
     width: auto;
     height: auto;

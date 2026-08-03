@@ -75,3 +75,6 @@ INFO 2026-07-31 05:49:51,254 judge_list Minimum tier changed from None to 1
 INFO 2026-07-31 09:27:17,555 judge_handler Judge connected from: ('127.0.0.1', 59050)
 INFO 2026-07-31 09:27:17,570 judge_handler Judge authenticated: ('127.0.0.1', 59050) (judge)
 INFO 2026-07-31 09:27:17,570 judge_list Minimum tier changed from None to 1
+INFO 2026-08-03 03:36:55,391 daemon Exiting due to SIGINT
+INFO 2026-08-03 03:37:45,108 daemon Exiting due to SIGINT
+INFO 2026-08-03 03:48:24,639 daemon Exiting due to SIGINT

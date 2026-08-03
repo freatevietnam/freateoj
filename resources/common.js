@@ -118,10 +118,15 @@ $(function () {
     }
 
     var $nav_list = $('#nav-list');
-    $('#navicon').click(function (event) {
+    var $navicon = $('#navicon');
+    var $user_links = $('#user-links');
+    var $body = $('body');
+
+    $navicon.click(function (event) {
         event.stopPropagation();
         $nav_list.toggleClass('show-list');
-        if ($nav_list.is(':hidden'))
+        $navicon.toggleClass('active');
+        if (!$nav_list.hasClass('show-list'))
             $(this).blur().removeClass('hover');
         else {
             $(this).addClass('hover');
@@ -130,6 +135,227 @@ $(function () {
         $(this).addClass('hover');
     }, function () {
         $(this).removeClass('hover');
+    });
+
+    // Auto-scale nav font-size để vừa khít navbar
+    var NAV_SCALE_STORAGE_KEY = 'nav-scale-factor';
+
+    function autoScaleNav() {
+        var nav = document.getElementById('navigation');
+        var container = document.getElementById('nav-container');
+        if (!nav || !container) return;
+
+        var navList = document.getElementById('nav-list');
+        var userLinks = document.getElementById('user-links');
+        if (!navList || !userLinks) return;
+
+        // ===== RESET: Hiện tất cả các element đã bị ẩn trước đó =====
+        var toToggle = [
+            navList.querySelectorAll('.home-nav-element'),
+            userLinks.querySelectorAll('a > span > span'),         // "Xin chào, ..."
+            userLinks.querySelectorAll('.notification-wrapper'),   // chuông
+            userLinks.querySelectorAll('a[href*="ticket"]'),       // report issue
+            userLinks.querySelectorAll('a[href*="misc_config"], a[href*="settings"]'), // bánh răng (superuser)
+            userLinks.querySelectorAll('#user-links > ul:first-child > li'), // settings dropdown
+        ];
+        toToggle.forEach(function (els) {
+            els.forEach(function (el) { el.style.display = ''; });
+        });
+        userLinks.style.display = '';
+
+        // Thu thập các element cần scale (chỉ scale các span/a của nav-items)
+        var navItems = navList.querySelectorAll(':scope > li > a');
+        var itemsData = [];
+        navItems.forEach(function (a) {
+            var span = a.querySelector(':scope > span');
+            var computedA = getComputedStyle(a);
+            var computedSpan = span ? getComputedStyle(span) : null;
+            itemsData.push({
+                a: a,
+                span: span,
+                aFontSize: parseFloat(computedA.fontSize),
+                aPaddingTop: parseFloat(computedA.paddingTop),
+                aPaddingRight: parseFloat(computedA.paddingRight),
+                aPaddingBottom: parseFloat(computedA.paddingBottom),
+                aPaddingLeft: parseFloat(computedA.paddingLeft),
+                spanFontSize: computedSpan ? parseFloat(computedSpan.fontSize) : 0,
+                spanPaddingTop: computedSpan ? parseFloat(computedSpan.paddingTop) : 0,
+                spanPaddingRight: computedSpan ? parseFloat(computedSpan.paddingRight) : 0,
+                spanPaddingBottom: computedSpan ? parseFloat(computedSpan.paddingBottom) : 0,
+                spanPaddingLeft: computedSpan ? parseFloat(computedSpan.paddingLeft) : 0,
+            });
+        });
+
+        function applyFactor(factor) {
+            // factor: 1.0 = gốc, 0.5 = một nửa
+            itemsData.forEach(function (it) {
+                it.a.style.fontSize = (it.aFontSize * factor) + 'px';
+                it.a.style.padding = (it.aPaddingTop * factor) + 'px '
+                    + (it.aPaddingRight * factor) + 'px '
+                    + (it.aPaddingBottom * factor) + 'px '
+                    + (it.aPaddingLeft * factor) + 'px';
+                if (it.span) {
+                    it.span.style.fontSize = (it.spanFontSize * factor) + 'px';
+                    it.span.style.padding = (it.spanPaddingTop * factor) + 'px '
+                        + (it.spanPaddingRight * factor) + 'px '
+                        + (it.spanPaddingBottom * factor) + 'px '
+                        + (it.spanPaddingLeft * factor) + 'px';
+                }
+            });
+        }
+
+        function hideElements(els) {
+            els.forEach(function (el) { el.style.display = 'none'; });
+        }
+
+        function measure() {
+            return {
+                nav: nav.clientWidth,
+                list: navList.scrollWidth,
+                user: userLinks.offsetWidth,
+                total: navList.scrollWidth + userLinks.offsetWidth
+            };
+        }
+
+        applyFactor(1);
+
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                var navWidth = nav.clientWidth;
+
+                // Bước 1: ẨN dần các element ít quan trọng
+                var m = measure();
+                if (m.total > navWidth) {
+                    hideElements(navList.querySelectorAll('.home-nav-element'));
+                    m = measure();
+                }
+                if (m.total > navWidth) {
+                    hideElements(userLinks.querySelectorAll('#user-links > ul:first-child > li'));
+                    hideElements(userLinks.querySelectorAll('a[href*="misc_config"]'));
+                    m = measure();
+                }
+                if (m.total > navWidth) {
+                    hideElements(userLinks.querySelectorAll('a[href*="ticket"]'));
+                    m = measure();
+                }
+                if (m.total > navWidth) {
+                    hideElements(userLinks.querySelectorAll('.notification-wrapper'));
+                    m = measure();
+                }
+                if (m.total > navWidth) {
+                    hideElements(userLinks.querySelectorAll('a > span > span'));
+                    m = measure();
+                }
+                if (m.total > navWidth) {
+                    userLinks.style.display = 'none';
+                    m = measure();
+                }
+
+                // Bước 2: Scale giảm dần cho đến khi vừa khít (không giới hạn số lần)
+                // Bắt đầu từ factor trong cache nếu có
+                var cachedFactor = null;
+                try {
+                    var raw = localStorage.getItem(NAV_SCALE_STORAGE_KEY);
+                    if (raw) cachedFactor = parseFloat(raw);
+                } catch (e) { /* ignore */ }
+
+                var factor = (cachedFactor && cachedFactor > 0.4 && cachedFactor <= 1) ? cachedFactor : 1;
+                applyFactor(factor);
+
+                // Đo lại sau khi apply cached
+                requestAnimationFrame(function () {
+                    m = measure();
+                    var minFactor = 0.4;
+                    var maxFactor = 1;
+
+                    // Nếu vẫn tràn: giảm dần đến khi vừa khít
+                    if (m.total > navWidth) {
+                        var step = 0.02;
+                        while (factor > minFactor) {
+                            factor -= step;
+                            applyFactor(factor);
+                            m = measure();
+                            if (m.total <= navWidth) break;
+                            if (factor <= minFactor) break;
+                        }
+                    } else {
+                        // Nếu dư nhiều: tăng dần đến khi vừa khít
+                        var stepUp = 0.02;
+                        while (factor < maxFactor) {
+                            var testFactor = factor + stepUp;
+                            applyFactor(testFactor);
+                            m = measure();
+                            if (m.total > navWidth) {
+                                applyFactor(factor);
+                                m = measure();
+                                break;
+                            }
+                            factor = testFactor;
+                        }
+                    }
+
+                    // Lưu vào localStorage
+                    try {
+                        localStorage.setItem(NAV_SCALE_STORAGE_KEY, factor.toString());
+                    } catch (e) { /* ignore */ }
+
+                    console.log('[autoScaleNav] final factor:', factor, 'totalWidth:', m.total, 'navWidth:', navWidth);
+                });
+            });
+        });
+    }
+
+    // Chạy sau khi DOM sẵn sàng và sau khi load font
+    var scaleRan = false;
+    function runScale(forceReset) {
+        if (forceReset) {
+            scaleRan = false;
+            try { localStorage.removeItem(NAV_SCALE_STORAGE_KEY); } catch (e) {}
+        }
+        if (scaleRan) return;
+        scaleRan = true;
+        autoScaleNav();
+    }
+
+    $(window).on('load', function () {
+        runScale();
+    });
+    $(document).ready(function () {
+        // Chạy nhiều lần trong vài giây đầu vì font có thể load chậm
+        runScale();
+        setTimeout(function () { runScale(); }, 200);
+        setTimeout(function () { runScale(); }, 500);
+        setTimeout(function () { runScale(); }, 1000);
+    });
+
+    // ResizeObserver: chỉ reset cache khi width thay đổi đáng kể (>20%)
+    var lastNavWidth = 0;
+    if (window.ResizeObserver) {
+        var ro = new ResizeObserver(function (entries) {
+            for (var i = 0; i < entries.length; i++) {
+                var w = entries[i].contentRect.width;
+                if (lastNavWidth && (Math.abs(w - lastNavWidth) / lastNavWidth) > 0.2) {
+                    runScale(true); // reset cache
+                } else {
+                    runScale(false); // dùng cache
+                }
+                lastNavWidth = w;
+                break;
+            }
+        });
+        var nav = document.getElementById('navigation');
+        if (nav) ro.observe(nav);
+    } else {
+        $(window).on('resize', function () {
+            runScale(true);
+        });
+    }
+
+    // Đóng mobile menu khi resize sang desktop
+    $(window).on('resize', function () {
+        if (!isMobile() && $body.hasClass('mobile-menu-open')) {
+            closeMobileMenu();
+        }
     });
 
     $nav_list.find('li a .nav-expand').click(function (event) {
@@ -153,6 +379,7 @@ $(function () {
 
     $('html').click(function () {
         $nav_list.removeClass('show-list');
+        $navicon.removeClass('active');
     });
 
     // Sliding underline for navbar
@@ -161,10 +388,18 @@ $(function () {
 
     function updateUnderline($link) {
         if (!$link.length) return;
+        // Disable animation khi scale quá nhỏ (font-size dưới ngưỡng đọc được)
+        var cachedFactor = 1;
+        try {
+            var raw = localStorage.getItem(NAV_SCALE_STORAGE_KEY);
+            if (raw) cachedFactor = parseFloat(raw);
+        } catch (e) { /* ignore */ }
+        if (cachedFactor < 0.7) return;
+
         var navLeft = $navUl.offset().left;
         var linkLeft = $link.offset().left;
         var width = $link.outerWidth();
-        
+
         $underline.css({
             left: (linkLeft - navLeft) + 'px',
             width: width + 'px',
@@ -183,6 +418,15 @@ $(function () {
     // Set initial underline position to active item
     var $activeItem = $('#nav-list > li').has('.active');
     function setInitialUnderline() {
+        var cachedFactor = 1;
+        try {
+            var raw = localStorage.getItem(NAV_SCALE_STORAGE_KEY);
+            if (raw) cachedFactor = parseFloat(raw);
+        } catch (e) { /* ignore */ }
+        if (cachedFactor < 0.7) {
+            $underline.css('opacity', 0);
+            return;
+        }
         if ($activeItem.length) {
             var $link = $activeItem.children('a, button').first();
             updateUnderline($link);
