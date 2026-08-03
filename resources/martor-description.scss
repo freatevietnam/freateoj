@@ -184,8 +184,54 @@ form .enable-living {
 }
 
 /* Django Admin */
-.submit-row a {
-    box-sizing: content-box;
+
+// Admin buttons styling
+.submit-row {
+    a {
+        box-sizing: content-box;
+        border-radius: $widget_border_radius;
+    }
+}
+
+.object-tools {
+    a, li {
+        border-radius: $widget_border_radius;
+    }
+}
+
+// Primary action buttons (green/default Django)
+.default-btn,
+input[type="submit"].default,
+input[type="button"].default,
+.button.default,
+.deletelink {
+    border-radius: $widget_border_radius;
+}
+
+// Add/edit buttons
+.add-another,
+.add-related,
+.related-lookup,
+.lookup-choose,
+[id^="add_id_"],
+[id^="changeid_"] {
+    border-radius: $widget_border_radius;
+}
+
+// Admin button resets for consistency
+#content .button,
+#content input[type="submit"],
+#content input[type="button"],
+#content .submit-row input,
+#content .form-row .field-box input[type="submit"] {
+    border-radius: $widget_border_radius;
+}
+
+// Button hover states
+#changelist-form .button:hover,
+#content .button:hover,
+.submit-row input:hover {
+    border-radius: $widget_border_radius;
 }
 
 body.overflow {

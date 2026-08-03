@@ -175,20 +175,20 @@ footer {
     border-top: none;
     background: transparent;
     position: relative;
-    padding: 0 8px 8px;
+    padding: 0;
     width: 100%;
-    box-sizing: border-box;
+    margin-top: 24px;
 
     .footer-inner {
-        background: #fff;
-        border: 1px solid #e0e0e0;
-        padding: 16px 24px;
+        background: transparent;
+        border-top: 1px solid #e0e0e0;
+        padding: 20px 24px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
         gap: 12px 24px;
-        max-width: 100em;
+        max-width: 100%;
         margin-left: auto;
         margin-right: auto;
     }
@@ -264,8 +264,7 @@ footer {
     footer .footer-inner {
         flex-direction: column;
         gap: 10px;
-        padding: 14px 16px;
-        border-radius: 12px;
+        padding: 16px 20px;
     }
 
     footer .footer-brand .footer-logo {
@@ -375,6 +374,8 @@ noscript #noscript {
     margin: 0 auto;
     background: #fff;
     padding: 0 12px;
+    border-radius: 25%;
+    border: 1px solid #e0e0e0;
 }
 
 // border-bottom: 1px solid rgb(204, 204, 204)
