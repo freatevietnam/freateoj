@@ -1,3 +1,7 @@
+window.isMobile = function () {
+    return window.matchMedia('(max-width: 760px)').matches;
+};
+
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function (searchString, position) {
         return this.substr(position || 0, searchString.length) === searchString;
@@ -122,10 +126,17 @@ $(function () {
     var $user_links = $('#user-links');
     var $body = $('body');
 
+    function closeMobileMenu() {
+        if ($nav_list && $nav_list.length) $nav_list.removeClass('show-list');
+        if ($navicon && $navicon.length) $navicon.removeClass('active');
+        if ($body && $body.length) $body.removeClass('mobile-menu-open');
+    }
+
     $navicon.click(function (event) {
         event.stopPropagation();
         $nav_list.toggleClass('show-list');
         $navicon.toggleClass('active');
+        $body.toggleClass('mobile-menu-open');
         if (!$nav_list.hasClass('show-list'))
             $(this).blur().removeClass('hover');
         else {
@@ -353,7 +364,7 @@ $(function () {
 
     // Đóng mobile menu khi resize sang desktop
     $(window).on('resize', function () {
-        if (!isMobile() && $body.hasClass('mobile-menu-open')) {
+        if (!window.isMobile() && $body.hasClass('mobile-menu-open')) {
             closeMobileMenu();
         }
     });
@@ -378,8 +389,7 @@ $(function () {
     });
 
     $('html').click(function () {
-        $nav_list.removeClass('show-list');
-        $navicon.removeClass('active');
+        closeMobileMenu();
     });
 
     // Sliding underline for navbar
@@ -387,7 +397,7 @@ $(function () {
     var $underline = $('<div class="nav-underline"></div>').appendTo($navUl);
 
     function updateUnderline($link) {
-        if (!$link.length) return;
+        if (!$link || !$link.length) return;
         // Disable animation khi scale quá nhỏ (font-size dưới ngưỡng đọc được)
         var cachedFactor = 1;
         try {
@@ -396,8 +406,12 @@ $(function () {
         } catch (e) { /* ignore */ }
         if (cachedFactor < 0.7) return;
 
-        var navLeft = $navUl.offset().left;
-        var linkLeft = $link.offset().left;
+        var navOffset = $navUl.offset();
+        var linkOffset = $link.offset();
+        if (!navOffset || !linkOffset) return;
+
+        var navLeft = navOffset.left;
+        var linkLeft = linkOffset.left;
         var width = $link.outerWidth();
 
         $underline.css({
@@ -496,6 +510,7 @@ function count_down(label) {
 }
 
 function register_time(elems, limit) {
+    if (typeof moment === 'undefined') return;
     limit = 60;
     elems.each(function () {
         var outdated = false;
