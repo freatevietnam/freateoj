@@ -13,28 +13,28 @@
 
 {% block after_field_sets %}{{ block.super }}
     {% if original %}
-        <button style="display: none" title="{% trans "Disconnect" %}" onclick="window.location.href='{% url 'admin:judge_judge_disconnect' original.pk %}'"
+        <button type="button" style="display: none" title="{% trans "Disconnect" %}" onclick="window.location.href='{% url 'admin:judge_judge_disconnect' original.pk %}'"
            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn disconnect-link action-link">
             <i class="fa fa-lg fa-power-off"></i>
             <span class="text">{% trans "Disconnect" %}</span>
-        </a>
-        <button style="display: none" title="{% trans "Terminate" %}" onclick="window.location.href='{% url 'admin:judge_judge_terminate' original.pk %}'"
+        </button>
+        <button type="button" style="display: none" title="{% trans "Terminate" %}" onclick="window.location.href='{% url 'admin:judge_judge_terminate' original.pk %}'"
            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn terminate-link action-link">
             <i class="fa fa-lg fa-plug"></i>
             <span class="text">{% trans "Terminate" %}</span>
-        </a>
+        </button>
         {% if not original.is_disabled %}
-            <button style="display: none" title="{% trans "Disable" %}" onclick="window.location.href='{% url 'admin:judge_judge_disable' original.pk %}'"
+            <button type="button" style="display: none" title="{% trans "Disable" %}" onclick="window.location.href='{% url 'admin:judge_judge_disable' original.pk %}'"
             class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn disable-link action-link">
                 <i class="fa fa-lg fa-times"></i>
                 <span class="text">{% trans "Disable" %}</span>
-            </a>
+            </button>
         {% else %}
-            <button style="display: none" title="{% trans "Enable" %}" onclick="window.location.href='{% url 'admin:judge_judge_disable' original.pk %}'"
+            <button type="button" style="display: none" title="{% trans "Enable" %}" onclick="window.location.href='{% url 'admin:judge_judge_disable' original.pk %}'"
             class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn disable-link action-link">
                 <i class="fa fa-lg fa-check"></i>
                 <span class="text">{% trans "Enable" %}</span>
-            </a>
+            </button>
         {% endif %}
     {% endif %}
 {% endblock %}

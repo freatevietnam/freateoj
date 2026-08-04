@@ -11,10 +11,10 @@
 
 {% block after_field_sets %}{{ block.super }}
     {% if original %}
-        <button style="display: none" title="{% trans "Edit user" %}" onclick="window.location.href='{% url 'admin:auth_user_change' original.user.pk %}'"
+        <button type="button" style="display: none" title="{% trans "Edit user" %}" onclick="window.location.href='{% url 'admin:auth_user_change' original.user.pk %}'"
            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn userlink">
             <i class="fa fa-lg fa-user"></i>
             <span class="text">{% trans "Edit user" %}</span>
-        </a>
+        </button>
     {% endif %}
 {% endblock %}

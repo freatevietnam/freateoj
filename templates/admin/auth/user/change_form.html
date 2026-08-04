@@ -12,16 +12,16 @@
 
 {% block after_field_sets %}{{ block.super }}
     {% if original.profile_id %}
-        <button style="display: none" title="{% trans "Edit profile" %}" onclick="window.location.href='{% url 'admin:judge_profile_change' original.profile.pk %}'"
+        <button type="button" style="display: none" title="{% trans "Edit profile" %}" onclick="window.location.href='{% url 'admin:judge_profile_change' original.profile.pk %}'"
            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn profilelink">
             <i class="fa fa-lg fa-user-plus"></i>
             <span class="text">{% trans "Edit profile" %}</span>
-        </a>
+        </button>
     {% else %}
-        <button style="display: none" title="{% trans "Create profile" %}" onclick="window.location.href='{% url 'create_profile' original.pk %}'"
+        <button type="button" style="display: none" title="{% trans "Create profile" %}" onclick="window.location.href='{% url 'create_profile' original.pk %}'"
            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn createprofilelink">
             <i class="fa fa-lg fa-user-plus"></i>
             <span class="text">{% trans "Create profile" %}</span>
-        </a>
+        </button>
     {% endif %}
 {% endblock %}

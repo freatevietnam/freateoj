@@ -24,10 +24,10 @@
 
 {% block after_field_sets %}{{ block.super }}
     {% if original and original.is_rated and original.ended and perms.judge.contest_rating %}
-        <button style="display: none" title="{% trans "Rate" %}" onclick="window.location.href='{% url 'admin:judge_contest_rate' original.pk %}'"
+        <button type="button" style="display: none" title="{% trans "Rate" %}" onclick="window.location.href='{% url 'admin:judge_contest_rate' original.pk %}'"
            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn rerate-link action-link">
             <i class="fa fa-lg fa-signal"></i>
             <span class="text">{% trans "Rate" %}</span>
-        </a>
+        </button>
     {% endif %}
 {% endblock %}

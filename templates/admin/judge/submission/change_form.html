@@ -11,10 +11,10 @@
 
 {% block after_field_sets %}{{ block.super }}
     {% if original and not original.is_locked %}
-        <button style="display: none" title="{% trans "Rejudge" %}" onclick="window.location.href='{% url 'admin:judge_submission_rejudge' original.pk %}'"
+        <button type="button" style="display: none" title="{% trans "Rejudge" %}" onclick="window.location.href='{% url 'admin:judge_submission_rejudge' original.pk %}'"
            class="ind-btn-ghost ind-flex-1 ind-flex-center-text ind-btn-orange brutalist-btn rejudgelink action-link">
             <i class="fa fa-lg fa-refresh"></i>
             <span class="text">{% trans "Rejudge" %}</span>
-        </a>
+        </button>
     {% endif %}
 {% endblock %}
