@@ -150,6 +150,11 @@ class ProblemSolution(SolvedProblemMixin, ProblemMixin, TitleMixin, CommentedDet
                                _('Could not find an editorial with the code "%s".') % code, status=404)
 
 
+class ProblemSolutionComments(ProblemSolution):
+    template_name = 'problem/editorial-comments-tab.html'
+    skip_comment_list = False
+
+
 class ProblemRaw(ProblemMixin, TitleMixin, TemplateResponseMixin, SingleObjectMixin, View):
     context_object_name = 'problem'
     template_name = 'problem/raw.html'
@@ -481,6 +486,11 @@ class ProblemDetail(ProblemMixin, SolvedProblemMixin, ProblemSubmitMixin, Commen
 
         # Otherwise, handle as comment
         return super(ProblemDetail, self).post(request, *args, **kwargs)
+
+
+class ProblemComments(ProblemDetail):
+    template_name = 'problem/comments-tab.html'
+    skip_comment_list = False
 
 
 class LatexError(Exception):

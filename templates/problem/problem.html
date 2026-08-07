@@ -438,9 +438,10 @@
                 {% endif %}
             </div>
         {% else %}
-            {% with comment_warn_code=true %}
-                {% include "comments/list.html" %}
-            {% endwith %}
+            {% block comments %}
+                <div id="comments" data-comments-url="{{ url('problem_comments', problem.code) }}"></div>
+                {% include "comments/lazy-load-js.html" %}
+            {% endblock %}
         {% endif %}
     </div>
 {% endblock %}

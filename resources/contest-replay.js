@@ -1,10 +1,38 @@
-/* Contest Replay Player - Skeleton
- * Provides infrastructure for animated scoreboard playback.
- * Entry point: window.ContestReplay.init(container, url)
- */
+/* Contest Replay & Ghost Participation Handling */
 
 (function () {
     'use strict';
+
+    function blockForVirtual($el, tooltip) {
+        $el.addClass('replay-blocked').attr('data-tooltip', tooltip);
+        $el.children().css({ 'opacity': 0.5, 'pointer-events': 'none' });
+        $el.find('input, button').prop('disabled', true);
+    }
+
+    $(function () {
+        var showVirtual = window.CONTEST_SHOW_VIRTUAL;
+        var virtualTooltip = window.CONTEST_REPLAY_VIRTUAL_TOOLTIP;
+
+        if (showVirtual) {
+            var $tip = null;
+            $(document)
+                .on('mouseenter', '.replay-blocked', function () {
+                    if (!$tip) $tip = $('<div class="replay-tooltip"></div>').appendTo('body');
+                    $tip.text($(this).attr('data-tooltip')).show();
+                })
+                .on('mousemove', '.replay-blocked', function (e) {
+                    if ($tip) $tip.css({ left: (e.clientX + 12) + 'px', top: (e.clientY + 12) + 'px' });
+                })
+                .on('mouseleave', '.replay-blocked', function () {
+                    if ($tip) $tip.hide();
+                });
+        }
+
+        var $ghost = $('#show-ghosts-checkbox');
+        if ($ghost.length && showVirtual) {
+            blockForVirtual($('#show-ghosts-wrap'), virtualTooltip);
+        }
+    });
 
     window.ContestReplay = {
         container: null,
@@ -53,7 +81,6 @@
         },
 
         render: function () {
-            // Placeholder for rendering ranking data
             if (!this.data || !this.container) return;
             var rankingDiv = this.container.querySelector('#replay-ranking');
             if (rankingDiv) {

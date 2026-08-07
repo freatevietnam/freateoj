@@ -299,7 +299,17 @@ class ContestAdmin(AdminFastPaginationMixin, NoBatchDeleteMixin, SortableAdminBa
             path('<int:contest_id>/rejudge/<int:problem_id>/', self.rejudge_view, name='judge_contest_rejudge'),
             path('<int:contest_id>/rescore/<int:problem_id>/', self.rescore_view, name='judge_contest_rescore'),
             path('<int:contest_id>/resend/<int:announcement_id>/', self.resend_view, name='judge_contest_resend'),
+            path('<int:contest_id>/invalidate_replay/', self.invalidate_replay_view, name='judge_contest_invalidate_replay'),
         ] + super(ContestAdmin, self).get_urls()
+
+    def invalidate_replay_view(self, request, contest_id):
+        if not request.user.has_perm('judge.change_contest'):
+            raise PermissionDenied()
+        contest = get_object_or_404(Contest, pk=contest_id)
+        contest.replay_version += 1
+        contest.save(update_fields=['replay_version'])
+        self.message_user(request, _('Invalidated replay cache.'))
+        return HttpResponseRedirect(reverse('admin:judge_contest_change', args=(contest_id,)))
 
     @method_decorator(require_POST)
     def rejudge_view(self, request, contest_id, problem_id):

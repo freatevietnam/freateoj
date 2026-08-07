@@ -366,9 +366,21 @@ class ContestDetail(ContestMixin, TitleMixin, CommentedDetailView):
         context['completed_problem_ids'] = user_completed_ids(self.request.profile) if authenticated else []
         context['attempted_problem_ids'] = user_attempted_ids(self.request.profile) if authenticated else []
 
-        context['can_download_data'] = bool(settings.DMOJ_CONTEST_DATA_DOWNLOAD)
-
         return context
+
+
+class ContestComments(ContestMixin, CommentedDetailView):
+    template_name = 'contest/comments-tab.html'
+    skip_comment_list = False
+
+    def get_comment_page(self):
+        return 'c:%s' % self.object.key
+
+    def get_object(self, queryset=None):
+        contest = super(ContestComments, self).get_object(queryset)
+        if contest.start_time > timezone.now() and not contest.is_editable_by(self.request.user):
+            raise Http404()
+        return contest
 
 
 class ContestAllProblems(ContestMixin, TitleMixin, DetailView):
@@ -1077,6 +1089,7 @@ class ContestRanking(ContestRankingBase):
         context = super().get_context_data(**kwargs)
         context['has_rating'] = self.object.ratings.exists()
         context['show_virtual'] = self.show_virtual
+        context['has_ghosts'] = self.object.csv_ranking == Contest.HAS_GHOST_PARTICIPATION and self.object.can_replay
         context['is_frozen'] = self.is_frozen
         context['cache_timeout'] = 0 if self.bypass_cache_ranking else self.object.scoreboard_cache_timeout
         context['can_see_full_submission_list'] = self.object.can_see_full_submission_list(self.request.user)
@@ -1151,7 +1164,8 @@ class ContestOfficialRanking(ContestRankingBase):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not self.object.csv_ranking:
+        # HAS_GHOST_PARTICIPATION is a sentinel for the ghost-participations toggle, not real CSV data.
+        if not self.object.csv_ranking or self.object.csv_ranking == Contest.HAS_GHOST_PARTICIPATION:
             raise Http404()
 
         # If the csv_ranking is an url, redirect to it
@@ -1181,6 +1195,62 @@ class ContestParticipationDisqualify(ContestMixin, SingleObjectMixin, View):
         return HttpResponseRedirect(reverse('contest_ranking', args=(self.object.key,)))
 
 
+def contest_replay_data_path(contest):
+    replay_dir = settings.FREATEOJ_CONTEST_REPLAY_MEDIA_DIR
+    filename = f'{contest.key}_v{contest.replay_version}.json'
+    return os.path.join(replay_dir, filename), filename
+
+
+def build_contest_replay_data(contest):
+    duration = int((contest.end_time - contest.start_time).total_seconds())
+
+    problems = list(
+        contest.contest_problems
+        .select_related('problem').defer('problem__description').order_by('order'),
+    )
+
+    parts_qs = contest.users.filter(virtual=ContestParticipation.LIVE)
+    participations_data = make_contest_ranking_json(contest, problems, parts_qs)
+    for p in participations_data:
+        del p['score'], p['cumtime'], p['tiebreaker'], p['format_data']
+
+    subs_qs = (
+        ContestSubmission.objects
+        .filter(
+            participation__contest=contest,
+            participation__virtual=ContestParticipation.LIVE,
+        )
+        .values_list('participation_id', 'problem_id', 'points', 'submission__result', 'submission__date')
+        .order_by('submission__date')
+    )
+
+    subs = []
+    for part_id, prob_id, points, result, sub_date in subs_qs:
+        if result in (None, 'CE', 'IE'):
+            continue
+        t = (sub_date - contest.start_time).total_seconds()
+        subs.append([part_id, prob_id, float(points), round(t, 3)])
+
+    return {
+        'start': int(contest.start_time.timestamp()),
+        'duration': duration,
+        'frozen': 0,
+        'problems': [prob.id for prob in problems],
+        'participations': participations_data,
+        'subs': subs,
+    }
+
+
+def write_contest_replay_data(contest, data):
+    filepath, filename = contest_replay_data_path(contest)
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    tmp = filepath + '.tmp'
+    with open(tmp, 'w') as f:
+        json.dump(data, f, separators=(',', ':'))
+    os.replace(tmp, filepath)
+    return filepath, filename
+
+
 class ContestReplayData(ContestMixin, View):
     def get(self, request, contest, version):
         self.object = self.get_object()
@@ -1191,16 +1261,14 @@ class ContestReplayData(ContestMixin, View):
         if version != self.object.replay_version:
             raise Http404()
         
-        replay_dir = settings.FREATEOJ_CONTEST_REPLAY_MEDIA_DIR
-        replay_file = os.path.join(replay_dir, f'{self.object.key}_v{version}.json')
-        
-        if not os.path.exists(replay_file):
+        filepath, filename = contest_replay_data_path(self.object)
+        if not os.path.exists(filepath):
+            write_contest_replay_data(self.object, build_contest_replay_data(self.object))
+            
+        if os.path.getsize(filepath) > 10 * 1024 * 1024:
             raise Http404()
         
-        if os.path.getsize(replay_file) > 10 * 1024 * 1024:
-            raise Http404()
-        
-        with open(replay_file, 'r') as f:
+        with open(filepath, 'r') as f:
             data = json.load(f)
         
         response = JsonResponse(data)

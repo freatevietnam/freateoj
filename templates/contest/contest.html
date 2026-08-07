@@ -351,10 +351,10 @@
     </span>
 
 
-    {% if not comment_lock %}
-        {% include "comments/list.html" %}
-    {% endif %}
-
+    {% block comments %}
+        <div id="comments" data-comments-url="{{ url('contest_comments', contest.key) }}"></div>
+        {% include "comments/lazy-load-js.html" %}
+    {% endblock %}
     <div style="clear: both;"></div>
 {% endblock %}
 

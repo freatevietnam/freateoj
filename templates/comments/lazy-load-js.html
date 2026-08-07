@@ -1,0 +1,63 @@
+<script type="text/javascript">
+    $(function () {
+        var $section = $('#comments');
+        if (!$section.length) return;
+
+        var endpoint = $section.data('comments-url');
+        if (!endpoint) return;
+
+        var isLoaded = false;
+        var fetchPage = function (url) {
+            $section.html('<div class="comment-loader"><i class="fa fa-spinner fa-spin"></i></div>');
+            $.ajax({
+                url: url,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            }).done(function (html) {
+                $section.html(html);
+                if (window.initComments) window.initComments($section);
+            }).fail(function () {
+                $section.html('<div class="alert alert-error">' + {{ _('Failed to load comments.')|htmltojs }} + '</div>');
+            });
+        };
+
+        var loadComments = function () {
+            if (isLoaded) return;
+            isLoaded = true;
+
+            var targetUrl = endpoint;
+            if (window.location.search) {
+                var match = window.location.search.match(/[?&]page=\d+/);
+                if (match) {
+                    targetUrl += (targetUrl.indexOf('?') >= 0 ? '&' : '?') + match[0].substring(1);
+                }
+            }
+
+            fetchPage(targetUrl);
+        };
+
+        $section.on('click', '.pagination a', function (e) {
+            e.preventDefault();
+            var href = $(this).attr('href');
+            if (href) {
+                fetchPage(endpoint + href);
+            }
+        });
+
+        if (window.location.hash === '#comments' || window.location.hash.startsWith('#comment-')) {
+            loadComments();
+            return;
+        }
+
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function (entries) {
+                if (entries[0].isIntersecting) {
+                    loadComments();
+                    observer.disconnect();
+                }
+            }, { rootMargin: '200px' });
+            observer.observe($section[0]);
+        } else {
+            loadComments();
+        }
+    });
+</script>

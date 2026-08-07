@@ -247,6 +247,15 @@ form.contest-join-pseudotab {
         }
     }
 
+    tr.ghost {
+        opacity: 0.5;
+    }
+
+    .ghost-user::before {
+        content: "👻";
+        margin-right: 0.25em;
+    }
+
     td:not(.user-name, .personal-info) a:hover {
         text-decoration: underline;
     }

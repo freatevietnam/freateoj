@@ -54,7 +54,10 @@
         </tbody>
     </table>
     </div>
-    {% include "comments/list.html" %}
+    {% block comments %}
+        <div id="comments" data-comments-url="{{ url('tagproblem_comments', problem.code) }}"></div>
+        {% include "comments/lazy-load-js.html" %}
+    {% endblock %}
 {% endblock %}
 
 {% block bodyend %}

@@ -248,3 +248,8 @@ class TagProblemDetail(TagProblemMixin, TitleMixin, CommentedDetailView):
 
         return super(TagProblemDetail, self).get_queryset() \
             .prefetch_related(Prefetch('tagdata_set', queryset=queryset))
+
+
+class TagProblemComments(TagProblemDetail):
+    template_name = 'tag/comments-tab.html'
+    skip_comment_list = False

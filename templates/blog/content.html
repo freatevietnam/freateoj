@@ -77,7 +77,10 @@
         {{ post_to_facebook(request, post, '<i class="fa fa-facebook-official"></i>') }}
         {{ post_to_twitter(request, SITE_NAME + ':', post, '<i class="fa fa-twitter"></i>') }}
     </span>
-    {% include "comments/list.html" %}
+    {% block comments %}
+        <div id="comments" data-comments-url="{{ url('blog_post_comments', post.id, post.slug) }}"></div>
+        {% include "comments/lazy-load-js.html" %}
+    {% endblock %}
     <div style="clear: both;"></div>
 {% endblock %}
 

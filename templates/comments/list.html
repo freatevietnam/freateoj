@@ -136,8 +136,11 @@
                             <ul id="comment-{{ node.id }}-children" class="comments">{{ loop(children) }}</ul>
                         {% endif %}
                     {% endwith %}
-                {% endfor %}
             </ul>
+        {% endif %}
+
+        {% if comments_page_obj and comments_page_obj.paginator.num_pages > 1 %}
+            {% include "digg_paginator.html" with page_obj=comments_page_obj %}
         {% endif %}
 
         {% if request.user.is_authenticated and comment_form and not comment_lock %}
@@ -157,7 +160,7 @@
                             <div id="form-errors">
                                 {{ comment_form.non_field_errors() }}
                                 {{ comment_form.parent.errors }}
-                                {% if comment_form.body.errors %}{{ _('Invalid comment body.') }}{% endif %}
+                                {{ comment_form.body.errors }}
                             </div>
                         {% endif %}
                         {{ comment_form.parent }}
@@ -172,3 +175,6 @@
         {% endif %}
     </div>
 {% endif %}
+{% compress js %}
+    {% include "comments/media-js.html" %}
+{% endcompress %}

@@ -51,8 +51,10 @@
 
     $(document).ready(function () {
         sort_top_level_comments_by_status();
-        window.reply_comment = function (parent) {
+        window.reply_comment = function (parent, keepContent) {
             var $comment_reply = $('#comment-' + parent + '-reply');
+            if ($comment_reply.length === 0)
+                return;
             var reply_id = 'reply-' + parent;
             if ($comment_reply.find('#' + reply_id).length == 0) {
                 var $reply_form = $('#new-comment').clone(false).prop('id', reply_id);
@@ -61,7 +63,8 @@
                 $reply_form.appendTo($comment_reply);
                 $reply_form.find('form.comment-submit-form input#id_parent').val(parent);
                 rename_martor_widget($reply_form, 'body', reply_id);
-                ace.edit('martor-' + reply_id).setValue('');
+                if (!keepContent)
+                    ace.edit('martor-' + reply_id).setValue('');
             }
             $comment_reply.fadeIn();
 
@@ -70,9 +73,27 @@
             }, 500);
         };
 
-        $(document).on('click', '.close', function() {
-            $(this).closest('.reply-comment').fadeOut();
-        });
+        {% if reply_parent_id %}
+            reply_comment({{ reply_parent_id }}, true);
+        {% endif %}
+
+        if (!window.__commentsMediaBound) {
+            window.__commentsMediaBound = true;
+
+            $(document).on('click', '.close', function() {
+                $(this).closest('.reply-comment').fadeOut();
+            });
+
+            var code_regex = [/input\(/, /#include/, /void\s+main/, /fn\s+main/, /func\s+main/];
+            $(document).on('click', 'form.comment-warn-code .button[type=submit]', function (e) {
+                var text = $(this).parents('form').find('#id_body').val();
+                if (code_regex.some(function (regex) {return regex.test(text);})) {
+                    if (!confirm({{ _('Looks like you\'re trying to post some source code!\n\nThe comment section is not for posting source code.\nIf you want to submit your solution, please use the "Submit solution" button.\n\nAre you sure you want to post this?')|htmltojs }})) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
 
         function update_math($comment) {
             if ('MathJax' in window && MathJax.typesetPromise) {
@@ -296,18 +317,10 @@
             });
         }
 
-        $(window).on('load', function() {
+        if (document.readyState === 'complete') {
             initializeCommentToggle();
-        });
-
-        var code_regex = [/input\(/, /#include/, /void\s+main/, /fn\s+main/, /func\s+main/];
-        $(document).on('click', 'form.comment-warn-code .button[type=submit]', function (e) {
-            var text = $(this).parents('form').find('#id_body').val();
-            if (code_regex.some(function (regex) {return regex.test(text);})) {
-                if (!confirm({{ _('Looks like you\'re trying to post some source code!\n\nThe comment section is not for posting source code.\nIf you want to submit your solution, please use the "Submit solution" button.\n\nAre you sure you want to post this?')|htmltojs }})) {
-                    e.preventDefault();
-                }
-            }
-        });
+        } else {
+            $(window).on('load', initializeCommentToggle);
+        }
     });
 </script>

@@ -39,7 +39,10 @@
         {{ solution.content|markdown('solution', MATH_ENGINE)|reference|str|safe }}
     </div>
     <hr>
-    {% include "comments/list.html" %}
+    {% block comments %}
+        <div id="comments" data-comments-url="{{ url('problem_editorial_comments', problem.code) }}"></div>
+        {% include "comments/lazy-load-js.html" %}
+    {% endblock %}
 {% endblock %}
 
 {% block bodyend %}
