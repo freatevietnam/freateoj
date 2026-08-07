@@ -438,10 +438,8 @@
                 {% endif %}
             </div>
         {% else %}
-            {% block comments %}
-                <div id="comments" data-comments-url="{{ url('problem_comments', problem.code) }}"></div>
-                {% include "comments/lazy-load-js.html" %}
-            {% endblock %}
+            <div id="comments" data-comments-url="{{ url('problem_comments', problem.code) }}"></div>
+            {% include "comments/lazy-load-js.html" %}
         {% endif %}
     </div>
 {% endblock %}
