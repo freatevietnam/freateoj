@@ -148,7 +148,16 @@ class ProblemAdmin(AdminFastPaginationMixin, NoBatchDeleteMixin, VersionAdmin):
     def get_actions(self, request):
         actions = super(ProblemAdmin, self).get_actions(request)
 
-        if request.user.has_perm('judge.change_public_visibility'):
+        if (
+            request.user.is_superuser or
+            request.user.has_perm('judge.change_public_visibility') or
+            request.user.has_perm('judge.change_problem') or
+            request.user.has_perm('judge.edit_own_problem') or
+            request.user.has_perm('judge.edit_all_problem')
+        ):
+            func, name, desc = self.get_action('make_public')
+            actions[name] = (func, name, desc)
+
             func, name, desc = self.get_action('make_public_and_update_publish_date')
             actions[name] = (func, name, desc)
 
@@ -180,6 +189,16 @@ class ProblemAdmin(AdminFastPaginationMixin, NoBatchDeleteMixin, VersionAdmin):
     def _rescore(self, request, problem_id, publicy_changed=False):
         from judge.tasks import rescore_problem
         transaction.on_commit(rescore_problem.s(problem_id, publicy_changed).delay)
+
+    @admin.display(description=_('Mark problems as public'))
+    def make_public(self, request, queryset):
+        count = queryset.update(is_public=True)
+        for problem_id in queryset.values_list('id', flat=True):
+            self._rescore(request, problem_id, True)
+
+        self.message_user(request, ngettext('%d problem successfully marked as public.',
+                                            '%d problems successfully marked as public.',
+                                            count) % count)
 
     @admin.display(description=_('Mark problems as public and set publish date to now'))
     def make_public_and_update_publish_date(self, request, queryset):

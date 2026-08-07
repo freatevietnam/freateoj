@@ -309,8 +309,6 @@ $(function () {
                     try {
                         localStorage.setItem(NAV_SCALE_STORAGE_KEY, factor.toString());
                     } catch (e) { /* ignore */ }
-
-                    console.log('[autoScaleNav] final factor:', factor, 'totalWidth:', m.total, 'navWidth:', navWidth);
                 });
             });
         });

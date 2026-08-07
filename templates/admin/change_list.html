@@ -84,14 +84,14 @@
       {% endif %}
 
       {% block result_list %}
-        <div class="actions-and-paginator actions-and-paginator-top {% if not cl.full_result_count %}no-objects{% endif %}">
-          {% if action_form and cl.full_result_count %}{% admin_actions %}{% endif %}
+        <div class="actions-and-paginator actions-and-paginator-top {% if not cl.result_count %}no-objects{% endif %}">
+          {% if action_form and cl.result_count %}{% admin_actions %}{% endif %}
           {% pagination cl %}
         </div>
         {% result_list cl %}
-        <div class="actions-and-paginator actions-and-paginator-bottom {% if not cl.full_result_count %}no-objects{% endif %}">
-          {% if action_form and cl.full_result_count %}{% admin_actions %}{% endif %}
-          {% if cl.full_result_count %}{% pagination cl %}{% endif %}
+        <div class="actions-and-paginator actions-and-paginator-bottom {% if not cl.result_count %}no-objects{% endif %}">
+          {% if action_form and cl.result_count %}{% admin_actions %}{% endif %}
+          {% if cl.result_count %}{% pagination cl %}{% endif %}
         </div>
       {% endblock %}
       {% if cl.formset and cl.result_count %}<div id="bottombar"><button type="submit" name="_save" class="default"><i class="fa fa-lg fa-floppy-o"></i> <span class="text">{% trans 'Save' %}</span></button></div>{% endif %}
